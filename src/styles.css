@@ -1,0 +1,203 @@
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+}
+a {
+  color: inherit;
+}
+.plain-link {
+  text-decoration: none;
+}
+.eyebrow {
+  font-size: 10px !important;
+  font-weight: 750 !important;
+  letter-spacing: 1.7px !important;
+  line-height: 1.7 !important;
+}
+.nav-section {
+  font-size: 9px !important;
+  letter-spacing: 1.8px !important;
+  color: #819e93 !important;
+  font-weight: 650 !important;
+  margin: 0 12px 12px !important;
+}
+.sidebar-link {
+  border-radius: 9px !important;
+  margin-bottom: 5px !important;
+  min-height: 41px !important;
+  padding: 6px 12px !important;
+  color: #adc3b8 !important;
+}
+.sidebar-link .MuiListItemIcon-root {
+  color: inherit;
+  min-width: 30px;
+}
+.sidebar-link.Mui-selected {
+  background: #28483e !important;
+  color: #e0efde !important;
+}
+.sidebar-link.Mui-selected::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  top: 11px;
+  bottom: 11px;
+  width: 3px;
+  border-radius: 4px;
+  background: #edb264;
+}
+.sidebar-link:hover {
+  background: #ffffff07 !important;
+}
+.tiny-badge {
+  font-size: 7px;
+  padding: 2px 5px;
+  border: 1px solid #73918566;
+  border-radius: 4px;
+  color: #94af9d;
+}
+.domain-dot {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.code-block {
+  background: #142b2d;
+  color: #dfede3;
+  overflow: auto;
+  font:
+    12px/1.85 "SFMono-Regular",
+    Consolas,
+    monospace;
+  margin: 0;
+  padding: 24px;
+  max-height: 510px;
+  white-space: pre;
+  tab-size: 2;
+}
+.lesson-card {
+  transition:
+    border-color 0.15s,
+    transform 0.15s;
+}
+.lesson-card:hover {
+  border-color: #8aaf9c;
+  transform: translateY(-1px);
+}
+.reading-content p {
+  margin: 0 0 18px;
+}
+.reading-content section {
+  scroll-margin-top: 24px;
+}
+.reading-content li {
+  margin-bottom: 10px;
+  line-height: 1.9;
+}
+.section-link {
+  text-decoration: none;
+  display: block;
+  padding: 7px 11px;
+  border-left: 2px solid transparent;
+  font-size: 12px;
+  color: inherit;
+}
+.section-link:hover,
+.section-link.active {
+  border-color: #be7335;
+  color: #be7335;
+  background: #be73350a;
+}
+.keycap {
+  border: 1px solid #cad4ce;
+  border-radius: 5px;
+  padding: 0 5px;
+  font-size: 10px;
+}
+.answer-option {
+  transition:
+    background 0.12s,
+    border-color 0.12s;
+}
+.answer-option:hover {
+  background: #7eaa8f09;
+}
+.hero-grid {
+  background-image: radial-gradient(#ffffff18 1px, transparent 1px);
+  background-size: 17px 17px;
+}
+.print-only {
+  display: none;
+}
+button,
+a,
+input,
+textarea,
+[tabindex]:not([tabindex="-1"]) {
+  outline-offset: 4px;
+}
+::selection {
+  background: #f3c88788;
+}
+.focus-highlight {
+  animation: highlight 2.4s ease-out;
+}
+@keyframes highlight {
+  0%,
+  40% {
+    background: #edb26426;
+  }
+  100% {
+    background: transparent;
+  }
+}
+@media (max-width: 600px) {
+  .code-block {
+    font-size: 10px;
+    padding: 16px;
+  }
+  .reading-content p {
+    font-size: 14px;
+    line-height: 1.95;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media print {
+  nav,
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    padding: 0 !important;
+  }
+  .print-only {
+    display: block;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .MuiCard-root {
+    break-inside: avoid;
+  }
+  .code-block {
+    white-space: pre-wrap;
+    max-height: none;
+  }
+}

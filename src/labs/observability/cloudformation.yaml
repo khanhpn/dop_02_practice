@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: DOP study sandbox - logs, metric alarm, SNS, EventBridge, SQS and two distinct DLQs
+Parameters:
+  NotificationEmail:
+    Type: String
+    Default: ''
+    Description: Optional email. Confirm the SNS subscription before testing notifications.
+Conditions:
+  HasEmail: !Not [!Equals [!Ref NotificationEmail, '']]
+Resources:
+  ApplicationLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/dop-study/${AWS::StackName}'
+      RetentionInDays: 7
+  Errors:
+    Type: AWS::Logs::MetricFilter
+    Properties:
+      LogGroupName: !Ref ApplicationLogs
+      FilterPattern: '{ $.level = "ERROR" }'
+      MetricTransformations:
+        - MetricNamespace: !Sub 'DOPStudy/${AWS::StackName}'
+          MetricName: ErrorCount
+          MetricValue: '1'
+          DefaultValue: 0
+          Unit: Count
+  Notifications:
+    Type: AWS::SNS::Topic
+  EmailSubscription:
+    Type: AWS::SNS::Subscription
+    Condition: HasEmail
+    Properties:
+      Protocol: email
+      Endpoint: !Ref NotificationEmail
+      TopicArn: !Ref Notifications
+  ErrorAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Three structured ERROR records within one minute
+      Namespace: !Sub 'DOPStudy/${AWS::StackName}'
+      MetricName: ErrorCount
+      Statistic: Sum
+      Unit: Count
+      Period: 60
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 3
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions: [!Ref Notifications]
+  NotificationPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics: [!Ref Notifications]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowThisCloudWatchAlarm
+            Effect: Allow
+            Principal:
+              Service: cloudwatch.amazonaws.com
+            Action: sns:Publish
+            Resource: !Ref Notifications
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !GetAtt ErrorAlarm.Arn
+              StringEquals:
+                aws:SourceAccount: !Ref AWS::AccountId
+  ProcessingDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 604800
+      SqsManagedSseEnabled: true
+  DeliveryDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 604800
+      SqsManagedSseEnabled: true
+  IncidentQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      MessageRetentionPeriod: 86400
+      VisibilityTimeout: 30
+      SqsManagedSseEnabled: true
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt ProcessingDLQ.Arn
+        maxReceiveCount: 3
+  IncidentRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Only synthetic incident events from this study exercise
+      State: ENABLED
+      EventPattern:
+        source: [dop.study]
+        detail-type: [PracticeIncident]
+      Targets:
+        - Id: IncidentQueue
+          Arn: !GetAtt IncidentQueue.Arn
+          DeadLetterConfig:
+            Arn: !GetAtt DeliveryDLQ.Arn
+          RetryPolicy:
+            MaximumEventAgeInSeconds: 60
+            MaximumRetryAttempts: 2
+  EventQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues: [!Ref IncidentQueue, !Ref DeliveryDLQ]
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowOnlyThisEventBridgeRule
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: [!GetAtt IncidentQueue.Arn, !GetAtt DeliveryDLQ.Arn]
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !GetAtt IncidentRule.Arn
+Outputs:
+  LogGroupName:
+    Value: !Ref ApplicationLogs
+  AlarmName:
+    Value: !Ref ErrorAlarm
+  NotificationTopicArn:
+    Value: !Ref Notifications
+  IncidentQueueUrl:
+    Value: !Ref IncidentQueue
+  ProcessingDLQUrl:
+    Value: !Ref ProcessingDLQ
+  DeliveryDLQUrl:
+    Value: !Ref DeliveryDLQ
+  EventRuleName:
+    Value: !Ref IncidentRule

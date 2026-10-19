@@ -1,0 +1,10 @@
+node_modules/
+.pnpm-store/
+dist/
+test-results/
+playwright-report/
+.superpowers/
+.DS_Store
+*.local
+artifacts/
+*.tsbuildinfo

@@ -1,0 +1,93 @@
+name: Verify, version & deploy Pages
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm build
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  version:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Allocate numeric v0.N tag (idempotent for this SHA)
+        id: tag
+        run: node scripts/version.mjs
+
+  deploy:
+    needs: [verify, version]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Avoid publishing an older build over a newer master
+        id: latest
+        uses: actions/github-script@v7
+        with:
+          result-encoding: string
+          script: |
+            const { data } = await github.rest.repos.getCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'master'
+            });
+            return data.sha === context.sha;
+      - uses: actions/configure-pages@v5
+        if: steps.latest.outputs.result == 'true'
+      - name: Deploy verified artifact
+        if: steps.latest.outputs.result == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Record release
+        if: steps.latest.outputs.result == 'true'
+        env:
+          RELEASE_TAG: ${{ needs.version.outputs.tag }}
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          echo "Release: $RELEASE_TAG" >> "$GITHUB_STEP_SUMMARY"
+          echo "Pages: $PAGE_URL" >> "$GITHUB_STEP_SUMMARY"
