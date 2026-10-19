@@ -57,7 +57,7 @@ export const lesson: Lesson = {
       id: `${id}-boundaries`,
       title: "5. Chuyển sự kiện giữa tài khoản, kiểm toán và phát lại an toàn",
       paragraphs: [
-        "Tài khoản vận hành trung tâm có thể nhận sự kiện từ nhiều tài khoản khi chính sách tài nguyên của bus cho phép tiếp nhận và phía gửi có quy tắc, role với quyền PutEvents phù hợp. Phía nhận vẫn phải cấu hình quy tắc lọc đúng tài khoản, nguồn sự kiện và cấp quyền gọi đích xử lý. Đây là các bước riêng: cho phép gửi vào bus không tự tạo quy trình khắc phục. Với đích bus liên tài khoản mới, hãy thiết kế role IAM ở phía gửi theo yêu cầu tương ứng và giới hạn tài khoản hoặc tổ chức được phép gửi. Với custom event (sự kiện tự tạo), riêng chuỗi source không phải bằng chứng xác thực, vì bên có quyền gửi có thể tự điền giá trị theo cấu trúc dữ liệu. Mức tin cậy phải dựa vào chủ thể được cấp quyền, chính sách và thông tin đáng tin cậy trong phần bao sự kiện.",
+        "Tài khoản vận hành trung tâm có thể nhận sự kiện từ nhiều tài khoản khi chính sách tài nguyên của bus cho phép tiếp nhận và phía gửi có quy tắc, role với quyền PutEvents phù hợp. Phía nhận vẫn phải cấu hình quy tắc lọc đúng tài khoản, nguồn sự kiện và cấp quyền gọi đích xử lý. Đây là các bước riêng: cho phép gửi vào bus không tự tạo quy trình khắc phục. Với đích bus liên tài khoản mới, hãy thiết kế role IAM ở phía gửi theo yêu cầu tương ứng và giới hạn tài khoản hoặc tổ chức được phép gửi. Với custom event (sự kiện tự tạo), riêng chuỗi source không phải bằng chứng xác thực, vì bên có quyền gửi có thể tự điền giá trị theo cấu trúc dữ liệu. Mức tin cậy phải dựa vào chủ thể được cấp quyền, chính sách và những trường thông tin đáng tin cậy ở cấp ngoài cùng, bao quanh phần detail của sự kiện.",
         "Archive (lưu trữ sự kiện) và replay (phát lại sự kiện) giúp cung cấp lại đầu vào để phục hồi hoặc kiểm tra bên nhận, nhưng không bảo đảm mọi hành động đều an toàn khi chạy lại. Sự kiện cũ có thể nói về tài nguyên đã thay đổi hoặc bị xóa, trong khi tác động của lần xử lý trước có thể đã xảy ra. Vì vậy, trước khi phát lại, hãy xác định khoảng thời gian, bên nhận, cách chống xử lý trùng và cách theo dõi kết quả; dùng môi trường thử nghiệm nếu phù hợp. Với sự kiện trong DLQ, cần đọc thông tin lỗi, sửa quyền hoặc đích rồi mới gửi lại có kiểm soát. Chỉ xóa thông điệp khi đã xác nhận kết quả theo thiết kế. Sau sự cố, phải đối chiếu số sự kiện với kết quả nghiệp vụ: hàng đợi trống do bị xóa hàng loạt không chứng minh công việc đã hoàn tất.",
       ],
     },
@@ -748,7 +748,7 @@ resource "aws_cloudwatch_event_target" "queue" {
         options: [
           [
             "Match only source and ignore the envelope account",
-            "Chỉ lọc source và bỏ qua trường account trong phần bao sự kiện.",
+            "Chỉ lọc source và bỏ qua trường account ở cấp ngoài cùng của sự kiện.",
             "Sai. Sự kiện từ tài khoản khác có thể dùng cùng nguồn và loại, nên bộ lọc này chưa giới hạn đúng phạm vi.",
           ],
           [
@@ -877,7 +877,7 @@ resource "aws_cloudwatch_event_target" "queue" {
         options: [
           [
             "Immediately rebuild every artifact because the event proves all binaries are corrupt",
-            "Build lại ngay mọi gói phần mềm vì sự kiện chứng minh toàn bộ chương trình đã hỏng.",
+            "Tạo lại ngay mọi gói phần mềm vì sự kiện chứng minh toàn bộ chương trình đã hỏng.",
             "Sai. Sự kiện tình trạng dịch vụ không chứng minh nội dung mọi gói phần mềm bị thay đổi hoặc hỏng.",
           ],
           [

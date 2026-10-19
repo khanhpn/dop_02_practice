@@ -515,7 +515,7 @@ resource "aws_iam_role_policy" "read" {
     },
     {
       en: "Which TWO tests best establish that a read-only artifact policy is scoped correctly? (Choose TWO.)",
-      vi: "Bạn cần kiểm chứng chính sách chỉ cho phép đọc gói phát hành trong releases/. Hai phép thử nào phù hợp nhất? Chọn HAI đáp án.",
+      vi: "Bạn cần kiểm chứng chính sách chỉ cho phép đọc gói phát hành đã được giới hạn đúng phạm vi. Hai phép thử nào phù hợp nhất? Chọn HAI đáp án.",
       section: "validation",
       answers: [1, 4],
       explanation:

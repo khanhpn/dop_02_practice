@@ -14,7 +14,7 @@ a {
   text-decoration: none;
 }
 .eyebrow {
-  font-size: 10px !important;
+  font-size: 11px !important;
   font-weight: 750 !important;
   letter-spacing: 1.7px !important;
   line-height: 1.7 !important;
@@ -91,7 +91,11 @@ a {
   transform: translateY(-1px);
 }
 .reading-content p {
-  margin: 0 0 18px;
+  max-width: 78ch;
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.85;
+  overflow-wrap: break-word;
 }
 .reading-content section {
   scroll-margin-top: 24px;
@@ -105,7 +109,7 @@ a {
   display: block;
   padding: 7px 11px;
   border-left: 2px solid transparent;
-  font-size: 12px;
+  font-size: 13px;
   color: inherit;
 }
 .section-link:hover,
@@ -163,8 +167,8 @@ textarea,
     padding: 16px;
   }
   .reading-content p {
-    font-size: 14px;
-    line-height: 1.95;
+    font-size: 15px;
+    line-height: 1.85;
   }
 }
 @media (prefers-reduced-motion: reduce) {

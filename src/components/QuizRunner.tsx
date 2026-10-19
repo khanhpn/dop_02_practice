@@ -71,11 +71,11 @@ function Explanation({
               ) : (
                 <CancelRounded color="disabled" sx={{ fontSize: 16 }} />
               )}
-              <Typography sx={{ fontSize: 12, fontWeight: 650 }}>
+              <Typography sx={{ fontSize: 14, fontWeight: 650 }}>
                 {o.id}. {o[locale]}
               </Typography>
             </Stack>
-            <Typography variant="body2" sx={{ fontSize: 12.5 }}>
+            <Typography variant="body2" sx={{ fontSize: 14, lineHeight: 1.7 }}>
               {o.explanation}
             </Typography>
           </Box>
@@ -531,7 +531,7 @@ export function QuizRunner({
         {persist ? " · Tự lưu để tiếp tục sau khi tải lại trang" : ""}
       </Typography>
       <Dialog open={confirm} onClose={() => setConfirm(false)}>
-        <DialogTitle>Nộp bài luyện tập?</DialogTitle>
+        <DialogTitle>{timed ? "Nộp bài thi thử?" : "Nộp bài luyện tập?"}</DialogTitle>
         <DialogContent>
           <Typography>
             Bạn đã trả lời {answered}/{items.length} câu. Câu bỏ trống sẽ được

@@ -260,7 +260,7 @@ export function Practice() {
           >
             {domains.map((d) => (
               <MenuItem key={d.id} value={d.id}>
-                D{d.id} · {d.title} ({d.weight}%)
+                D{d.id} · {d.shortLabel} ({d.weight}%)
               </MenuItem>
             ))}
           </TextField>

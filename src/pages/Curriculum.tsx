@@ -87,7 +87,7 @@ export function Curriculum() {
         title={domain ? domain.subtitle : "Bản đồ kiến thức của bạn"}
         description={
           domain
-            ? domain.description
+            ? `${domain.description} Tên nhóm trong Exam Guide: ${domain.title}.`
             : "Lộ trình gồm 6 nhóm kiến thức (domain), 19 chương và mục tiêu 72 bài chuyên sâu. Bạn có thể chọn phần cần củng cố để bắt đầu học."
         }
       />
@@ -131,7 +131,7 @@ export function Curriculum() {
         {domains.map((d) => (
           <Chip
             key={d.id}
-            label={`D${d.id} · ${d.title}`}
+            label={`D${d.id} · ${d.shortLabel}`}
             onClick={() => change("domain", String(d.id))}
             color={selected === d.id ? "primary" : "default"}
             variant={selected === d.id ? "filled" : "outlined"}

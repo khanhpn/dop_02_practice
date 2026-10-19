@@ -126,7 +126,7 @@ export function Dashboard() {
               }}
             />
           }
-          label="Lưu tiến độ trên máy"
+          label="Tiến độ tự lưu trên máy"
           size="small"
           variant="outlined"
           sx={{
@@ -430,12 +430,12 @@ export function Dashboard() {
                     {chapters.filter((c) => c.domainId === d.id).length} CHƯƠNG
                   </Typography>
                   <Typography variant="h4" sx={{ mt: 0.5, fontSize: 13 }}>
-                    {d.title}
+                    {d.shortLabel}
                   </Typography>
                   <Typography
                     sx={{ fontSize: 10.5, color: "text.secondary", mt: 0.5 }}
                   >
-                    {d.subtitle}
+                    {d.title}
                   </Typography>
                   <Stack
                     direction="row"

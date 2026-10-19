@@ -33,7 +33,7 @@ export const d6l09 = lesson(
         id: "d6-l09-cloudtrail",
         title: "2. Thu sự kiện trên toàn tổ chức và chọn đúng loại sự kiện",
         paragraphs: [
-          "Organization trail (đường thu thập sự kiện cấp tổ chức) giúp thu sự kiện từ tài khoản quản lý và các tài khoản thành viên theo cấu hình chung. Tài khoản quản lý hoặc delegated administrator (quản trị viên được uỷ quyền) quản lý trail này. Người dùng trong tài khoản thành viên không thể tự sửa hoặc xoá nó chỉ vì được cấp quyền quản lý CloudTrail trong tài khoản của mình. Với multi-Region trail (trail nhiều Region), cần xem cả những Region phải chủ động kích hoạt, home Region (Region gốc của trail) và AWS partition (phân vùng AWS). Đừng hiểu “nhiều Region” là tự động bao phủ mọi phân vùng hoặc mọi Region chưa được kích hoạt. Khi tài khoản mới gia nhập tổ chức, nó tham gia cơ chế thu thập chung, nhưng bạn vẫn phải kiểm tra việc chuyển nhật ký đến nơi lưu trữ có thành công hay không.",
+          "Organization trail (đường thu thập sự kiện cấp tổ chức) giúp thu sự kiện từ tài khoản quản lý và các tài khoản thành viên theo cấu hình chung. Tài khoản quản lý hoặc delegated administrator (quản trị viên được ủy quyền) quản lý trail này. Người dùng trong tài khoản thành viên không thể tự sửa hoặc xóa nó chỉ vì được cấp quyền quản lý CloudTrail trong tài khoản của mình. Với multi-Region trail (trail nhiều Region), cần xem cả những Region phải chủ động kích hoạt, home Region (Region gốc của trail) và AWS partition (phân vùng AWS). Đừng hiểu “nhiều Region” là tự động bao phủ mọi phân vùng hoặc mọi Region chưa được kích hoạt. Khi tài khoản mới gia nhập tổ chức, nó tham gia cơ chế thu thập chung, nhưng bạn vẫn phải kiểm tra việc chuyển nhật ký đến nơi lưu trữ có thành công hay không.",
           "Management events (sự kiện quản lý) mô tả những thao tác như thay đổi cấu hình, trong khi data events (sự kiện dữ liệu) có thể ghi các thao tác như S3 GetObject, PutObject hoặc Lambda Invoke. Trail không mặc định thu toàn bộ sự kiện dữ liệu. Bạn phải cấu hình bộ chọn sự kiện để thu đúng loại tài nguyên và thao tác cần kiểm toán, đồng thời kiểm soát chi phí. Event history chỉ cung cấp lịch sử sự kiện quản lý gần đây trong phạm vi tài khoản và Region đang xem; đây không phải kho lưu trữ dài hạn hay màn hình tự tập hợp dữ liệu của mọi tài khoản thành viên. Để điều tra trên toàn tổ chức hoặc lưu lâu dài, hãy dùng dữ liệu trail trong S3 hoặc event data store phù hợp. Ví dụ, nếu chỉ thu thao tác ghi, bạn sẽ thiếu căn cứ để trả lời ai đã đọc một đối tượng nhạy cảm.",
         ],
       },
@@ -41,7 +41,7 @@ export const d6l09 = lesson(
         id: "d6-l09-integrity",
         title: "3. Kiểm tra việc chuyển nhật ký và bảo vệ dữ liệu đã lưu",
         paragraphs: [
-          "Thấy trail trong danh sách chưa chứng minh nhật ký đã đến S3. Hãy kiểm tra GetTrailStatus, giá trị IsLogging, lỗi chuyển dữ liệu gần nhất và các đối tượng mới dưới đường dẫn của tài khoản, Region cần theo dõi. Organization trail có thể xuất hiện trong tài khoản thành viên dù có lỗi khi kiểm tra nơi nhận dữ liệu. Vì vậy, một bảng giám sát chỉ đếm số trail sẽ bỏ sót tình trạng ngừng thu thập. Chính sách bucket phải cho phép CloudTrail ghi vào đúng đường dẫn; nếu dùng khoá KMS do khách hàng quản lý, chính sách khoá cũng phải cho phép những thao tác cần thiết. Nên tách tài khoản lưu trữ nhật ký và quyền đọc phục vụ kiểm toán khỏi quyền quản trị ứng dụng, để một người chiếm được quyền sửa ứng dụng không đồng thời dễ dàng xoá dấu vết.",
+          "Thấy trail trong danh sách chưa chứng minh nhật ký đã đến S3. Hãy kiểm tra GetTrailStatus, giá trị IsLogging, lỗi chuyển dữ liệu gần nhất và các đối tượng mới dưới đường dẫn của tài khoản, Region cần theo dõi. Organization trail có thể xuất hiện trong tài khoản thành viên dù có lỗi khi kiểm tra nơi nhận dữ liệu. Vì vậy, một bảng giám sát chỉ đếm số trail sẽ bỏ sót tình trạng ngừng thu thập. Chính sách bucket phải cho phép CloudTrail ghi vào đúng đường dẫn; nếu dùng khóa KMS do khách hàng quản lý, chính sách khóa cũng phải cho phép những thao tác cần thiết. Nên tách tài khoản lưu trữ nhật ký và quyền đọc phục vụ kiểm toán khỏi quyền quản trị ứng dụng, để một người chiếm được quyền sửa ứng dụng không đồng thời dễ dàng xóa dấu vết.",
           "Log file validation (xác minh tính toàn vẹn của tập tin nhật ký) tạo digest files (tập tin chứa thông tin kiểm chứng), dùng giá trị băm và chữ ký để hỗ trợ phát hiện việc sửa hoặc xóa nhật ký trong chuỗi được kiểm tra. Bật tính năng này mới cung cấp dữ liệu để kiểm chứng; không có nghĩa mọi lần kiểm chứng đã tự được thực hiện hoặc mọi yêu cầu xóa đã bị ngăn. S3 Object Lock và quyền truy cập hạn chế việc sửa, xóa; quy trình xác minh kiểm tra dữ liệu có còn nguyên vẹn; mã hóa bảo vệ nội dung khỏi chủ thể không được phép đọc. Vì giải quyết các yêu cầu khác nhau, ba biện pháp không thay thế nhau. Nhóm cần giữ cả nhật ký, tập tin kiểm chứng và khóa giải mã trong thời hạn cần thiết. Kho không cho sửa nhưng thiếu dữ liệu, hoặc còn tập tin mà không thể giải mã, đều chưa đáp ứng yêu cầu kiểm toán.",
         ],
       },
@@ -50,7 +50,7 @@ export const d6l09 = lesson(
         title:
           "4. Tổng hợp dữ liệu Config và kiểm tra sai lệch với CloudFormation",
         paragraphs: [
-          "AWS Config recorder (bộ ghi cấu hình) phải được bật cho đúng loại tài nguyên và Region cần theo dõi. Aggregator (bộ tổng hợp dữ liệu) chỉ gom thông tin cấu hình và kết quả đánh giá từ nhiều tài khoản, Region để bạn xem tập trung; nó không tự bật bộ ghi, tạo quy tắc đánh giá ở nguồn hay trực tiếp sửa tài nguyên. Nếu một tài khoản không có lịch sử cấu hình, hãy kiểm tra nguồn có thực sự ghi dữ liệu không rồi mới kiểm tra việc tổng hợp. Dữ liệu cũng có thể đến chậm, nên chưa thấy bản ghi không đủ để kết luận tài nguyên đã bị xoá. Một quy tắc chỉ đánh giá yêu cầu mà nó được thiết kế để kiểm tra: đạt yêu cầu mã hoá không có nghĩa quyền truy cập cũng an toàn. Conformance pack (gói quy tắc tuân thủ) giúp triển khai một tập quy tắc và cấu hình khắc phục theo phạm vi đã chọn.",
+          "AWS Config recorder (bộ ghi cấu hình) phải được bật cho đúng loại tài nguyên và Region cần theo dõi. Aggregator (bộ tổng hợp dữ liệu) chỉ gom thông tin cấu hình và kết quả đánh giá từ nhiều tài khoản, Region để bạn xem tập trung; nó không tự bật bộ ghi, tạo quy tắc đánh giá ở nguồn hay trực tiếp sửa tài nguyên. Nếu một tài khoản không có lịch sử cấu hình, hãy kiểm tra nguồn có thực sự ghi dữ liệu không rồi mới kiểm tra việc tổng hợp. Dữ liệu cũng có thể đến chậm, nên chưa thấy bản ghi không đủ để kết luận tài nguyên đã bị xóa. Một quy tắc chỉ đánh giá yêu cầu mà nó được thiết kế để kiểm tra: đạt yêu cầu mã hóa không có nghĩa quyền truy cập cũng an toàn. Conformance pack (gói quy tắc tuân thủ) giúp triển khai một tập quy tắc và cấu hình khắc phục theo phạm vi đã chọn.",
           "CloudFormation drift detection giúp nhận ra những giá trị thực tế khác với mẫu hạ tầng, nhưng chỉ trong phạm vi loại tài nguyên và thuộc tính được hỗ trợ, được khai báo để so sánh. Trạng thái IN_SYNC không chứng minh mọi thiết lập bảo mật đều chưa thay đổi. Một thuộc tính không ghi trong mẫu hoặc không được hỗ trợ kiểm tra có thể nằm ngoài phép so sánh. Với nested stacks (các stack lồng nhau), cũng cần kiểm tra đúng phạm vi thay vì cho rằng một lần quét stack cha đã kiểm tra tất cả. Phát hiện sai lệch không tự sửa sai lệch: bạn phải xác định thay đổi có hợp lệ không, rồi cập nhật mẫu để chấp nhận hoặc đưa tài nguyên về cấu hình mong muốn. CloudTrail giúp tìm người và thao tác gây thay đổi; Config giúp xem lịch sử; kết quả drift cho biết khác biệt so với hạ tầng dạng mã.",
         ],
       },
@@ -58,7 +58,7 @@ export const d6l09 = lesson(
         id: "d6-l09-network",
         title: "5. Đọc Flow Logs và ghép các nguồn để điều tra",
         paragraphs: [
-          "Bạn có thể bật VPC Flow Logs cho VPC, subnet hoặc network interface (giao diện mạng) để ghi thông tin mô tả luồng IP: địa chỉ nguồn, đích, cổng, giao thức, số byte và kết quả ACCEPT hoặc REJECT tuỳ định dạng. Đây không phải packet capture (bắt toàn bộ gói tin), nên không cung cấp toàn bộ nội dung HTTP hay dữ liệu TLS đã giải mã. Quá trình tổng hợp và chuyển nhật ký có độ trễ, đồng thời có những loại lưu lượng hoặc bản ghi không được thu như thông thường. Vì vậy, đừng coi nó là bằng chứng tuyệt đối rằng mọi gói tin đều đã được ghi. Khi thấy REJECT, bạn biết luồng bị từ chối ở lớp được quan sát, nhưng chưa biết chính xác quy tắc security group hay network ACL nào gây ra. Cần đối chiếu cấu hình và bối cảnh định tuyến để khoanh vùng nguyên nhân.",
+          "Bạn có thể bật VPC Flow Logs cho VPC, subnet hoặc network interface (giao diện mạng) để ghi thông tin mô tả luồng IP: địa chỉ nguồn, đích, cổng, giao thức, số byte và kết quả ACCEPT hoặc REJECT tùy định dạng. Đây không phải packet capture (bắt toàn bộ gói tin), nên không cung cấp toàn bộ nội dung HTTP hay dữ liệu TLS đã giải mã. Quá trình tổng hợp và chuyển nhật ký có độ trễ, đồng thời có những loại lưu lượng hoặc bản ghi không được thu như thông thường. Vì vậy, đừng coi nó là bằng chứng tuyệt đối rằng mọi gói tin đều đã được ghi. Khi thấy REJECT, bạn biết luồng bị từ chối ở lớp được quan sát, nhưng chưa biết chính xác quy tắc security group hay network ACL nào gây ra. Cần đối chiếu cấu hình và bối cảnh định tuyến để khoanh vùng nguyên nhân.",
           "Một cuộc điều tra thường cần ghép nhiều nguồn theo cùng khoảng thời gian. CloudTrail cho biết ai sửa quy tắc, Config cho thấy cấu hình trước và sau, Flow Logs cho biết luồng mạng liên quan, còn nhật ký ứng dụng giúp xác định ảnh hưởng đến người dùng. GuardDuty cung cấp dấu hiệu đe doạ, Inspector phát hiện lỗ hổng trong phạm vi hỗ trợ và Access Analyzer phân tích quyền truy cập. Những findings (kết quả phát hiện) này là đầu mối để điều tra, không thay thế toàn bộ nhật ký gốc phải lưu. Với cảnh báo như StopLogging hoặc thay đổi bất thường ở chính sách kho lưu trữ, cần có hướng dẫn xác minh danh tính, phạm vi và lý do thay đổi. Chỉ tự động khắc phục khi đã có quyền và điều kiện an toàn; lưu mã sự kiện để tránh xử lý trùng, đồng thời ghi lại kết quả kiểm tra sau hành động.",
         ],
       },
@@ -101,7 +101,7 @@ export const d6l09 = lesson(
         context:
           "Trail cấp tổ chức xuất hiện trong bảng điều khiển của mọi tài khoản, nhưng kho lưu trữ không nhận được tập tin mới từ một tài khoản thành viên.",
         solution:
-          "Kiểm tra trạng thái trail, lỗi chuyển nhật ký, Region đã kích hoạt, đường dẫn và chính sách bucket, rồi quyền sử dụng khoá KMS. Thực hiện một thao tác quản lý vô hại được phép và tìm bản ghi tương ứng ở nơi lưu trữ.",
+          "Kiểm tra trạng thái trail, lỗi chuyển nhật ký, Region đã kích hoạt, đường dẫn và chính sách bucket, rồi quyền sử dụng khóa KMS. Thực hiện một thao tác quản lý vô hại được phép và tìm bản ghi tương ứng ở nơi lưu trữ.",
         tradeoff:
           "Kiểm tra từ thao tác nguồn đến tập tin đích tốn thêm công sức, nhưng phát hiện được lỗi mà việc chỉ đếm số trail không thể nhận ra.",
       },
@@ -119,7 +119,7 @@ export const d6l09 = lesson(
       "CloudTrail cho biết hoạt động API; Config lưu cấu hình đã ghi nhận; Flow Logs mô tả luồng mạng.",
       "Với trail nhiều tài khoản, nhiều Region, phải kiểm tra cả phạm vi thu thập và việc chuyển dữ liệu thực tế.",
       "Muốn thu sự kiện dữ liệu, cần chọn rõ phạm vi; Event history không tự chứa mọi lần đọc đối tượng.",
-      "Xác minh toàn vẹn, chống sửa xoá và mã hoá là ba yêu cầu khác nhau.",
+      "Xác minh toàn vẹn, chống sửa xóa và mã hóa là ba yêu cầu khác nhau.",
       "Bộ tổng hợp Config không tự bật nguồn ghi dữ liệu; phát hiện sai lệch không tự sửa tài nguyên.",
     ],
     examTraps: [
@@ -200,7 +200,7 @@ resource "aws_cloudtrail" "organization" {
         {
           title: "Kiểm tra nhật ký đã được lưu và có thể xác minh",
           detail:
-            "Với trail riêng, xem GetTrailStatus và tìm các đối tượng S3 mới. Nếu đã bật xác minh toàn vẹn, tìm tập tin digest và đọc quy trình kiểm chứng bằng CLI. Không sửa hay xoá nhật ký chỉ để tạo lỗi thử nghiệm.",
+            "Với trail riêng, xem GetTrailStatus và tìm các đối tượng S3 mới. Nếu đã bật xác minh toàn vẹn, tìm tập tin digest và đọc quy trình kiểm chứng bằng CLI. Không sửa hay xóa nhật ký chỉ để tạo lỗi thử nghiệm.",
           expected:
             "Có cả thông tin trạng thái và tập tin thực tế để chứng minh việc chuyển nhật ký. Phân biệt được bật tính năng xác minh với đã chạy kiểm chứng.",
         },
@@ -214,15 +214,15 @@ resource "aws_cloudtrail" "organization" {
         {
           title: "Dọn tài nguyên trong đúng phạm vi",
           detail:
-            "Khôi phục nhãn thử nghiệm nếu cần. Nếu đã tạo trail hoặc bộ chọn sự kiện riêng, dừng hoặc xoá đúng phần đó và xử lý dữ liệu theo quy định của tài khoản thử nghiệm. Giữ nguyên trail tổ chức và nhật ký dùng chung.",
+            "Khôi phục nhãn thử nghiệm nếu cần. Nếu đã tạo trail hoặc bộ chọn sự kiện riêng, dừng hoặc xóa đúng phần đó và xử lý dữ liệu theo quy định của tài khoản thử nghiệm. Giữ nguyên trail tổ chức và nhật ký dùng chung.",
           expected:
-            "Không để nguồn thu riêng tiếp tục phát sinh phí ngoài ý muốn. Dữ liệu kiểm toán được giữ hoặc xoá theo thoả thuận, không theo suy đoán của người làm bài.",
+            "Không để nguồn thu riêng tiếp tục phát sinh phí ngoài ý muốn. Dữ liệu kiểm toán được giữ hoặc xóa theo thoả thuận, không theo suy đoán của người làm bài.",
         },
       ],
       cleanup: [
-        "Chỉ xoá trail, bộ chọn và nơi nhận nhật ký riêng do bạn tạo cho bài học; không thay đổi cơ chế kiểm toán chung.",
-        "Dọn bucket, đối tượng và các phiên bản thử nghiệm trong phạm vi được phép; không xoá nhật ký đang phải lưu theo quy định.",
-        "Nếu đã tạo riêng Flow Logs hoặc tài nguyên Config ngoài phần cơ bản, tắt đúng phần đó. Giữ khoá giải mã chừng nào dữ liệu phụ thuộc vào nó còn cần đọc.",
+        "Chỉ xóa trail, bộ chọn và nơi nhận nhật ký riêng do bạn tạo cho bài học; không thay đổi cơ chế kiểm toán chung.",
+        "Dọn bucket, đối tượng và các phiên bản thử nghiệm trong phạm vi được phép; không xóa nhật ký đang phải lưu theo quy định.",
+        "Nếu đã tạo riêng Flow Logs hoặc tài nguyên Config ngoài phần cơ bản, tắt đúng phần đó. Giữ khóa giải mã chừng nào dữ liệu phụ thuộc vào nó còn cần đọc.",
       ],
       challenge:
         "Thiết kế cảnh báo khi có StopLogging hoặc thay đổi bất thường ở chính sách kho nhật ký. Nêu rõ sự kiện cần thu, điều kiện khớp cảnh báo, cách kiểm tra trạng thái hiện tại, cách giữ bằng chứng và ai có quyền khôi phục.",
@@ -297,7 +297,7 @@ resource "aws_cloudtrail" "organization" {
         [
           "Assume the trail list proves complete logging.",
           "Cho rằng danh sách trail đã chứng minh việc ghi nhật ký đầy đủ.",
-          "Sai. Trail vẫn có thể tồn tại khi bucket từ chối ghi, khoá KMS thiếu quyền hoặc việc chuyển nhật ký gặp lỗi.",
+          "Sai. Trail vẫn có thể tồn tại khi bucket từ chối ghi, khóa KMS thiếu quyền hoặc việc chuyển nhật ký gặp lỗi.",
         ],
         [
           "Create a second identical trail before checking any status.",
@@ -311,38 +311,38 @@ resource "aws_cloudtrail" "organization" {
         ],
         [
           "Disable encryption for every archive bucket.",
-          "Tắt mã hoá cho mọi bucket lưu nhật ký.",
-          "Sai. Chưa có bằng chứng mã hoá là nguyên nhân; thay đổi đồng loạt còn làm giảm bảo vệ dữ liệu và vượt phạm vi cần xử lý.",
+          "Tắt mã hóa cho mọi bucket lưu nhật ký.",
+          "Sai. Chưa có bằng chứng mã hóa là nguyên nhân; thay đổi đồng loạt còn làm giảm bảo vệ dữ liệu và vượt phạm vi cần xử lý.",
         ],
       ],
     },
     {
       en: "A member administrator wants to delete the organization trail using local CloudTrail permissions. What behavior should be expected?",
-      vi: "Quản trị viên của một tài khoản thành viên muốn dùng quyền CloudTrail trong tài khoản mình để xoá trail cấp tổ chức. Điều gì sẽ xảy ra?",
+      vi: "Quản trị viên của một tài khoản thành viên muốn dùng quyền CloudTrail trong tài khoản mình để xóa trail cấp tổ chức. Điều gì sẽ xảy ra?",
       section: "cloudtrail",
       answers: [1],
       explanation:
-        "Trail cấp tổ chức do tài khoản quản lý hoặc quản trị viên được uỷ quyền quản lý. Quyền quản trị trail thông thường trong một tài khoản thành viên không tự cho phép thay đổi cấu hình chung này.",
+        "Trail cấp tổ chức do tài khoản quản lý hoặc quản trị viên được ủy quyền quản lý. Quyền quản trị trail thông thường trong một tài khoản thành viên không tự cho phép thay đổi cấu hình chung này.",
       choices: [
         [
           "Any member administrator can delete the organization trail.",
-          "Bất kỳ quản trị viên tài khoản thành viên nào cũng xoá được trail cấp tổ chức.",
+          "Bất kỳ quản trị viên tài khoản thành viên nào cũng xóa được trail cấp tổ chức.",
           "Sai. Quyền CloudTrail trong tài khoản thành viên không đồng nghĩa với quyền quản lý trail do tổ chức kiểm soát.",
         ],
         [
           "The member cannot modify or delete that organization trail through ordinary local trail permissions.",
-          "Quản trị viên thành viên không thể sửa hoặc xoá trail đó chỉ bằng quyền quản lý trail thông thường trong tài khoản mình.",
+          "Quản trị viên thành viên không thể sửa hoặc xóa trail đó chỉ bằng quyền quản lý trail thông thường trong tài khoản mình.",
           "Đúng. Thao tác phải được thực hiện qua danh tính có thẩm quyền quản lý trail cấp tổ chức phù hợp.",
         ],
         [
           "Deleting the local console entry removes all historic S3 logs automatically.",
-          "Xoá mục hiển thị trong bảng điều khiển của tài khoản sẽ tự xoá mọi nhật ký S3 trước đây.",
-          "Sai. Cấu hình thu thập và dữ liệu đã lưu là hai phần riêng; xoá trail không mặc nhiên xoá toàn bộ đối tượng S3.",
+          "Xoá mục hiển thị trong bảng điều khiển của tài khoản sẽ tự xóa mọi nhật ký S3 trước đây.",
+          "Sai. Cấu hình thu thập và dữ liệu đã lưu là hai phần riêng; xóa trail không mặc nhiên xóa toàn bộ đối tượng S3.",
         ],
         [
           "The member must first rotate every KMS key to gain deletion authority.",
-          "Quản trị viên thành viên phải xoay vòng mọi khoá KMS trước để được quyền xoá trail.",
-          "Sai. Xoay vòng khoá thay đổi vật liệu mã hoá theo cơ chế của khoá, không cấp quyền quản lý trail tổ chức.",
+          "Quản trị viên thành viên phải xoay vòng mọi khóa KMS trước để được quyền xóa trail.",
+          "Sai. Xoay vòng khóa thay đổi vật liệu mã hóa theo cơ chế của khóa, không cấp quyền quản lý trail tổ chức.",
         ],
       ],
     },
@@ -452,7 +452,7 @@ resource "aws_cloudtrail" "organization" {
         [
           "Automatic prevention of every S3 DeleteObject request.",
           "Tự động ngăn mọi yêu cầu S3 DeleteObject.",
-          "Sai. Hạn chế xoá cần chính sách truy cập hoặc cơ chế như Object Lock; xác minh toàn vẹn phục vụ kiểm tra dữ liệu.",
+          "Sai. Hạn chế xóa cần chính sách truy cập hoặc cơ chế như Object Lock; xác minh toàn vẹn phục vụ kiểm tra dữ liệu.",
         ],
         [
           "Digest-based evidence that can be used to validate log-file integrity.",
@@ -473,21 +473,21 @@ resource "aws_cloudtrail" "organization" {
     },
     {
       en: "A compliance archive uses Object Lock and KMS encryption. Why might log-file validation still be useful?",
-      vi: "Kho nhật ký tuân thủ đã dùng Object Lock và mã hoá KMS. Vì sao tính năng xác minh toàn vẹn vẫn có ích?",
+      vi: "Kho nhật ký tuân thủ đã dùng Object Lock và mã hóa KMS. Vì sao tính năng xác minh toàn vẹn vẫn có ích?",
       section: "integrity",
       answers: [0],
       explanation:
-        "Chống sửa xoá, bảo vệ bí mật và kiểm chứng dữ liệu là các yêu cầu khác nhau. Object Lock và mã hoá không thay thế quy trình dùng digest để kiểm tra tính toàn vẹn của nhật ký.",
+        "Chống sửa xóa, bảo vệ bí mật và kiểm chứng dữ liệu là các yêu cầu khác nhau. Object Lock và mã hóa không thay thế quy trình dùng digest để kiểm tra tính toàn vẹn của nhật ký.",
       choices: [
         [
           "It adds a verification mechanism for integrity, distinct from retention and encryption.",
-          "Nó bổ sung cơ chế kiểm chứng tính toàn vẹn, khác với giữ dữ liệu và mã hoá.",
+          "Nó bổ sung cơ chế kiểm chứng tính toàn vẹn, khác với giữ dữ liệu và mã hóa.",
           "Đúng. Mỗi biện pháp bảo vệ một thuộc tính riêng, nên có thể cần kết hợp để đáp ứng yêu cầu kiểm toán.",
         ],
         [
           "It replaces the need to retain the KMS key.",
-          "Nó loại bỏ nhu cầu giữ khoá KMS.",
-          "Sai. Digest không giải mã được dữ liệu; mất khoá cần thiết vẫn có thể khiến nhật ký không còn đọc được.",
+          "Nó loại bỏ nhu cầu giữ khóa KMS.",
+          "Sai. Digest không giải mã được dữ liệu; mất khóa cần thiết vẫn có thể khiến nhật ký không còn đọc được.",
         ],
         [
           "It makes unlogged events appear retrospectively.",
@@ -497,7 +497,7 @@ resource "aws_cloudtrail" "organization" {
         [
           "It allows a member to bypass organization-trail ownership.",
           "Nó cho phép tài khoản thành viên bỏ qua quyền quản lý trail tổ chức.",
-          "Sai. Xác minh toàn vẹn không thay đổi danh tính nào được phép quản lý hoặc xoá trail.",
+          "Sai. Xác minh toàn vẹn không thay đổi danh tính nào được phép quản lý hoặc xóa trail.",
         ],
       ],
     },
@@ -531,8 +531,8 @@ resource "aws_cloudtrail" "organization" {
         ],
         [
           "Assume a successful KMS DescribeKey proves CloudTrail can encrypt.",
-          "Cho rằng gọi KMS DescribeKey thành công chứng minh CloudTrail mã hoá được dữ liệu.",
-          "Sai. Quyền đọc thông tin khoá của người kiểm tra không chứng minh CloudTrail có quyền dùng khoá để mã hoá.",
+          "Cho rằng gọi KMS DescribeKey thành công chứng minh CloudTrail mã hóa được dữ liệu.",
+          "Sai. Quyền đọc thông tin khóa của người kiểm tra không chứng minh CloudTrail có quyền dùng khóa để mã hóa.",
         ],
       ],
     },
@@ -621,7 +621,7 @@ resource "aws_cloudtrail" "organization" {
         ],
         [
           "CloudTrail events are deleted whenever drift is IN_SYNC.",
-          "Mỗi khi stack IN_SYNC, các sự kiện CloudTrail đều bị xoá.",
+          "Mỗi khi stack IN_SYNC, các sự kiện CloudTrail đều bị xóa.",
           "Sai. Kết quả kiểm tra sai lệch không điều khiển vòng đời lưu trữ sự kiện CloudTrail.",
         ],
       ],
@@ -646,8 +646,8 @@ resource "aws_cloudtrail" "organization" {
         ],
         [
           "Delete the entire stack immediately regardless of workload impact.",
-          "Lập tức xoá toàn bộ stack bất kể ảnh hưởng đến ứng dụng.",
-          "Sai. Đây là hành động phá huỷ vượt quá nhu cầu xác minh và có thể gây gián đoạn không cần thiết.",
+          "Lập tức xóa toàn bộ stack bất kể ảnh hưởng đến ứng dụng.",
+          "Sai. Đây là hành động phá hủy vượt quá nhu cầu xác minh và có thể gây gián đoạn không cần thiết.",
         ],
         [
           "Treat every unsupported property as proven unchanged.",
@@ -663,7 +663,7 @@ resource "aws_cloudtrail" "organization" {
     },
     {
       en: "A security analyst needs the HTTP request body of rejected traffic. Can VPC Flow Logs alone provide it?",
-      vi: "Nhân viên phân tích bảo mật cần nội dung HTTP của lưu lượng bị từ chối. Chỉ VPC Flow Logs có cung cấp được không?",
+      vi: "Nhân viên phân tích bảo mật cần phần thân của yêu cầu HTTP trong lưu lượng bị từ chối. Chỉ VPC Flow Logs có cung cấp được không?",
       section: "network",
       answers: [2],
       explanation:
@@ -671,7 +671,7 @@ resource "aws_cloudtrail" "organization" {
       choices: [
         [
           "Yes; every flow record stores full decrypted HTTP bodies.",
-          "Có; mọi bản ghi luồng đều lưu đầy đủ nội dung HTTP đã giải mã.",
+          "Có; mọi bản ghi luồng đều lưu đầy đủ phần thân HTTP đã giải mã.",
           "Sai. Flow Logs không chứa toàn bộ nội dung yêu cầu HTTP và không tự giải mã TLS.",
         ],
         [
@@ -811,14 +811,14 @@ resource "aws_cloudtrail" "organization" {
         ],
         [
           "A KMS alias name automatically activates Regions for all members.",
-          "Tên bí danh khoá KMS tự kích hoạt Region cho mọi tài khoản thành viên.",
-          "Sai. Bí danh giúp tham chiếu khoá KMS, không quản lý việc bật Region của tài khoản.",
+          "Tên bí danh khóa KMS tự kích hoạt Region cho mọi tài khoản thành viên.",
+          "Sai. Bí danh giúp tham chiếu khóa KMS, không quản lý việc bật Region của tài khoản.",
         ],
       ],
     },
     {
       en: "An archive key is scheduled for deletion while log retention is still active. Which audit property is at risk?",
-      vi: "Khoá mã hoá kho nhật ký được lên lịch xoá trong khi nhật ký vẫn phải được lưu theo quy định. Khả năng nào đang gặp rủi ro?",
+      vi: "Khoá mã hóa kho nhật ký được lên lịch xóa trong khi nhật ký vẫn phải được lưu theo quy định. Khả năng nào đang gặp rủi ro?",
       section: "integrity",
       answers: [2],
       explanation:
@@ -827,22 +827,22 @@ resource "aws_cloudtrail" "organization" {
         [
           "Only the visual order of log-group names.",
           "Chỉ thứ tự hiển thị tên các log group.",
-          "Sai. Rủi ro là mất khả năng đọc dữ liệu mã hoá, không phải thay đổi cách sắp xếp giao diện.",
+          "Sai. Rủi ro là mất khả năng đọc dữ liệu mã hóa, không phải thay đổi cách sắp xếp giao diện.",
         ],
         [
           "Only the number of Config rule names.",
           "Chỉ số lượng tên quy tắc Config.",
-          "Sai. Xoá khoá lưu trữ không làm thay đổi số lượng quy tắc theo cách này; vấn đề trực tiếp nằm ở dữ liệu mã hoá.",
+          "Sai. Xoá khóa lưu trữ không làm thay đổi số lượng quy tắc theo cách này; vấn đề trực tiếp nằm ở dữ liệu mã hóa.",
         ],
         [
           "Recoverability and readability of encrypted audit evidence.",
-          "Khả năng khôi phục và đọc bằng chứng kiểm toán đã mã hoá.",
-          "Đúng. Nếu khoá cần thiết bị xoá, các tập tin còn tồn tại cũng có thể không sử dụng được cho kiểm toán.",
+          "Khả năng khôi phục và đọc bằng chứng kiểm toán đã mã hóa.",
+          "Đúng. Nếu khóa cần thiết bị xóa, các tập tin còn tồn tại cũng có thể không sử dụng được cho kiểm toán.",
         ],
         [
           "The archive automatically becomes plaintext and easier to query.",
           "Kho lưu trữ tự chuyển sang văn bản rõ và dễ truy vấn hơn.",
-          "Sai. Xoá khoá không tự giải mã dữ liệu rồi lưu lại bản rõ; trái lại có thể làm mất khả năng giải mã.",
+          "Sai. Xoá khóa không tự giải mã dữ liệu rồi lưu lại bản rõ; trái lại có thể làm mất khả năng giải mã.",
         ],
       ],
     },

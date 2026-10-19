@@ -6,6 +6,7 @@ export const domains: Domain[] = [
   {
     id: 1,
     title: "SDLC Automation",
+    shortLabel: "Tự động hóa phát hành",
     subtitle: "Tự động hoá vòng đời phần mềm",
     weight: 22,
     color: "#be7335",
@@ -15,6 +16,7 @@ export const domains: Domain[] = [
   {
     id: 2,
     title: "Configuration Management & IaC",
+    shortLabel: "Cấu hình và IaC",
     subtitle: "Quản lý cấu hình và hạ tầng bằng mã",
     weight: 17,
     color: "#426bb8",
@@ -24,6 +26,7 @@ export const domains: Domain[] = [
   {
     id: 3,
     title: "Resilient Cloud Solutions",
+    shortLabel: "Khả năng phục hồi",
     subtitle: "Giải pháp đám mây có khả năng phục hồi",
     weight: 15,
     color: "#43856a",
@@ -33,6 +36,7 @@ export const domains: Domain[] = [
   {
     id: 4,
     title: "Monitoring & Logging",
+    shortLabel: "Giám sát và nhật ký",
     subtitle: "Giám sát & ghi nhật ký",
     weight: 15,
     color: "#8b6bb3",
@@ -42,6 +46,7 @@ export const domains: Domain[] = [
   {
     id: 5,
     title: "Incident & Event Response",
+    shortLabel: "Ứng phó sự cố",
     subtitle: "Ứng phó sự cố và xử lý sự kiện",
     weight: 14,
     color: "#bc6658",
@@ -51,6 +56,7 @@ export const domains: Domain[] = [
   {
     id: 6,
     title: "Security & Compliance",
+    shortLabel: "Bảo mật và tuân thủ",
     subtitle: "Bảo mật & tuân thủ",
     weight: 17,
     color: "#29888d",

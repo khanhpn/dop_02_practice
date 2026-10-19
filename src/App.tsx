@@ -146,7 +146,7 @@ function Shell() {
           </ListItemButton>
         ))}
       </List>
-      <Typography className="nav-section">NHÓM KIẾN THỨC THI</Typography>
+      <Typography className="nav-section">NỘI DUNG ÔN THI</Typography>
       <List disablePadding>
         {domains.map((d) => (
           <ListItemButton
@@ -163,10 +163,7 @@ function Shell() {
               <span className="domain-dot" style={{ background: d.color }} />
             </ListItemIcon>
             <ListItemText
-              primary={d.title.replace(
-                "Configuration Management & IaC",
-                "Configuration & IaC",
-              )}
+              primary={d.shortLabel}
               primaryTypographyProps={{ fontSize: 11.5, fontWeight: 500 }}
             />
             <Typography sx={{ fontSize: 10, opacity: 0.55 }}>

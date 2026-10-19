@@ -11,7 +11,7 @@ export const makeTheme = (mode: "light" | "dark") =>
       },
       text: {
         primary: mode === "light" ? "#233231" : "#e8f0ec",
-        secondary: mode === "light" ? "#75827f" : "#a2b5af",
+        secondary: mode === "light" ? "#5b6c66" : "#a2b5af",
       },
       divider: mode === "light" ? "#e9eeeb" : "#30433e",
     },

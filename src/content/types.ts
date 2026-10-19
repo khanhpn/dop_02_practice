@@ -5,6 +5,7 @@ export interface Source {
 export interface Domain {
   id: number;
   title: string;
+  shortLabel: string;
   subtitle: string;
   weight: number;
   color: string;

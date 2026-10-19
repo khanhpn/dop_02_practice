@@ -102,7 +102,7 @@ export function LessonPage() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", xl: "minmax(0,1fr) 230px" },
+          gridTemplateColumns: { xs: "1fr", lg: "minmax(0,1fr) 230px" },
           gap: 4,
           alignItems: "start",
         }}
@@ -187,11 +187,15 @@ export function LessonPage() {
               <Typography variant="caption" color="text.secondary">
                 KIẾN THỨC CẦN NẮM TRƯỚC
               </Typography>
-              <Typography variant="body2" sx={{ mt: 0.7 }}>
-                {lesson.prerequisites.join(" · ")}
-              </Typography>
+              <Box component="ul" sx={{ pl: 2.2, mt: 1, mb: 0 }}>
+                {lesson.prerequisites.map((item) => (
+                  <Typography component="li" variant="body2" key={item}>
+                    {item}
+                  </Typography>
+                ))}
+              </Box>
             </Card>
-            <Box sx={{ display: { xl: "none" }, mb: 3 }}>
+            <Box sx={{ display: { lg: "none" }, mb: 3 }}>
               <TextField
                 fullWidth
                 select
@@ -522,7 +526,9 @@ export function LessonPage() {
           sx={{
             position: "sticky",
             top: 24,
-            display: { xs: "none", xl: "block" },
+            display: { xs: "none", lg: "block" },
+            maxHeight: "calc(100vh - 48px)",
+            overflowY: "auto",
           }}
         >
           <Typography
