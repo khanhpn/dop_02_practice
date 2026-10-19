@@ -14,15 +14,11 @@ pnpm dev
 Mở URL Vite in ra, mặc định `http://127.0.0.1:5173`. Không mở `index.html` trực tiếp qua `file://`.
 
 ```sh
-pnpm check        # TypeScript + core/content/release tests
+pnpm check        # TypeScript
 pnpm audit:content # số bài/câu/tasks thực tế, không sửa dữ liệu
 pnpm build        # static production → dist/
 pnpm preview      # xem bản production
-pnpm exec playwright install chromium
-pnpm test:e2e     # desktop + mobile user flows
 ```
-
-Nếu máy đã có Chromium phù hợp, có thể đặt `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` tới executable. `PLAYWRIGHT_BASE_URL` giúp test một preview server có sẵn. CI tải Chromium đúng phiên bản tự động.
 
 ## Học như thế nào
 
@@ -41,7 +37,7 @@ Nếu máy đã có Chromium phù hợp, có thể đặt `PLAYWRIGHT_CHROMIUM_E
 
 Workflow `.github/workflows/pages.yml`:
 
-- **Pull request vào `master`:** install bằng lockfile → typecheck/unit/content tests → browser tests → build. Không tag/deploy.
+- **Pull request vào `master`:** install bằng lockfile → typecheck → build. Không tag/deploy.
 - **Push/merge vào `master`:** sau khi verify thành công, tự tạo tag `v0.0`, `v0.1`, … và deploy artifact `dist/` qua official Pages Actions.
 - Tag sort bằng số nên `v0.10` lớn hơn `v0.9`. Rerun cùng commit tái sử dụng tag; push tag không trigger lại workflow.
 - Tag allocation thử lại khi hai build cùng tranh một version; không force-push. Deploy kiểm tra `master` để tránh build cũ ghi đè build mới.
@@ -68,7 +64,6 @@ src/core/                    Chấm bài, mock sampling, persistence, planner
 src/components/              QuizRunner, code tabs, flow diagram, cards
 src/pages/                   Dashboard, curriculum, lesson, practice, plan, settings
 scripts/version.mjs          Version v0.N và push tag an toàn khi rerun
-tests/                       Core, content integrity, release integration, browser flows
 docs/                        Thiết kế, kế hoạch và trạng thái nội dung
 ```
 
@@ -76,7 +71,7 @@ docs/                        Thiết kế, kế hoạch và trạng thái nội 
 
 Exam guide snapshot được đối chiếu ngày **19/10/2026** tại [AWS DOP-C02 exam guide](https://docs.aws.amazon.com/aws-certification/latest/devops-engineer-professional-02/devops-engineer-professional-02.html). 6 domain có trọng số **22/17/15/15/14/17**. Mỗi bài có `reviewedAt`, nguồn AWS, mapping `chapterId` về Task Statement chính thức. Terraform là đối chiếu thực hành.
 
-Mục tiêu nội dung đầy đủ: **72 bài, 19 Task Statements, ≥1.440 câu**. `tests/content.test.ts` kiểm tra coverage này và không cho pipeline publish khi còn thiếu. Nó cũng kiểm IDs, câu trùng nguyên văn, EN/VI, đáp án, rationale, review anchors, các bước lab và cleanup. Kiểm tra tự động chỉ bắt lỗi cấu trúc; không thay thế đọc và đánh giá chuyên môn từng tình huống.
+Mục tiêu nội dung đầy đủ: **72 bài, 19 Task Statements, ≥1.440 câu**. `pnpm audit:content` báo số bài/câu/tasks thực tế. Kiểm tra tự động chỉ bắt lỗi cấu trúc; không thay thế đọc và đánh giá chuyên môn từng tình huống.
 
 Trạng thái thực tế và phần tiếp tục nằm trong `docs/progress.md` và `src/content/domain*/PROGRESS.md` nếu có. UI báo số bài/câu đã biên soạn thực tế. Không dùng bài rỗng hoặc câu hỏi biến thể chỉ đổi tên công ty để làm đủ số lượng.
 

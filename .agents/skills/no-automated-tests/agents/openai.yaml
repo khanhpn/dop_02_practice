@@ -1,0 +1,7 @@
+interface:
+  display_name: "No automated tests"
+  short_description: "Skip Vitest and Playwright here"
+  default_prompt: "Use $no-automated-tests. Do not run or restore tests; verify with pnpm check."
+
+policy:
+  allow_implicit_invocation: true

@@ -30,11 +30,11 @@ src/content/types.ts định nghĩa Lesson/Question/Lab/Source; src/content/doma
 
 ## CI/CD
 
-PR vào master chỉ verify. Push master chạy typecheck/content/unit/browser smoke/build, tạo tag v0.0 lần đầu rồi v0.N tăng 1 (hai phần). Tag đã trỏ cùng commit được reuse khi rerun. Không trigger workflow bằng tag. Deploy cùng artifact đã build qua official Pages Actions; concurrency deployment tuần tự, không bỏ giữa deploy. GITHUB_TOKEN contents:write chỉ cho tag job; pages:write/id-token:write chỉ cho deploy. Không có remote hiện tại: cung cấp cấu hình và hướng dẫn bật Pages → GitHub Actions; chỉ xác nhận deploy khi thực sự có kết quả GitHub.
+PR vào master chỉ verify. Push master chạy typecheck/build, tạo tag v0.0 lần đầu rồi v0.N tăng 1 (hai phần). Tag đã trỏ cùng commit được reuse khi rerun. Không trigger workflow bằng tag. Deploy cùng artifact đã build qua official Pages Actions; concurrency deployment tuần tự, không bỏ giữa deploy. GITHUB_TOKEN contents:write chỉ cho tag job; pages:write/id-token:write chỉ cho deploy. Không có remote hiện tại: cung cấp cấu hình và hướng dẫn bật Pages → GitHub Actions; chỉ xác nhận deploy khi thực sự có kết quả GitHub.
 
 ## Kiểm thử
 
-Kiểm content: 72 bài/19 tasks, IDs unique, >=20 câu mỗi bài, EN/VI đủ, đáp án hợp lệ, mỗi option có rationale VI, reviewLink resolve đúng bài/section, source HTTPS AWS, lab đủ bước và cleanup. Core tests: exact set grading cho multi-select, phân bố mock, thiếu pool, loại câu trùng, corrupted backup, storage schema. Browser: navigation, deep link, locale, đáp án/review link, notes persist, export/import, mobile overflow, mock timer/resume. Production build và preview kiểm trực quan.
+Không dùng Vitest/Playwright. Kiểm cấu trúc nội dung bằng `pnpm audit:content`; typecheck bằng `pnpm check`; production build khi cần. Không bắt agent viết hoặc chạy unit/e2e tests.
 
 ## Ranh giới
 
