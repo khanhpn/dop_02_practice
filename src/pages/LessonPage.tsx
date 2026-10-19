@@ -76,8 +76,8 @@ export function LessonPage() {
     ...lesson.sections.map((s) => ({ id: s.id, title: s.title })),
     { id: "real-world", title: "Ứng dụng thực tế" },
     { id: "iac", title: "CloudFormation / Terraform" },
-    { id: "lab", title: "Lab thực hành" },
-    { id: "takeaways", title: "Ghi nhớ & bẫy đề thi" },
+    { id: "lab", title: "Bài thực hành" },
+    { id: "takeaways", title: "Ghi nhớ và những điểm dễ nhầm" },
     { id: "quiz", title: `Luyện tập · ${lesson.questions.length} câu` },
     { id: "notes", title: "Ghi chú của tôi" },
   ];
@@ -95,9 +95,9 @@ export function LessonPage() {
           to={`/curriculum?domain=${domain.id}`}
           underline="hover"
         >
-          Domain {domain.id}
+          Nhóm kiến thức {domain.id}
         </Link>
-        <Typography variant="caption">Task {lesson.chapterId}</Typography>
+        <Typography variant="caption">Mục tiêu thi {lesson.chapterId}</Typography>
       </Breadcrumbs>
       <Box
         sx={{
@@ -117,12 +117,12 @@ export function LessonPage() {
               />
               <Chip
                 size="small"
-                label={`DOMAIN ${domain.id} · ${domain.weight}%`}
+                label={`NHÓM KIẾN THỨC ${domain.id} · ${domain.weight}%`}
                 variant="outlined"
               />
               <Chip
                 size="small"
-                label={`${lesson.duration} phút đọc · ${lesson.lab.duration} phút lab`}
+                label={`${lesson.duration} phút đọc · ${lesson.lab.duration} phút thực hành`}
                 variant="outlined"
               />
             </Stack>
@@ -185,7 +185,7 @@ export function LessonPage() {
               </Box>
               <Divider sx={{ my: 2 }} />
               <Typography variant="caption" color="text.secondary">
-                KIẾN THỨC NÊN NHỚ LẠI
+                KIẾN THỨC CẦN NẮM TRƯỚC
               </Typography>
               <Typography variant="body2" sx={{ mt: 0.7 }}>
                 {lesson.prerequisites.join(" · ")}
@@ -273,21 +273,21 @@ export function LessonPage() {
           </Box>
           <Box component="section" id="iac" sx={{ mt: 5 }}>
             <Typography className="eyebrow" color="secondary">
-              ĐỌC CODE ĐỂ HIỂU CƠ CHẾ
+              ĐỌC MÃ ĐỂ HIỂU CƠ CHẾ
             </Typography>
             <Typography variant="h2" sx={{ fontSize: "1.65rem", my: 2 }}>
-              Nếu viết bằng IaC thì sao?
+              Khai báo hạ tầng bằng mã như thế nào?
             </Typography>
             <Typography color="text.secondary">
-              Bắt đầu với CloudFormation (hạ tầng dạng mã của AWS), sau đó
-              chuyển tab để xem cách diễn đạt tương đương bằng Terraform.
+              Đọc mẫu CloudFormation trước để hiểu các tài nguyên và quan hệ
+              giữa chúng, sau đó mở thẻ Terraform để đối chiếu cách khai báo.
             </Typography>
             <CodeTabs example={lesson.code} />
           </Box>
           <Box component="section" id="lab" sx={{ mt: 5 }}>
             <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1 }}>
               <Typography className="eyebrow" color="secondary">
-                LEARN BY DOING
+                HIỂU QUA THỰC HÀNH
               </Typography>
               <Chip
                 size="small"
@@ -382,7 +382,7 @@ export function LessonPage() {
             </Alert>
             <Card sx={{ p: 2.5, mt: 2, borderColor: "warning.main" }}>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Cleanup — dọn tài nguyên sau lab
+                Dọn tài nguyên sau bài thực hành
               </Typography>
               <Box component="ol" sx={{ pl: 2.2, mb: 0 }}>
                 {lesson.lab.cleanup.map((p, i) => (
@@ -395,7 +395,7 @@ export function LessonPage() {
           </Box>
           <Box component="section" id="takeaways" sx={{ mt: 5 }}>
             <Typography variant="h2" sx={{ fontSize: "1.65rem", mb: 2 }}>
-              Những điều cần mang vào phòng thi
+              Những điểm cần ghi nhớ khi làm bài thi
             </Typography>
             <Box component="ul" sx={{ pl: 2.5 }}>
               {lesson.keyTakeaways.map((p, i) => (
@@ -406,7 +406,7 @@ export function LessonPage() {
             </Box>
             <Alert severity="warning" icon={false}>
               <Typography variant="h4" sx={{ mb: 1 }}>
-                Exam traps (bẫy đề thi)
+                Những điểm dễ nhầm trong đề thi
               </Typography>
               {lesson.examTraps.map((p, i) => (
                 <Typography key={i} variant="body2" sx={{ mb: 1 }}>
@@ -423,14 +423,14 @@ export function LessonPage() {
               Luyện tập · {lesson.questions.length} câu hỏi
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Câu hỏi tự biên soạn theo tình huống DOP-C02. Dùng EN để luyện
-              thi, chuyển VI khi cần làm rõ. Đọc giải thích và ôn lại đúng mục
-              kiến thức sau mỗi câu.
+              Câu hỏi được biên soạn theo tình huống trong phạm vi DOP-C02.
+              Chọn tiếng Anh để luyện thi, hoặc tiếng Việt khi cần làm rõ tình
+              huống. Sau mỗi câu, đọc lời giải và ôn lại phần kiến thức liên quan.
             </Typography>
             {state.activeSession?.mode === "mock" && (
               <Alert severity="info" sx={{ mb: 2 }}>
-                Bạn có phiên thi thử đang lưu. Làm quiz bài học không thay đổi
-                đồng hồ của phiên đó.{" "}
+                Bạn có bài thi thử đang làm dở. Đồng hồ của bài thi vẫn tiếp tục
+                tính giờ trong lúc bạn làm câu hỏi ở bài học này.{" "}
                 <Link component={RouterLink} to="/practice">
                   Tiếp tục thi thử
                 </Link>

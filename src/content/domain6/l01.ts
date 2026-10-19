@@ -17,7 +17,7 @@ export const d6l01 = lesson(
     ],
     prerequisites: [
       "Đã biết IAM user (người dùng), IAM role (vai trò truy cập) và cấu trúc một chính sách IAM viết bằng JSON.",
-      "Nhận biết được ARN của role, S3 bucket và object; hiểu sự khác nhau giữa quyền trên bucket và quyền trên một đối tượng bên trong.",
+      "Nhận biết ARN của role, bucket S3 và đối tượng S3; hiểu sự khác nhau giữa quyền trên bucket và quyền trên từng đối tượng bên trong.",
     ],
     sections: [
       {
@@ -33,7 +33,7 @@ export const d6l01 = lesson(
         title: "2. Vì sao đã có Allow mà yêu cầu vẫn bị từ chối?",
         paragraphs: [
           "Một yêu cầu có thể chịu nhiều lớp chính sách cùng lúc. Trong trường hợp cấp quyền thông thường qua danh tính, chính sách của role cho biết các thao tác được phép, còn permissions boundary (ranh giới quyền) đặt giới hạn tối đa cho các quyền đó. Session policy (chính sách của phiên truy cập) có thể giới hạn thêm quyền của một phiên STS. Với tài khoản thành viên trong AWS Organizations, SCP (chính sách kiểm soát dịch vụ) tiếp tục giới hạn những quyền mà các danh tính thuộc phạm vi áp dụng có thể sử dụng. Những lớp giới hạn này không tự cấp quyền mới. Chẳng hạn, role có AdministratorAccess vẫn không tắt được CloudTrail nếu một SCP áp dụng đang cấm thao tác đó. Khi điều tra, hãy liệt kê đúng những lớp đang có hiệu lực, tìm lệnh Deny rõ ràng và kiểm tra xem quyền được cấp có nằm trong các giới hạn còn lại hay không.",
-          "Tuy nhiên, đừng rút gọn mọi tình huống thành một phép lấy giao của tất cả chính sách. Chính sách gắn với tài nguyên có quy tắc khác nhau tùy đối tượng được cấp quyền và cách cấp. Trong cùng tài khoản, cấp trực tiếp cho ARN của một phiên role không hoàn toàn giống cấp cho ARN của IAM role; cách implicit deny ảnh hưởng đến hai trường hợp có thể khác nhau. Explicit deny áp dụng vẫn cần được xét. Với KMS key policy, chính sách tin cậy hoặc truy cập khác tài khoản, bạn còn phải kiểm tra yêu cầu riêng của loại tài nguyên và danh tính liên quan. Khi thiết kế hệ thống thật, cách cấp quyền rõ đối tượng, rõ điều kiện và đã được kiểm chứng sẽ dễ giải thích, kiểm toán hơn việc mở quyền cho những phiên truy cập ngắn hạn mà nhóm chưa hiểu hết.",
+          "Không nên rút gọn mọi tình huống thành phép lấy giao của tất cả chính sách. Với chính sách gắn với tài nguyên, cách đánh giá còn phụ thuộc chủ thể được cấp quyền và hình thức cấp quyền. Chẳng hạn, trong cùng tài khoản, cấp trực tiếp cho ARN của phiên role không hoàn toàn giống cấp cho ARN của IAM role: ảnh hưởng của implicit deny có thể khác nhau, dù explicit deny áp dụng vẫn phải được xét. Vì vậy, khi đọc một chính sách, hãy xác định chính xác giá trị Principal đang chỉ đến tài khoản, role hay phiên role trước khi kết luận. Với KMS key policy, chính sách tin cậy hoặc truy cập giữa các tài khoản, còn phải xem yêu cầu riêng của tài nguyên và danh tính liên quan. Cách cấp quyền rõ đối tượng, rõ điều kiện và đã được kiểm chứng sẽ dễ giải thích, kiểm toán hơn việc mở quyền cho những phiên mà nhóm chưa hiểu hết.",
         ],
       },
       {
@@ -86,7 +86,7 @@ export const d6l01 = lesson(
             "AWS xét quyền của role, chính sách của tài nguyên và các giới hạn thực sự áp dụng cho yêu cầu.",
         },
         {
-          label: "Thử lại và đối chiếu nhật ký",
+          label: "Kiểm chứng và đối chiếu nhật ký",
           detail:
             "Thử cả thao tác được phép và cần bị chặn; đối chiếu CloudTrail nếu loại sự kiện đã được ghi nhận.",
         },
@@ -98,11 +98,11 @@ export const d6l01 = lesson(
       {
         title: "Sử dụng được role đích nhưng vẫn không đọc được gói phát hành",
         context:
-          "Pipeline ở tài khoản A đã nhận phiên truy cập của role tại B. Nó liệt kê được bucket, nhưng khi đọc releases/build.zip bằng GetObject lại nhận AccessDenied.",
+          "Pipeline ở tài khoản A đã nhận phiên truy cập của role tại B. Lệnh liệt kê bucket thành công, nhưng GetObject đối với releases/build.zip lại nhận AccessDenied.",
         solution:
           "Trước hết, dùng GetCallerIdentity để xác nhận lệnh đọc đang sử dụng đúng phiên role B. Sau đó kiểm tra s3:GetObject có áp dụng trên ARN đối tượng cần đọc hay không, cùng các lệnh Deny trong chính sách của bucket hoặc những lớp giới hạn liên quan. Liệt kê được tên đối tượng chưa đồng nghĩa với việc được đọc nội dung của chúng.",
         tradeoff:
-          "Bạn có thể cần nhiều statement hơn khi tách quyền liệt kê và quyền đọc, nhưng đổi lại sẽ xác định rõ từng thao tác được phép trên tài nguyên nào.",
+          "Nhóm có thể phải viết các statement riêng cho quyền liệt kê và quyền đọc. Đổi lại, mỗi statement thể hiện rõ thao tác và loại tài nguyên tương ứng, giúp phát hiện lỗi cấp quyền sai ARN.",
       },
       {
         title:
@@ -288,7 +288,7 @@ resource "aws_iam_role_policy" "read" {
         [
           "Create a second administrator user immediately.",
           "Tạo ngay một người dùng IAM mới có quyền quản trị.",
-          "Tạo thêm tài khoản quản trị không giúp xác định nguyên nhân ban đầu. Việc này còn mở rộng quyền trước khi biết ứng dụng thực sự cần gì.",
+          "Tạo thêm người dùng có quyền quản trị không xác định được nguyên nhân ban đầu. Cách này còn mở rộng quyền trước khi biết ứng dụng thực sự cần thao tác nào.",
         ],
         [
           "Wait for IAM propagation without identifying which action was denied.",
@@ -429,7 +429,7 @@ resource "aws_iam_role_policy" "read" {
       section: "scope",
       answers: [3],
       explanation:
-        "ARN trong đề là ARN của bucket. GetObject tác động đến đối tượng bên trong nên cần ARN đối tượng; ListBucket mới là ví dụ thao tác được xét trên ARN bucket.",
+        "ARN trong đề chỉ đến bucket, còn GetObject tác động đến đối tượng bên trong. Do đó, dù tên hành động đúng, tài nguyên trong statement vẫn không khớp yêu cầu đọc; cần dùng ARN đối tượng. ListBucket mới là ví dụ thao tác được xét trên ARN bucket.",
       choices: [
         [
           "The bucket must use an EC2 ARN.",
@@ -554,7 +554,7 @@ resource "aws_iam_role_policy" "read" {
       section: "scope",
       answers: [0],
       explanation:
-        "Quyền tạo chương trình kết hợp với PassRole quá rộng có thể cho phép chương trình chạy với quyền cao hơn người tạo. Vì vậy, cần đánh giá cả chuỗi hành động chứ không chỉ từng API riêng lẻ.",
+        "Cần xét cả chuỗi hành động: CI tạo được Lambda và giao được một role có quyền cao, sau đó mã hàm gọi API bằng quyền của role đó. Vì vậy, giới hạn từng API riêng lẻ chưa đủ nếu PassRole cho phép giao role vượt quá nhu cầu của chương trình.",
       choices: [
         [
           "The function could run with a more privileged execution role.",
@@ -644,7 +644,7 @@ resource "aws_iam_role_policy" "read" {
       section: "validation",
       answers: [0, 3],
       explanation:
-        "Công cụ kiểm tra và mô phỏng giúp phát hiện lỗi, nhưng kết quả phải được hiểu trong phạm vi của công cụ. Cần đối chiếu cả điều kiện của yêu cầu thực tế và các lớp chính sách đang áp dụng.",
+        "Kiểm tra và mô phỏng chính sách giúp phát hiện lỗi trong phạm vi mà công cụ hỗ trợ. Tuy nhiên, luồng thật có thể dùng ngữ cảnh khác hoặc chịu thêm chính sách tài nguyên, giới hạn tổ chức. Kết quả cần được đối chiếu với yêu cầu thực tế trước khi kết luận toàn bộ đường truy cập đã hoạt động.",
       choices: [
         [
           "Access Analyzer policy validation can identify syntax and security issues.",
@@ -739,7 +739,7 @@ resource "aws_iam_role_policy" "read" {
       section: "trust",
       answers: [2],
       explanation:
-        "IAM có thể lưu liên kết tới một principal bằng ID duy nhất của nó. Role được tạo lại có ID mới dù dùng lại tên cũ, nên liên kết tin cậy tới danh tính đã xóa cần được cập nhật.",
+        "IAM có thể lưu quan hệ tin cậy với role bằng principal ID duy nhất. Khi role bị xóa rồi tạo lại, tên và ARN có thể nhìn giống trước nhưng ID đã thay đổi. Chính sách còn tham chiếu ID cũ phải được cập nhật về đúng danh tính mới.",
       choices: [
         [
           "Trust policies cannot contain IAM roles.",
@@ -854,7 +854,7 @@ resource "aws_iam_role_policy" "read" {
         [
           "Evaluation depends on the grant and principal type; role-session grants have important differences.",
           "Cách đánh giá phụ thuộc kiểu cấp quyền và loại principal; cấp trực tiếp cho phiên role có những khác biệt cần xét.",
-          "Cần phân biệt ARN của IAM role với ARN của phiên role và đọc các lớp giới hạn theo đúng trường hợp. Chính những khác biệt này khiến công thức tổng quát trong đề chưa đủ chính xác.",
+          "Cần phân biệt ARN của IAM role với ARN của phiên sử dụng role, rồi xét các lớp giới hạn theo đúng hình thức cấp quyền. Khác biệt này giải thích vì sao công thức lấy giao trong đề chưa đủ để kết luận cho mọi chính sách tài nguyên.",
         ],
       ],
     },

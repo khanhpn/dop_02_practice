@@ -53,7 +53,7 @@ export function Practice() {
     const start = () => {
       if (!pool.length) {
         setError(
-          "Chưa có câu phù hợp trong bộ lọc này. Hãy chọn bài khác hoặc luyện một số câu trước.",
+          "Chưa có câu hỏi phù hợp với bộ lọc này. Hãy chọn bài hoặc nhóm kiến thức khác; nếu chưa có lịch sử trả lời, bạn có thể bắt đầu bằng một lượt luyện tập.",
         );
         return;
       }
@@ -119,8 +119,8 @@ export function Practice() {
           />
         ) : (
           <Alert severity="warning">
-            Phiên lưu có câu hỏi không còn trong phiên bản nội dung này. Hãy bắt
-            đầu bộ câu hỏi mới.
+            Lượt làm bài đã lưu có câu hỏi không còn trong nội dung hiện tại.
+            Hãy bắt đầu một bộ câu hỏi mới.
           </Alert>
         )}
       </>
@@ -128,7 +128,7 @@ export function Practice() {
   return (
     <>
       <PageHeading
-        eyebrow="PRACTICE MAKES PROGRESS"
+        eyebrow="LUYỆN TẬP ĐỂ HIỂU VỮNG HƠN"
         title="Hiểu sâu hơn qua từng câu hỏi"
         description="Chọn câu hỏi theo bài học, theo nhóm kiến thức hoặc làm một đề thi thử. Đọc lời giải để hiểu vì sao đáp án phù hợp và biết cần ôn lại phần nào."
       />
@@ -152,7 +152,7 @@ export function Practice() {
             justifyContent="space-between"
           >
             <Box>
-              <Typography variant="h3">Bạn có một phiên đang làm dở</Typography>
+              <Typography variant="h3">Bạn có một lượt làm bài đang dở</Typography>
               <Typography
                 variant="body2"
                 color="text.secondary"
@@ -173,7 +173,7 @@ export function Practice() {
               startIcon={<PlayArrowRounded />}
               onClick={() => setView(state.activeSession)}
             >
-              Tiếp tục phiên đã lưu
+              Tiếp tục bài đang làm
             </Button>
           </Stack>
         </Card>
@@ -194,7 +194,7 @@ export function Practice() {
         >
           <Chip
             size="small"
-            label="EXAM MODE"
+            label="CHẾ ĐỘ THI THỬ"
             color="primary"
             variant="outlined"
             sx={{ mb: 2 }}
@@ -203,7 +203,7 @@ export function Practice() {
             Thử sức với một đề đầy đủ
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: 13, mt: 1.5 }}>
-            75 câu hỏi được lấy theo trọng số 6 domain, trộn thứ tự và chỉ mở
+            75 câu hỏi được phân bổ theo trọng số của 6 nhóm kiến thức, trộn thứ tự và chỉ hiển thị
             giải thích khi nộp bài.
           </Typography>
           <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mt: 2, mb: 3 }}>
@@ -216,7 +216,7 @@ export function Practice() {
             onClick={mock}
             endIcon={<PlayArrowRounded />}
           >
-            Bắt đầu mock exam
+            Bắt đầu thi thử
           </Button>
         </Card>
         <Card sx={{ p: 3 }}>
@@ -224,13 +224,13 @@ export function Practice() {
             ÔN TẬP THÔNG MINH
           </Typography>
           <Typography variant="h2" sx={{ fontSize: 24 }}>
-            Khép lại những khoảng trống
+            Củng cố phần kiến thức còn yếu
           </Typography>
           <Typography
             color="text.secondary"
             sx={{ fontSize: 13, mt: 1.5, mb: 3 }}
           >
-            Mỗi câu sai đều có giải thích và link quay về kiến thức. Câu trả lời
+            Mỗi câu sai đều có lời giải và liên kết đến phần kiến thức cần ôn. Câu trả lời
             đúng được hẹn ôn lại sau 1, 2, 4, 8… ngày.
           </Typography>
           <Stack direction="row" gap={1} flexWrap="wrap">
@@ -248,12 +248,12 @@ export function Practice() {
         </Card>
         <Card sx={{ p: 3 }}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            Luyện theo domain
+            Luyện theo nhóm kiến thức
           </Typography>
           <TextField
             fullWidth
             select
-            label="Chọn domain"
+            label="Chọn nhóm kiến thức"
             value={domain}
             onChange={(e) => setDomain(Number(e.target.value))}
             sx={{ mb: 2 }}
@@ -265,7 +265,7 @@ export function Practice() {
             ))}
           </TextField>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Một phiên tối đa 30 câu, lấy ngẫu nhiên từ domain bạn muốn củng cố.
+            Mỗi lượt luyện tập có tối đa 30 câu, được lấy ngẫu nhiên từ nhóm kiến thức bạn chọn.
           </Typography>
           <Button
             variant="outlined"
@@ -280,7 +280,7 @@ export function Practice() {
               )
             }
           >
-            Luyện domain này
+            Luyện nhóm kiến thức này
           </Button>
         </Card>
         <Card sx={{ p: 3 }}>
@@ -302,7 +302,7 @@ export function Practice() {
             ))}
           </TextField>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            Làm trọn bộ câu hỏi sau khi đọc bài và thực hành lab.
+            Làm trọn bộ câu hỏi sau khi đọc bài và hoàn thành bài thực hành.
           </Typography>
           <Button
             variant="outlined"
@@ -345,12 +345,12 @@ export function Practice() {
               <Box>
                 <Typography sx={{ fontWeight: 650, fontSize: 13 }}>
                   {a.mode === "mock"
-                    ? "Mock exam"
+                    ? "Thi thử"
                     : a.mode === "review"
                       ? "Ôn tập"
                       : a.mode === "domain"
-                        ? "Luyện domain"
-                        : "Quiz bài học"}{" "}
+                        ? "Luyện theo nhóm kiến thức"
+                        : "Câu hỏi theo bài học"}{" "}
                   · {a.questionIds.length} câu
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -367,15 +367,15 @@ export function Practice() {
         </Stack>
       )}
       <Dialog open={!!replaceConfirm} onClose={() => setReplaceConfirm(null)}>
-        <DialogTitle>Bắt đầu phiên mới?</DialogTitle>
+        <DialogTitle>Bắt đầu lượt làm bài mới?</DialogTitle>
         <DialogContent>
           <Typography>
-            Phiên đang làm sẽ được thay thế. Bạn có thể tiếp tục phiên cũ bằng
-            nút “Tiếp tục phiên đã lưu”.
+            Lượt làm bài đang dở sẽ được thay thế. Nếu muốn hoàn thành lượt cũ,
+            hãy chọn “Tiếp tục bài đang làm”.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setReplaceConfirm(null)}>Giữ phiên cũ</Button>
+          <Button onClick={() => setReplaceConfirm(null)}>Giữ lượt đang làm</Button>
           <Button
             variant="contained"
             onClick={() => {
@@ -383,7 +383,7 @@ export function Practice() {
               setReplaceConfirm(null);
             }}
           >
-            Bắt đầu phiên mới
+            Bắt đầu lượt mới
           </Button>
         </DialogActions>
       </Dialog>

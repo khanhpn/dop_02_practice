@@ -74,7 +74,7 @@ function session(v: unknown): v is ActiveSession {
 export function parseBackup(text: string): StudyState {
   const fail = () => {
     throw new Error(
-      "Backup không hợp lệ hoặc khác phiên bản. Dữ liệu hiện tại chưa bị thay đổi.",
+      "Bản sao lưu không hợp lệ hoặc có phiên bản không được hỗ trợ. Dữ liệu hiện tại chưa bị thay đổi.",
     );
   };
   if (text.length > 10_000_000) fail();

@@ -26,7 +26,7 @@ export const d6l09 = lesson(
         title: "1. Cần trả lời câu hỏi nào thì chọn nguồn dữ liệu đó",
         paragraphs: [
           "Security auditing (kiểm toán bảo mật) bắt đầu từ một câu hỏi cụ thể: bạn cần chứng minh điều gì? Nếu cần biết ai đã sửa quy tắc truy cập, hãy tìm hoạt động API tương ứng trong CloudTrail. Nếu cần xem cấu hình tài nguyên trước và sau thay đổi, hãy dùng dữ liệu mà AWS Config đã ghi nhận. VPC Flow Logs cung cấp thông tin mô tả các luồng mạng, còn CloudFormation drift detection (phát hiện sai lệch hạ tầng) so sánh trạng thái thực tế với những thuộc tính được khai báo trong mẫu và được hỗ trợ kiểm tra. Bốn nguồn này bổ sung cho nhau, không thay thế nhau. Chẳng hạn, một bản ghi kết nối mạng không cho biết IAM user nào đã mở security group; ngược lại, sự kiện sửa security group không chứa nội dung các yêu cầu HTTP đi qua nó.",
-          "Trước khi có sự cố, hãy lập bảng ghi rõ mỗi câu hỏi sẽ được trả lời bằng nguồn nào, trong tài khoản và Region nào, dữ liệu được giữ bao lâu và ai được đọc. Khi ghép các sự kiện theo thời gian, cần thống nhất múi giờ và đối chiếu thông tin của cùng một yêu cầu hoặc phiên truy cập. Trường userIdentity trong CloudTrail có thể chỉ đến assumed-role session (phiên sử dụng role), nên tên role chung chưa đủ xác định người đã thao tác. Hãy xem thêm session issuer (role đã cấp phiên) và những thuộc tính nhận diện nguồn có sẵn. Địa chỉ IP cũng không mặc nhiên đại diện cho một người, còn access key ID chỉ là mã nhận diện khoá, không phải secret access key. Cuối cùng, hãy xác nhận dữ liệu thực sự được thu trong khoảng cần điều tra: bật ghi nhật ký sau sự cố không tái tạo được mọi thông tin đã bỏ lỡ.",
+          "Trước khi có sự cố, hãy ghi rõ mỗi câu hỏi điều tra cần nguồn nào, trong tài khoản và Region nào, giữ dữ liệu bao lâu và ai được đọc. Khi ghép sự kiện theo thời gian, cần thống nhất múi giờ và đối chiếu thông tin của cùng yêu cầu hoặc phiên truy cập. Trường userIdentity trong CloudTrail có thể chỉ đến assumed-role session (phiên sử dụng role), nên tên role chung chưa đủ xác định người đã thao tác. Hãy xem thêm session issuer (role đã cấp phiên) và các thuộc tính nhận diện nguồn có sẵn; nhiều người có thể dùng cùng role nhưng thuộc các phiên khác nhau. Địa chỉ IP cũng không mặc nhiên đại diện cho một người, còn access key ID là mã nhận diện khóa, không phải secret access key. Cuối cùng, cần xác nhận nguồn thực sự đã thu dữ liệu trong khoảng điều tra: bật ghi nhật ký sau sự cố không tái tạo được thông tin đã bỏ lỡ.",
         ],
       },
       {
@@ -42,7 +42,7 @@ export const d6l09 = lesson(
         title: "3. Kiểm tra việc chuyển nhật ký và bảo vệ dữ liệu đã lưu",
         paragraphs: [
           "Thấy trail trong danh sách chưa chứng minh nhật ký đã đến S3. Hãy kiểm tra GetTrailStatus, giá trị IsLogging, lỗi chuyển dữ liệu gần nhất và các đối tượng mới dưới đường dẫn của tài khoản, Region cần theo dõi. Organization trail có thể xuất hiện trong tài khoản thành viên dù có lỗi khi kiểm tra nơi nhận dữ liệu. Vì vậy, một bảng giám sát chỉ đếm số trail sẽ bỏ sót tình trạng ngừng thu thập. Chính sách bucket phải cho phép CloudTrail ghi vào đúng đường dẫn; nếu dùng khoá KMS do khách hàng quản lý, chính sách khoá cũng phải cho phép những thao tác cần thiết. Nên tách tài khoản lưu trữ nhật ký và quyền đọc phục vụ kiểm toán khỏi quyền quản trị ứng dụng, để một người chiếm được quyền sửa ứng dụng không đồng thời dễ dàng xoá dấu vết.",
-          "Log file validation (xác minh tính toàn vẹn của tập tin nhật ký) tạo digest files (tập tin chứa thông tin kiểm chứng), sử dụng giá trị băm và chữ ký để hỗ trợ phát hiện việc sửa hoặc xoá nhật ký trong chuỗi được kiểm tra. Bật tính năng này không có nghĩa mọi lần kiểm chứng đã tự được thực hiện, cũng không tự ngăn yêu cầu xoá. S3 Object Lock và quyền truy cập giúp hạn chế sửa, xoá; cơ chế xác minh giúp kiểm tra dữ liệu có còn nguyên vẹn; mã hoá giúp bảo vệ nội dung khỏi người không có quyền đọc. Mỗi biện pháp giải quyết một yêu cầu khác nhau. Bạn phải giữ cả nhật ký, tập tin kiểm chứng và khoá giải mã trong thời gian cần thiết. Kho lưu trữ không cho sửa nhưng thiếu dữ liệu, hoặc có dữ liệu mà không giải mã được, vẫn chưa đáp ứng yêu cầu kiểm toán.",
+          "Log file validation (xác minh tính toàn vẹn của tập tin nhật ký) tạo digest files (tập tin chứa thông tin kiểm chứng), dùng giá trị băm và chữ ký để hỗ trợ phát hiện việc sửa hoặc xóa nhật ký trong chuỗi được kiểm tra. Bật tính năng này mới cung cấp dữ liệu để kiểm chứng; không có nghĩa mọi lần kiểm chứng đã tự được thực hiện hoặc mọi yêu cầu xóa đã bị ngăn. S3 Object Lock và quyền truy cập hạn chế việc sửa, xóa; quy trình xác minh kiểm tra dữ liệu có còn nguyên vẹn; mã hóa bảo vệ nội dung khỏi chủ thể không được phép đọc. Vì giải quyết các yêu cầu khác nhau, ba biện pháp không thay thế nhau. Nhóm cần giữ cả nhật ký, tập tin kiểm chứng và khóa giải mã trong thời hạn cần thiết. Kho không cho sửa nhưng thiếu dữ liệu, hoặc còn tập tin mà không thể giải mã, đều chưa đáp ứng yêu cầu kiểm toán.",
         ],
       },
       {
@@ -93,7 +93,7 @@ export const d6l09 = lesson(
         },
       ],
       caption:
-        "Mỗi nguồn trả lời một phần của cuộc điều tra. Hãy ghép thông tin thay vì yêu cầu một nguồn chứng minh tất cả.",
+        "Mỗi nguồn trả lời một phần của cuộc điều tra: danh tính thao tác, diễn biến cấu hình, kết nối mạng hoặc ảnh hưởng tới ứng dụng. Hãy đối chiếu theo cùng tài nguyên và thời gian để nối các phần này, đồng thời ghi rõ giới hạn của dữ liệu thực sự đã thu.",
     },
     scenarios: [
       {
@@ -181,7 +181,7 @@ resource "aws_cloudtrail" "organization" {
             "Chạy lệnh STS để xác nhận tài khoản và danh tính đang sử dụng. Lập bảng cho ba câu hỏi: ai đổi nhãn bucket, ai đọc đối tượng thử nghiệm, kết nối mạng có bị từ chối không. Với mỗi câu, chọn nguồn sẽ cung cấp bằng chứng.",
           command: "aws sts get-caller-identity",
           expected:
-            "Bảng phân biệt được sự kiện quản lý, sự kiện dữ liệu của đối tượng và thông tin mô tả luồng mạng.",
+            "Bảng phân biệt rõ nguồn cần cho sự kiện quản lý, thao tác dữ liệu trên đối tượng và thông tin luồng mạng.",
         },
         {
           title: "Tạo một thay đổi quản lý vô hại",
@@ -209,7 +209,7 @@ resource "aws_cloudtrail" "organization" {
           detail:
             "Chỉ xem nguồn đã có trong tài khoản thử nghiệm: loại tài nguyên Config đang ghi, trạng thái nguồn tổng hợp, thuộc tính được hỗ trợ kiểm tra sai lệch và các trường trong Flow Logs. Nếu chưa có nguồn, mô tả điều kiện cần để triển khai thay vì bật hàng loạt.",
           expected:
-            "Biết mỗi nguồn thu được gì, bỏ sót gì và cần cấu hình ở đâu; không nhầm bộ tổng hợp với bộ ghi cấu hình hoặc Flow Logs với dữ liệu bắt gói tin.",
+            "Giải thích được mỗi nguồn thu thông tin gì, phần nào nằm ngoài phạm vi và phải cấu hình ở đâu; không nhầm bộ tổng hợp với bộ ghi hoặc Flow Logs với công cụ bắt toàn bộ gói tin.",
         },
         {
           title: "Dọn tài nguyên trong đúng phạm vi",
@@ -447,7 +447,7 @@ resource "aws_cloudtrail" "organization" {
       section: "integrity",
       answers: [1],
       explanation:
-        "CloudTrail tạo tập tin digest chứa thông tin băm và chữ ký để hỗ trợ kiểm chứng chuỗi nhật ký. Đây là cơ chế phát hiện dấu hiệu sửa hoặc xoá, không phải cơ chế tự ngăn mọi thao tác xoá hay tự kiểm chứng mọi lần đọc.",
+        "CloudTrail tạo tập tin digest chứa thông tin băm và chữ ký để kiểm chứng chuỗi nhật ký. Cơ chế này giúp phát hiện dấu hiệu sửa hoặc xóa dữ liệu đã thu; nó không tự ngăn mọi thao tác xóa và cũng không chứng minh quy trình kiểm chứng đã được thực hiện chỉ vì tính năng đang bật.",
       choices: [
         [
           "Automatic prevention of every S3 DeleteObject request.",
@@ -542,7 +542,7 @@ resource "aws_cloudtrail" "organization" {
       section: "config-drift",
       answers: [2],
       explanation:
-        "Bộ tổng hợp chỉ thu nhận dữ liệu cấu hình đã được ghi tại nguồn. Cần xác nhận tài khoản và Region nguồn có bộ ghi đang hoạt động với đúng phạm vi, rồi kiểm tra trạng thái tổng hợp.",
+        "Bộ tổng hợp cần dữ liệu đã được bộ ghi Config tại nguồn thu nhận. Vì vậy, khi thiếu lịch sử của một tài khoản, hãy kiểm tra bộ ghi, Region và loại tài nguyên được chọn trước, rồi kiểm tra trạng thái tổng hợp. Tạo bộ tổng hợp không bổ sung lịch sử chưa từng được ghi.",
       choices: [
         [
           "Only whether the aggregator Region matches a central CloudTrail bucket Region.",
@@ -602,7 +602,7 @@ resource "aws_cloudtrail" "organization" {
       section: "config-drift",
       answers: [0],
       explanation:
-        "Phát hiện sai lệch không so sánh mọi thiết lập có thể có của tài nguyên. Kết quả chỉ phản ánh những thuộc tính được hỗ trợ và được khai báo để so sánh, nên phải đọc IN_SYNC trong đúng phạm vi.",
+        "Phát hiện sai lệch không so sánh mọi thiết lập có thể có của tài nguyên. IN_SYNC chỉ phản ánh những thuộc tính được hỗ trợ và được khai báo để so sánh. Với thuộc tính nằm ngoài phạm vi đó, kết quả chưa đưa ra kết luận; cần dùng nguồn kiểm tra phù hợp thay vì mặc định nó chưa thay đổi.",
       choices: [
         [
           "Drift evaluates supported properties explicitly represented for comparison, not every possible setting.",
@@ -727,7 +727,7 @@ resource "aws_cloudtrail" "organization" {
       section: "evidence",
       answers: [3],
       explanation:
-        "Tên role chung không đủ phân biệt những người hoặc ứng dụng cùng sử dụng role. Thông tin cấp phiên và thuộc tính nhận diện nguồn có sẵn giúp liên kết sự kiện với phiên cụ thể, cần đối chiếu cùng thời gian và thao tác.",
+        "Tên role chung không phân biệt những người hoặc ứng dụng cùng sử dụng role. Cần xem thông tin cấp phiên và các thuộc tính nhận diện nguồn hiện có, rồi đối chiếu với thời gian, API và tài nguyên của sự kiện. Nhờ vậy, kết luận gắn với phiên cụ thể thay vì quy mọi hoạt động về một tên role.",
       choices: [
         [
           "Only the bucket storage class.",
@@ -822,7 +822,7 @@ resource "aws_cloudtrail" "organization" {
       section: "integrity",
       answers: [2],
       explanation:
-        "Giữ tập tin không đủ nếu sau này không thể giải mã để đọc bằng chứng. Vòng đời khoá và quyền sử dụng khoá phải phù hợp với thời gian cần sử dụng dữ liệu phụ thuộc vào nó.",
+        "Giữ tập tin và giữ khả năng đọc tập tin là hai yêu cầu liên quan nhưng khác nhau. Nếu nhật ký còn phải lưu để kiểm toán, khóa giải mã cùng quyền sử dụng khóa cũng phải được duy trì trong thời gian cần đọc dữ liệu; xóa khóa có thể khiến bằng chứng còn tồn tại nhưng không sử dụng được.",
       choices: [
         [
           "Only the visual order of log-group names.",

@@ -23,10 +23,10 @@ export const lesson: Lesson = {
   sections: [
     {
       id: `${id}-sources`,
-      title: "1. Chọn tín hiệu phù hợp câu hỏi vận hành",
+      title: "1. Chọn tín hiệu theo câu hỏi vận hành",
       paragraphs: [
         "Event (sự kiện) mô tả điều vừa xảy ra, chẳng hạn EC2 chuyển sang stopped hoặc một API thay đổi cấu hình được gọi. Metric (chỉ số) là số đo theo thời gian; alarm (cảnh báo) đánh giá số đo theo điều kiện và chuyển trạng thái khi cần. Nếu muốn biết máy đã dừng, sự kiện thay đổi trạng thái trực tiếp từ EC2 thường rõ hơn việc suy đoán qua CPU thấp. Nếu muốn biết ai gọi StopInstances và gọi từ đâu, cần ngữ cảnh danh tính, yêu cầu trong sự kiện API của CloudTrail. AWS Health lại cung cấp thông tin bảo trì hoặc vấn đề của dịch vụ AWS và tác động liên quan tùy loại sự kiện. Hãy bắt đầu bằng câu hỏi vận hành cần trả lời, rồi chọn nguồn mang đúng thông tin.",
-        "Các API AWS không có cùng cách ghi nhận, phân phối hoặc độ trễ sự kiện. Trước khi viết mẫu lọc theo eventName, cần xác nhận dịch vụ có phát thông tin đó và đã cấu hình CloudTrail hay sự kiện dữ liệu theo yêu cầu chưa. Với thông báo riêng cho tài khoản, hãy xem tài nguyên bị ảnh hưởng và thời điểm xảy ra để xác định tác động thực tế. Một thông báo công khai về tình trạng dịch vụ AWS chưa chứng minh mọi yêu cầu của ứng dụng đều thất bại. Vì vậy, hệ thống ứng cứu nên kết hợp sự kiện dịch vụ với số liệu phản ánh trải nghiệm người dùng. Ghi lại thời điểm, tài khoản, Region và mã tài nguyên giúp tránh xử lý nhầm đích hoặc coi một sự kiện đến muộn là trạng thái hiện tại.",
+        "Các API AWS không có cùng cách ghi nhận, phân phối hoặc độ trễ sự kiện. Trước khi viết mẫu lọc theo eventName, cần xác nhận hoạt động cần theo dõi có được ghi nhận và chuyển thành sự kiện hay không, đồng thời kiểm tra cấu hình CloudTrail hoặc sự kiện dữ liệu liên quan. Với thông báo riêng cho tài khoản, hãy xem tài nguyên bị ảnh hưởng và thời điểm xảy ra để xác định tác động thực tế. Một thông báo công khai về tình trạng dịch vụ AWS chưa chứng minh mọi yêu cầu của ứng dụng đều thất bại. Vì vậy, hệ thống ứng cứu nên kết hợp sự kiện dịch vụ với số liệu phản ánh trải nghiệm người dùng. Ghi lại thời điểm, tài khoản, Region và mã tài nguyên cũng giúp bộ xử lý phân biệt đúng đối tượng và nhận ra sự kiện đến muộn, thay vì coi nội dung của nó là trạng thái hiện tại.",
       ],
     },
     {
@@ -39,26 +39,26 @@ export const lesson: Lesson = {
     },
     {
       id: `${id}-topology`,
-      title: "3. Fan-out, hàng đợi, stream và quy trình",
+      title: "3. Phân phối bản sao, hàng đợi, luồng dữ liệu và quy trình",
       paragraphs: [
         "Fan-out (gửi bản sao của một sự kiện đến nhiều bên xử lý) phù hợp khi thông báo, ghi kiểm toán và khắc phục cần hoạt động độc lập. Có thể phân phối bằng SNS hoặc nhiều đích, nhiều quy tắc EventBridge. Đặt SQS trước bộ xử lý giúp đệm khi sự kiện đến dồn hoặc bên nhận xử lý chậm. Lưu ý, nhiều worker (tiến trình xử lý) đọc chung một hàng đợi thường chia nhau công việc; mỗi hệ thống không tự nhận một bản sao đầy đủ. Nếu hai nhóm đều phải xử lý mọi sự kiện, cấp hàng đợi riêng rồi phân phối vào cả hai. Cách này còn tách thời hạn lưu, việc thử lại và tốc độ tiêu thụ để một bên bị lỗi không cản bên khác.",
-        "Kinesis phù hợp với luồng dữ liệu cần thứ tự theo partition và nhiều bên đọc giữ vị trí riêng, nhưng cũng đòi hỏi quản lý thông lượng, thời hạn lưu và checkpoint. Step Functions mô tả quy trình nhiều bước có trạng thái, nhánh rẽ, thời gian chờ và cách xử lý lỗi; Lambda phù hợp với từng bước xử lý ngắn. Nếu cần chờ phê duyệt hoặc đợi tài nguyên sẵn sàng, hãy dùng cơ chế chờ của quy trình thay vì giữ Lambda chạy sleep lâu. Chọn cấu trúc theo yêu cầu, không cần ghép mọi dịch vụ vào cùng một thiết kế. Dù dùng hàng đợi hay quy trình, hãy theo dõi tuổi công việc, lượng tồn đọng, tỷ lệ lỗi và số sự kiện đã xử lý để phát hiện sự cố ngay trong hệ thống ứng cứu.",
+        "Kinesis phù hợp với luồng dữ liệu cần giữ thứ tự trong từng partition (phân vùng dữ liệu) và cho phép nhiều bên đọc duy trì vị trí đọc riêng. Đổi lại, nhóm phải quản lý thông lượng, thời hạn lưu và checkpoint (mốc đã xử lý). Step Functions phục vụ nhu cầu khác: mô tả quy trình nhiều bước có trạng thái, nhánh rẽ, thời gian chờ và cách xử lý lỗi; Lambda có thể thực hiện từng bước xử lý ngắn trong quy trình đó. Nếu cần chờ phê duyệt hoặc đợi tài nguyên sẵn sàng, hãy dùng cơ chế chờ của quy trình thay vì giữ Lambda chạy chỉ để đợi. Như vậy, việc lựa chọn xuất phát từ yêu cầu xử lý: cần phân phối công việc, đọc luồng dữ liệu hay theo dõi một quy trình nhiều bước. Dù dùng cách nào, hãy theo dõi thời gian công việc đã chờ, lượng tồn đọng, tỷ lệ lỗi và số sự kiện đã xử lý để phát hiện sự cố ngay trong hệ thống ứng cứu.",
       ],
     },
     {
       id: `${id}-delivery`,
-      title: "4. Retry, DLQ và ranh giới lỗi",
+      title: "4. Thử lại, DLQ và ranh giới xử lý lỗi",
       paragraphs: [
         "Retry policy (chính sách thử lại) của EventBridge áp dụng khi giao sự kiện đến đích gặp lỗi có thể thử lại. Dịch vụ giãn khoảng thử và thêm độ lệch ngẫu nhiên trong giới hạn cấu hình. Nếu hết giới hạn mà không có DLQ (hàng đợi giữ sự kiện giao thất bại), sự kiện có thể không còn được giữ trong quá trình này. Một số lỗi không sửa được bằng chờ, chẳng hạn thiếu quyền, có thể được đưa thẳng vào DLQ đã cấu hình. EventBridge target DLQ phải là SQS Standard ở cùng Region với quy tắc; SQS FIFO không được hỗ trợ cho vai trò này. Chính sách của hàng đợi phải cho EventBridge gọi SendMessage từ đúng quy tắc, và đường đưa vào DLQ cũng cần được giám sát.",
-        "Giao thành công và xử lý nghiệp vụ thành công là hai mốc khác nhau. Khi Lambda nhận lời gọi bất đồng bộ rồi hàm mới thất bại, EventBridge đã hoàn thành việc giao; phần thử lại và nơi lưu lỗi thuộc cơ chế Lambda được cấu hình tương ứng. Nếu đích là SQS, EventBridge thành công khi đưa được thông điệp vào hàng đợi, còn lỗi ở worker cần cơ chế redrive và quan sát của hàng đợi. Theo dõi FailedInvocations, InvocationsSentToDLQ và InvocationsFailedToBeSentToDLQ để biết sự kiện có bị lỗi và có được giữ lại hay không. Trước khi gửi lại sau sửa lỗi, kiểm tra trạng thái và khả năng xử lý lặp an toàn: một phần hành động có thể đã hoàn tất ở lần đầu.",
+        "Giao sự kiện thành công và hoàn tất nghiệp vụ là hai mốc khác nhau. Khi Lambda đã chấp nhận lời gọi bất đồng bộ nhưng hàm sau đó phát sinh lỗi, EventBridge đã hoàn thành bước giao; cơ chế thử lại và nơi giữ lỗi lúc này thuộc cấu hình gọi bất đồng bộ của Lambda. Nếu đích là SQS, EventBridge hoàn thành việc giao khi đưa được thông điệp vào hàng đợi. Lỗi ở tiến trình xử lý cần được theo dõi bằng cơ chế của tiến trình đó và redrive policy (chính sách chuyển thông điệp lỗi) của hàng đợi. Vì vậy, trước khi điều chỉnh số lần thử lại, hãy xác định lỗi xảy ra trước hay sau khi đích nhận sự kiện. Các số liệu FailedInvocations, InvocationsSentToDLQ và InvocationsFailedToBeSentToDLQ giúp theo dõi lỗi giao và khả năng giữ lại sự kiện. Khi gửi lại sau khi sửa lỗi, vẫn phải kiểm tra trạng thái và khả năng xử lý lặp an toàn, vì một phần công việc có thể đã hoàn tất ở lần trước.",
       ],
     },
     {
       id: `${id}-boundaries`,
-      title: "5. Xuyên tài khoản, audit và replay an toàn",
+      title: "5. Chuyển sự kiện giữa tài khoản, kiểm toán và phát lại an toàn",
       paragraphs: [
-        "Một tài khoản vận hành trung tâm có thể nhận sự kiện từ nhiều tài khoản qua resource policy của bus và quy tắc, role bên gửi được cấp PutEvents phù hợp. Phía nhận vẫn phải có quy tắc lọc đúng tài khoản, nguồn và quyền gọi đích xử lý; cho phép gửi vào bus chưa tự tạo hành động khắc phục. Với đích bus liên tài khoản mới, thiết kế role IAM ở bên gửi theo yêu cầu hiện hành và giới hạn tài khoản hoặc tổ chức được phép. Với custom event, không dùng riêng chuỗi source làm bằng chứng xác thực. Publisher có quyền có thể gửi dữ liệu theo schema, còn mức tin cậy phải dựa vào principal, chính sách và những thông tin đáng tin trong phần bao sự kiện.",
-        "Archive và replay lưu rồi phát lại sự kiện để phục hồi hoặc kiểm tra bên nhận, nhưng không bảo đảm mọi hành động được chạy lại an toàn. Sự kiện cũ có thể nói về tài nguyên đã đổi hoặc đã bị xóa; tác động của lần xử lý trước cũng có thể đã xảy ra. Trước khi phát lại, chọn khoảng thời gian, bên nhận, tiêu chí chống trùng và cách quan sát; dùng môi trường thử nếu phù hợp. Với DLQ, đọc thông tin lỗi để sửa quyền hoặc đích trước khi redrive, và chỉ xóa thông điệp khi đã xác nhận xử lý theo thiết kế. Sau sự cố, cần đối chiếu số sự kiện cùng kết quả nghiệp vụ. Hàng đợi trống chưa chứng minh mọi việc hoàn tất nếu thông điệp chỉ vừa bị xóa hàng loạt.",
+        "Tài khoản vận hành trung tâm có thể nhận sự kiện từ nhiều tài khoản khi chính sách tài nguyên của bus cho phép tiếp nhận và phía gửi có quy tắc, role với quyền PutEvents phù hợp. Phía nhận vẫn phải cấu hình quy tắc lọc đúng tài khoản, nguồn sự kiện và cấp quyền gọi đích xử lý. Đây là các bước riêng: cho phép gửi vào bus không tự tạo quy trình khắc phục. Với đích bus liên tài khoản mới, hãy thiết kế role IAM ở phía gửi theo yêu cầu tương ứng và giới hạn tài khoản hoặc tổ chức được phép gửi. Với custom event (sự kiện tự tạo), riêng chuỗi source không phải bằng chứng xác thực, vì bên có quyền gửi có thể tự điền giá trị theo cấu trúc dữ liệu. Mức tin cậy phải dựa vào chủ thể được cấp quyền, chính sách và thông tin đáng tin cậy trong phần bao sự kiện.",
+        "Archive (lưu trữ sự kiện) và replay (phát lại sự kiện) giúp cung cấp lại đầu vào để phục hồi hoặc kiểm tra bên nhận, nhưng không bảo đảm mọi hành động đều an toàn khi chạy lại. Sự kiện cũ có thể nói về tài nguyên đã thay đổi hoặc bị xóa, trong khi tác động của lần xử lý trước có thể đã xảy ra. Vì vậy, trước khi phát lại, hãy xác định khoảng thời gian, bên nhận, cách chống xử lý trùng và cách theo dõi kết quả; dùng môi trường thử nghiệm nếu phù hợp. Với sự kiện trong DLQ, cần đọc thông tin lỗi, sửa quyền hoặc đích rồi mới gửi lại có kiểm soát. Chỉ xóa thông điệp khi đã xác nhận kết quả theo thiết kế. Sau sự cố, phải đối chiếu số sự kiện với kết quả nghiệp vụ: hàng đợi trống do bị xóa hàng loạt không chứng minh công việc đã hoàn tất.",
       ],
     },
   ],
@@ -109,7 +109,7 @@ export const lesson: Lesson = {
       solution:
         "Kiểm tra số liệu gọi bất đồng bộ của Lambda và nơi nhận lỗi hoặc DLQ đã cấu hình cho Lambda. Sửa hàm, rồi gửi lại có kiểm soát để tránh gửi trùng thông báo đã thành công ở lần trước.",
       tradeoff:
-        "Cần giám sát riêng việc giao và việc xử lý, nhưng sẽ xác định đúng nguyên nhân thay vì sửa quyền EventBridge vốn đang hoạt động.",
+        "Nhóm phải giám sát riêng bước giao sự kiện và bước xử lý trong hàm. Việc tách hai mốc giúp xác định đúng lỗi của Lambda, tránh sửa quyền EventBridge khi sự kiện đã được giao thành công.",
     },
   ],
   keyTakeaways: [
@@ -516,7 +516,7 @@ resource "aws_cloudwatch_event_target" "queue" {
         ],
         correct: ["A", "C"],
         explanation:
-          "Hệ thống ứng cứu cũng cần được giám sát. Tuổi và số công việc tồn cho biết xử lý có bị kẹt; số liệu lỗi giao và lỗi đưa vào DLQ cho biết sự kiện có mất đường xử lý hoặc đường giữ lỗi không.",
+          "Bản thân hệ thống ứng cứu cũng có thể bị lỗi. Tuổi thông điệp và số công việc tồn đọng cho biết bộ xử lý có bị chậm hoặc mắc kẹt hay không; số liệu lỗi giao và lỗi đưa vào DLQ cho biết sự kiện có đến được đích hoặc được giữ lại khi thất bại hay không. Kết hợp hai nhóm tín hiệu mới theo dõi được cả tiến độ xử lý lẫn khả năng bảo toàn đầu vào.",
         tags: ["backlog", "observability"],
       },
       {
@@ -665,7 +665,7 @@ resource "aws_cloudwatch_event_target" "queue" {
           ],
           [
             "Lambda asynchronous invocation retries and error destination or DLQ",
-            "Kiểm tra thử lại bất đồng bộ và nơi nhận lỗi hoặc DLQ của Lambda.",
+            "Cơ chế thử lại lời gọi bất đồng bộ và nơi nhận lỗi hoặc DLQ của Lambda.",
             "Đúng. Đây là lớp chịu trách nhiệm cho thất bại của hàm sau khi nhận lời gọi bất đồng bộ.",
           ],
           [
@@ -682,7 +682,7 @@ resource "aws_cloudwatch_event_target" "queue" {
       {
         section: "delivery",
         en: "EventBridge puts an event onto SQS successfully, but the worker repeatedly fails. Which control belongs closest to this new failure?",
-        vi: "EventBridge đã đưa sự kiện vào SQS thành công nhưng bộ xử lý liên tục thất bại. Cơ chế nào gần lỗi này nhất?",
+        vi: "EventBridge đã đưa sự kiện vào SQS thành công nhưng tiến trình xử lý liên tục thất bại. Cơ chế nào cần được kiểm tra trực tiếp ở bước đang lỗi?",
         options: [
           [
             "Only increasing EventBridge delivery attempts",
@@ -701,7 +701,7 @@ resource "aws_cloudwatch_event_target" "queue" {
           ],
           [
             "Worker error handling, visibility timeout, and SQS redrive policy",
-            "Xử lý lỗi trong bộ xử lý, visibility timeout và redrive policy của SQS.",
+            "Cơ chế xử lý lỗi của tiến trình, visibility timeout và redrive policy của SQS.",
             "Đúng. Những cơ chế này quản lý việc xử lý sau khi hàng đợi đã nhận, và đưa thông điệp lỗi sang nơi giữ riêng khi cần.",
           ],
         ],
@@ -717,7 +717,7 @@ resource "aws_cloudwatch_event_target" "queue" {
         options: [
           [
             "A sender forwarding rule and role, receiver matching rule, and target permissions",
-            "Quy tắc chuyển tiếp và role bên gửi, quy tắc khớp bên nhận, cùng quyền gọi đích.",
+            "Quy tắc chuyển tiếp và role ở phía gửi, quy tắc khớp sự kiện ở phía nhận cùng quyền gọi đích xử lý.",
             "Đúng. Các phần này tạo đường đi đầy đủ từ tài khoản nguồn đến bộ xử lý ở tài khoản trung tâm.",
           ],
           [
@@ -811,7 +811,7 @@ resource "aws_cloudwatch_event_target" "queue" {
       {
         section: "patterns",
         en: "A delayed event says an instance was stopped, but it is running again when the worker executes. What should the worker do before applying remediation?",
-        vi: "Sự kiện đến muộn cho biết máy đã stopped, nhưng lúc bộ xử lý chạy thì máy lại đang running. Trước khi khắc phục, bộ xử lý nên làm gì?",
+        vi: "Sự kiện đến muộn cho biết máy đã chuyển sang stopped, nhưng khi tiến trình xử lý chạy thì máy đang ở trạng thái running. Trước khi khắc phục, tiến trình cần làm gì?",
         options: [
           [
             "Always force it back to the historical stopped state",
@@ -877,7 +877,7 @@ resource "aws_cloudwatch_event_target" "queue" {
         options: [
           [
             "Immediately rebuild every artifact because the event proves all binaries are corrupt",
-            "Build lại mọi gói phần mềm ngay vì sự kiện chứng minh toàn bộ chương trình đã hỏng.",
+            "Build lại ngay mọi gói phần mềm vì sự kiện chứng minh toàn bộ chương trình đã hỏng.",
             "Sai. Sự kiện tình trạng dịch vụ không chứng minh nội dung mọi gói phần mềm bị thay đổi hoặc hỏng.",
           ],
           [

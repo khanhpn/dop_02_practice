@@ -54,7 +54,7 @@ function Explanation({
         <strong>
           {gradeQuestion(question.correct, selected)
             ? "Chính xác."
-            : "Cùng nhìn lại cách chọn đáp án."}
+            : "Hãy xem lại lý do chọn từng đáp án."}
         </strong>{" "}
         Đáp án: {question.correct.join(", ")}.<br />
         {question.explanation}
@@ -190,7 +190,7 @@ export function QuizRunner({
             {correctCount}/{items.length} câu đúng
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Điểm phần trăm luyện tập; không quy đổi thành scaled score của AWS.
+            Đây là tỷ lệ trả lời đúng khi luyện tập, không quy đổi thành điểm theo thang chuẩn hoá (scaled score) của AWS.
           </Typography>
         </Box>
         <Box
@@ -214,7 +214,7 @@ export function QuizRunner({
                 sx={{ bgcolor: "action.hover", p: 1.5, borderRadius: 2 }}
               >
                 <Typography sx={{ fontSize: 10, color: "text.secondary" }}>
-                  DOMAIN {d}
+                  NHÓM KIẾN THỨC {d}
                 </Typography>
                 <Typography sx={{ fontSize: 14, fontWeight: 650 }}>
                   {count}/{domainQs.length} đúng
@@ -307,7 +307,7 @@ export function QuizRunner({
         <Stack direction="row" alignItems="center" gap={1}>
           <Chip
             size="small"
-            label={timed ? "MOCK EXAM" : "PRACTICE"}
+            label={timed ? "THI THỬ" : "LUYỆN TẬP"}
             color="primary"
             variant="outlined"
           />
@@ -334,7 +334,7 @@ export function QuizRunner({
       />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="caption" color="text.secondary">
-          TASK {current.taskId} ·{" "}
+          MỤC TIÊU THI {current.taskId} ·{" "}
           {current.type === "multiple"
             ? `CHỌN ${current.correct.length} ĐÁP ÁN`
             : "CHỌN 1 ĐÁP ÁN"}
@@ -490,7 +490,7 @@ export function QuizRunner({
             </Button>
           ) : (
             <Button variant="contained" onClick={() => setConfirm(true)}>
-              Nộp bài & xem kết quả
+              Nộp bài và xem kết quả
             </Button>
           )}
         </Stack>
@@ -528,7 +528,7 @@ export function QuizRunner({
         sx={{ display: "block", mt: 1 }}
       >
         {answered}/{items.length} đã trả lời · {session.flagged.length} đánh dấu
-        {persist ? " · Tự lưu để tiếp tục sau khi reload" : ""}
+        {persist ? " · Tự lưu để tiếp tục sau khi tải lại trang" : ""}
       </Typography>
       <Dialog open={confirm} onClose={() => setConfirm(false)}>
         <DialogTitle>Nộp bài luyện tập?</DialogTitle>

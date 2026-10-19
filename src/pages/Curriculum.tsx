@@ -80,15 +80,15 @@ export function Curriculum() {
             to="/lab/observability"
             variant="outlined"
           >
-            Mở lab tích hợp
+            Mở bài thực hành tích hợp
           </Button>
         }
-        eyebrow="TỪ NỀN TẢNG ĐẾN PROFESSIONAL"
+        eyebrow="TỪ NỀN TẢNG ĐẾN TRÌNH ĐỘ PROFESSIONAL"
         title={domain ? domain.subtitle : "Bản đồ kiến thức của bạn"}
         description={
           domain
             ? domain.description
-            : "6 domain → 19 chương → 72 bài chuyên sâu. Bắt đầu từ chỗ bạn cần, học theo cách bạn hiểu."
+            : "Lộ trình gồm 6 nhóm kiến thức (domain), 19 chương và mục tiêu 72 bài chuyên sâu. Bạn có thể chọn phần cần củng cố để bắt đầu học."
         }
       />
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mb: 2 }}>
@@ -117,13 +117,13 @@ export function Curriculum() {
         >
           <MenuItem value="all">Tất cả bài học</MenuItem>
           <MenuItem value="incomplete">Chưa hoàn thành</MenuItem>
-          <MenuItem value="saved">Đã bookmark</MenuItem>
+          <MenuItem value="saved">Đã lưu</MenuItem>
           <MenuItem value="weak">Kiến thức còn yếu</MenuItem>
         </TextField>
       </Stack>
       <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mb: 4 }}>
         <Chip
-          label="Tất cả domains"
+          label="Tất cả nhóm kiến thức"
           onClick={() => change("domain", "")}
           color={!selected ? "primary" : "default"}
           variant={!selected ? "filled" : "outlined"}

@@ -28,7 +28,7 @@ export function Plan() {
   return (
     <>
       <PageHeading
-        eyebrow="BỐN GIỜ MỖI NGÀY, MỘT MỤC TIÊU RÕ RÀNG"
+        eyebrow="HỌC ĐỀU MỖI NGÀY, THEO SÁT MỤC TIÊU"
         title="Học đều. Ôn đúng. Thi tự tin."
         description={`Lộ trình từ ${new Date(state.settings.startDate + "T12:00:00").toLocaleDateString("vi-VN")} đến ${new Date(state.settings.examDate + "T12:00:00").toLocaleDateString("vi-VN")}. Các ngày cuối dành cho ôn tập và thi thử.`}
         action={
@@ -65,9 +65,10 @@ export function Plan() {
               sx={{ height: 7, borderRadius: 4, mb: 1.5 }}
             />
             <Typography variant="body2" color="text.secondary">
-              Bạn có thể dành khoảng một giờ để đọc hiểu, hai giờ thực hành và
-              một giờ làm câu hỏi ôn tập. Với bài khó, hãy dành thêm thời gian
-              tìm hiểu cơ chế trước khi chuyển sang bài tiếp theo.
+              Nếu học bốn giờ mỗi ngày, bạn có thể dành một giờ đọc hiểu, hai
+              giờ thực hành và một giờ làm câu hỏi ôn tập. Hãy điều chỉnh tỷ lệ
+              này theo quỹ thời gian của bạn. Với bài khó, nên làm rõ cơ chế
+              trước khi chuyển sang bài tiếp theo.
             </Typography>
           </Box>
         </Stack>
@@ -75,7 +76,7 @@ export function Plan() {
       {!plan.length ? (
         <Card sx={{ p: 4 }}>
           <Typography variant="h3">
-            Cần một ngày thi mục tiêu sau ngày bắt đầu học
+            Ngày thi mục tiêu phải sau ngày bắt đầu học
           </Typography>
           <Typography color="text.secondary" sx={{ my: 2 }}>
             Đổi ngày trong cài đặt để tạo lại lộ trình của bạn.
@@ -211,7 +212,7 @@ export function Plan() {
                       color="text.secondary"
                       sx={{ display: { xs: "none", sm: "block" } }}
                     >
-                      {state.settings.dailyHours}h tập trung
+                      {state.settings.dailyHours} giờ học
                     </Typography>
                   </Card>
                 ))}

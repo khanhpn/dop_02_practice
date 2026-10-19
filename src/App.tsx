@@ -71,7 +71,7 @@ function Shell() {
       ? "Bài học"
       : location.pathname === "/settings"
         ? "Cài đặt"
-        : "Study workspace");
+        : "Không gian học");
   const sidebar = (
     <Box
       sx={{
@@ -121,7 +121,7 @@ function Shell() {
             dop<span style={{ color: "#f0b56e" }}>.</span>study
           </Typography>
           <Typography sx={{ fontSize: 9, letterSpacing: 2, color: "#90b0a5" }}>
-            LEARN. BUILD. CERTIFY.
+            HỌC. THỰC HÀNH. THI CHỨNG CHỈ.
           </Typography>
         </Box>
       </Box>
@@ -142,11 +142,11 @@ function Shell() {
               primary={label}
               primaryTypographyProps={{ fontSize: 12.5, fontWeight: 550 }}
             />
-            {to === "/practice" && <Box className="tiny-badge">QUIZ</Box>}
+            {to === "/practice" && <Box className="tiny-badge">ÔN TẬP</Box>}
           </ListItemButton>
         ))}
       </List>
-      <Typography className="nav-section">EXAM DOMAINS</Typography>
+      <Typography className="nav-section">NHÓM KIẾN THỨC THI</Typography>
       <List disablePadding>
         {domains.map((d) => (
           <ListItemButton
@@ -237,7 +237,7 @@ function Shell() {
         endIcon={<ArrowOutwardRounded sx={{ fontSize: 13 }} />}
         sx={{ color: "#8fa89e", fontSize: 10, mt: 1 }}
       >
-        AWS Exam Guide chính thức
+        Hướng dẫn thi chính thức của AWS
       </Button>
     </Box>
   );
@@ -287,7 +287,7 @@ function Shell() {
           >
             <Stack direction="row" alignItems="center" spacing={1}>
               <IconButton
-                aria-label="Mở menu"
+                aria-label="Mở mục điều hướng"
                 sx={{ display: { lg: "none" } }}
                 onClick={() => setMobileOpen(true)}
               >
@@ -298,7 +298,7 @@ function Shell() {
                 color="text.secondary"
                 sx={{ display: { xs: "none", sm: "block" } }}
               >
-                Workspace
+                Không gian học
               </Typography>
               <ChevronRightRounded
                 sx={{
@@ -324,8 +324,8 @@ function Shell() {
               <Tooltip
                 title={
                   state.settings.theme === "light"
-                    ? "Chuyển giao diện tối"
-                    : "Chuyển giao diện sáng"
+                    ? "Chuyển sang giao diện tối"
+                    : "Chuyển sang giao diện sáng"
                 }
               >
                 <IconButton
@@ -408,7 +408,7 @@ function Shell() {
                 dop.study · Học để hiểu, thực hành để nhớ.
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {lessons.length}/72 bài · Dữ liệu học lưu trên trình duyệt này
+                {lessons.length}/72 bài · Tiến độ học được lưu trong trình duyệt này
               </Typography>
             </Box>
           </Box>

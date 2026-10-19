@@ -35,7 +35,7 @@ export function LessonCard({ lesson }: { lesson: Lesson }) {
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Stack direction="row" spacing={1} sx={{ mb: 0.4 }}>
           <Typography variant="caption" color="text.secondary">
-            TASK {lesson.chapterId}
+            MỤC TIÊU THI {lesson.chapterId}
           </Typography>
           {done && (
             <Chip
@@ -61,7 +61,7 @@ export function LessonCard({ lesson }: { lesson: Lesson }) {
           color="text.secondary"
           sx={{ display: "block", mt: 0.7 }}
         >
-          {lesson.duration} phút đọc · {lesson.lab.duration} phút lab ·{" "}
+          {lesson.duration} phút đọc · {lesson.lab.duration} phút thực hành ·{" "}
           {lesson.questions.length} câu hỏi
         </Typography>
       </Box>

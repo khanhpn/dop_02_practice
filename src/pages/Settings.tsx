@@ -51,7 +51,7 @@ export function Settings() {
     if (!selected) return;
     try {
       if (selected.size > 10_000_000)
-        throw new Error("File backup vượt quá 10 MB.");
+        throw new Error("Tệp sao lưu vượt quá 10 MB.");
       setPending(parseBackup(await selected.text()));
       setMessage(null);
     } catch (e) {
@@ -76,9 +76,9 @@ export function Settings() {
   return (
     <>
       <PageHeading
-        eyebrow="YOUR WORKSPACE, YOUR PACE"
-        title="Một không gian theo nhịp của bạn"
-        description="Điều chỉnh mục tiêu và giữ bản sao tiến độ để học trên máy khác."
+        eyebrow="KHÔNG GIAN HỌC THEO NHỊP CỦA BẠN"
+        title="Điều chỉnh mục tiêu, giữ trọn tiến độ"
+        description="Đặt lịch học phù hợp với bạn và sao lưu tiến độ để tiếp tục học khi đổi máy."
       />
       {message && (
         <Alert
@@ -151,7 +151,7 @@ export function Settings() {
                 })
               }
             >
-              <MenuItem value="en">English — luyện thi</MenuItem>
+              <MenuItem value="en">Tiếng Anh — luyện thi</MenuItem>
               <MenuItem value="vi">Tiếng Việt — tham khảo</MenuItem>
             </TextField>
             {validation && <Alert severity="error">{validation}</Alert>}
@@ -163,14 +163,15 @@ export function Settings() {
         <Stack spacing={3}>
           <Card sx={{ p: 3 }}>
             <Typography variant="h3" sx={{ mb: 1.5 }}>
-              Dữ liệu thuộc về bạn
+              Lưu giữ và chuyển dữ liệu học tập
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Tiến độ, ghi chú và kết quả chỉ được lưu trong trình duyệt bạn
               đang dùng, không tự đồng bộ sang máy khác. Hãy xuất bản sao lưu
               trước khi xoá dữ liệu trình duyệt hoặc đổi máy, rồi nhập lại bản
-              sao đó để học tiếp. Bản chạy trên máy và bản GitHub Pages lưu dữ
-              liệu riêng biệt.
+              sao đó để học tiếp. Website chạy trên máy và website trên GitHub
+              Pages lưu dữ liệu riêng; muốn chuyển tiến độ giữa hai nơi, bạn cần
+              xuất rồi nhập bản sao lưu.
             </Typography>
             <Stack direction="row" spacing={1} flexWrap="wrap" gap={1}>
               <Button
@@ -178,13 +179,13 @@ export function Settings() {
                 startIcon={<FileDownloadOutlined />}
                 onClick={() => download(serializeBackup(state))}
               >
-                Export backup
+                Xuất bản sao lưu
               </Button>
               <Button
                 startIcon={<FileUploadOutlined />}
                 onClick={() => file.current?.click()}
               >
-                Import backup
+                Nhập bản sao lưu
               </Button>
               <input
                 ref={file}
@@ -192,7 +193,7 @@ export function Settings() {
                 type="file"
                 accept="application/json,.json"
                 onChange={(e) => void importFile(e.target.files?.[0])}
-                aria-label="Chọn file backup"
+                aria-label="Chọn tệp sao lưu"
               />
             </Stack>
             <Typography
@@ -210,7 +211,7 @@ export function Settings() {
               Nội dung & nguồn tham khảo
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
-              AWS DOP-C02 · snapshot exam guide ngày {SNAPSHOT_DATE}.{" "}
+              AWS DOP-C02 · Hướng dẫn thi được đối chiếu ngày {SNAPSHOT_DATE}.{" "}
               {lessons.length} bài học và {questions.length} câu hỏi đã biên
               soạn. Mỗi bài dẫn nguồn AWS để đọc sâu và đối chiếu.
             </Typography>
@@ -220,11 +221,11 @@ export function Settings() {
               rel="noreferrer"
               sx={{ fontSize: 13 }}
             >
-              Mở AWS Exam Guide chính thức ↗
+              Mở hướng dẫn thi chính thức của AWS ↗
             </Link>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
               Câu hỏi luyện tập do dự án biên soạn, không phải câu hỏi thi chính
-              thức. Ngân hàng và mock exam giúp đánh giá lỗ hổng kiến thức;
+              thức. Ngân hàng câu hỏi và đề thi thử giúp xác định phần kiến thức cần củng cố;
               không bảo đảm kết quả thi.
             </Typography>
           </Card>
@@ -233,7 +234,7 @@ export function Settings() {
               Bắt đầu lại hành trình
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              Export một bản sao trước khi xoá tiến độ. Thao tác này chỉ tác
+              Xuất bản sao lưu trước khi xoá tiến độ. Thao tác này chỉ tác
               động dữ liệu của website trong trình duyệt này.
             </Typography>
             <Button
@@ -247,10 +248,10 @@ export function Settings() {
         </Stack>
       </Box>
       <Dialog open={!!pending} onClose={() => setPending(null)}>
-        <DialogTitle>Thay tiến độ bằng bản backup?</DialogTitle>
+        <DialogTitle>Thay tiến độ hiện tại bằng bản sao lưu?</DialogTitle>
         <DialogContent>
           <Typography>
-            Backup có {pending?.completed.length} bài hoàn thành,{" "}
+            Bản sao lưu có {pending?.completed.length} bài hoàn thành,{" "}
             {pending?.attempts.length} lượt luyện tập. Dữ liệu hiện tại sẽ được
             thay bằng bản này.
           </Typography>
@@ -259,7 +260,7 @@ export function Settings() {
             onClick={() => download(serializeBackup(state))}
             sx={{ mt: 2 }}
           >
-            Export dữ liệu hiện tại trước
+            Sao lưu dữ liệu hiện tại trước
           </Button>
         </DialogContent>
         <DialogActions>
@@ -272,13 +273,13 @@ export function Settings() {
                 setDraft({ ...pending.settings });
                 setPending(null);
                 setMessage({
-                  text: "Đã nhập backup thành công.",
+                  text: "Đã nhập bản sao lưu thành công.",
                   error: false,
                 });
               }
             }}
           >
-            Import & thay thế
+            Nhập và thay thế dữ liệu
           </Button>
         </DialogActions>
       </Dialog>
@@ -286,11 +287,11 @@ export function Settings() {
         <DialogTitle>Xoá toàn bộ tiến độ?</DialogTitle>
         <DialogContent>
           <Typography>
-            Ghi chú, bookmarks, kết quả quiz và phiên đang làm sẽ bị xoá. Bạn
-            chỉ khôi phục được nếu có backup.
+            Ghi chú, bài đã lưu, kết quả luyện tập và lượt làm bài đang dở sẽ bị
+            xoá. Chỉ có thể khôi phục những dữ liệu này nếu bạn đã giữ bản sao lưu.
           </Typography>
           <Button onClick={() => download(serializeBackup(state))}>
-            Export backup trước
+            Xuất bản sao lưu trước
           </Button>
         </DialogContent>
         <DialogActions>
@@ -304,7 +305,7 @@ export function Settings() {
               setDraft({ ...fresh.settings });
               setReset(false);
               setMessage({
-                text: "Đã xoá tiến độ của website. Có thể khôi phục bằng backup đã export.",
+                text: "Đã xoá tiến độ học trên website. Bạn có thể khôi phục bằng bản sao lưu đã xuất.",
                 error: false,
               });
             }}

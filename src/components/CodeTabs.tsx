@@ -37,7 +37,7 @@ export function CodeTabs({ example }: { example: CodeExample }) {
         <Chip
           size="small"
           variant="outlined"
-          label={example.deployable ? "Template đầy đủ" : "Snippet minh hoạ"}
+          label={example.deployable ? "Mẫu cấu hình đầy đủ" : "Đoạn mã minh hoạ"}
         />
       </Stack>
       <Stack
@@ -52,13 +52,13 @@ export function CodeTabs({ example }: { example: CodeExample }) {
             setTab(v);
             setCopied(false);
           }}
-          aria-label="Công cụ Infrastructure as Code"
+          aria-label="Công cụ khai báo hạ tầng bằng mã"
         >
           <Tab label="CloudFormation" />
           <Tab label="Terraform" />
         </Tabs>
         <Button size="small" startIcon={<ContentCopyRounded />} onClick={copy}>
-          {copied ? "Đã sao chép" : "Copy"}
+          {copied ? "Đã sao chép" : "Sao chép"}
         </Button>
       </Stack>
       <Box component="pre" className="code-block" tabIndex={0}>

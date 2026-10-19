@@ -83,7 +83,7 @@ export function CapstoneLab() {
     {
       title: "Đọc mẫu cấu hình trước khi triển khai bằng CloudFormation",
       detail:
-        "Tải file cloudformation.yaml rồi mở terminal tại thư mục chứa file. Trong CloudFormation, một stack là tập hợp tài nguyên được tạo và quản lý cùng nhau theo mẫu cấu hình. Stack của bài này gồm nhóm nhật ký, bộ lọc tạo chỉ số từ nhật ký, cảnh báo CloudWatch, chủ đề thông báo SNS, quy tắc EventBridge và ba hàng đợi SQS. Hai trong ba hàng đợi là dead-letter queue (DLQ, hàng đợi giữ thông điệp gặp lỗi), phục vụ hai tình huống khác nhau mà bạn sẽ kiểm tra ở bước 7. Hãy đọc các khai báo này trước khi chạy lệnh. Nếu chưa cần nhận email, giữ tham số NotificationEmail ở giá trị rỗng. Khi muốn thử thông báo email, truyền địa chỉ vào tham số này và xác nhận đăng ký qua thư SNS gửi đến.",
+        "Tải tập tin cloudformation.yaml rồi mở cửa sổ dòng lệnh tại thư mục chứa tập tin. Trong CloudFormation, một stack là tập hợp tài nguyên được tạo và quản lý cùng nhau theo mẫu cấu hình. Stack của bài này gồm nhóm nhật ký, bộ lọc tạo chỉ số từ nhật ký, cảnh báo CloudWatch, chủ đề thông báo SNS, quy tắc EventBridge và ba hàng đợi SQS. Hai trong ba hàng đợi là dead-letter queue (DLQ, hàng đợi giữ thông điệp gặp lỗi), phục vụ hai tình huống khác nhau mà bạn sẽ kiểm tra ở bước 7. Hãy đọc các khai báo này trước khi chạy lệnh. Nếu chưa cần nhận email, giữ tham số NotificationEmail ở giá trị rỗng. Khi muốn thử thông báo email, truyền địa chỉ vào tham số này và xác nhận đăng ký qua thư SNS gửi đến.",
       command: commands.deploy,
       expected:
         "Lệnh validate-template chấp nhận mẫu cấu hình, sau đó stack chuyển sang CREATE_COMPLETE. Nếu tạo tài nguyên thất bại, mở tab Events của stack để xem chính xác tài nguyên nào lỗi và thông báo nguyên nhân.",
@@ -140,8 +140,8 @@ export function CapstoneLab() {
   return (
     <>
       <PageHeading
-        eyebrow="CAPSTONE · DOMAIN 4 + 5 + 6"
-        title="Từ một dòng log đến phản ứng có kiểm soát"
+        eyebrow="THỰC HÀNH TỔNG HỢP · NHÓM 4 + 5 + 6"
+        title="Từ bản ghi nhật ký đến quy trình ứng phó sự cố"
         description="Thực hành cách phát hiện lỗi qua nhật ký, gửi cảnh báo và xử lý sự kiện bằng hàng đợi. Bạn sẽ theo dõi từng bước để hiểu hệ thống đã nhận, chuyển và xử lý dữ liệu đến đâu. CloudFormation là bản chính, kèm Terraform để đối chiếu."
       />
       <Alert severity="warning" sx={{ mb: 3 }}>
@@ -207,7 +207,7 @@ export function CapstoneLab() {
           terraform: tf,
           deployable: true,
           explanation:
-            "Chọn một công cụ để thực hành trước, rồi đối chiếu cách khai báo ở tab còn lại. Bản Terraform dùng tên riêng dop-observability-tf; hãy giữ tập tin state để Terraform biết đang quản lý những tài nguyên nào, cùng lockfile để cố định phiên bản provider. Cả hai bản đều giới hạn quyền gửi đến SQS theo SourceArn của quy tắc EventBridge. Quyền gửi thông báo đến SNS cũng chỉ dành cho cảnh báo CloudWatch của bài, dựa trên ARN cảnh báo và SourceAccount. Hai hàng đợi DLQ được khai báo riêng vì chúng xử lý hai loại lỗi khác nhau.",
+            "Chọn một công cụ để thực hành trước, rồi mở thẻ còn lại để đối chiếu cách khai báo. Bản Terraform dùng tên riêng dop-observability-tf. Hãy giữ tập tin trạng thái để Terraform theo dõi các tài nguyên đã tạo và giữ lockfile để cố định phiên bản provider. Cả hai bản đều giới hạn quyền gửi đến SQS theo SourceArn của quy tắc EventBridge. Quyền gửi thông báo đến SNS cũng chỉ dành cho cảnh báo CloudWatch của bài, dựa trên ARN cảnh báo và SourceAccount. Hai hàng đợi DLQ được khai báo riêng vì chúng xử lý hai loại lỗi khác nhau.",
         }}
       />
       <Stack spacing={3} sx={{ mt: 4 }}>

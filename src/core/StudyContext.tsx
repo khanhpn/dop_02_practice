@@ -34,7 +34,7 @@ function initialState() {
     return {
       state: emptyState(),
       error:
-        "Không đọc được dữ liệu đã lưu. Bạn vẫn có thể học trong phiên này. Hãy giữ bản backup trước khi nhập dữ liệu mới.",
+        "Không đọc được dữ liệu đã lưu trong trình duyệt. Bạn vẫn có thể học trong phiên hiện tại. Trước khi nhập bản sao lưu khác, hãy giữ một bản dữ liệu cũ nếu còn truy cập được.",
       canSave: false,
     };
   }
@@ -50,7 +50,7 @@ export function StudyProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, serializeBackup(state));
     } catch {
       setError(
-        "Trình duyệt không lưu được dữ liệu (bộ nhớ đầy hoặc đang chặn storage). Hãy export backup; tiến độ hiện vẫn còn trong phiên này.",
+        "Trình duyệt không lưu được dữ liệu do hết dung lượng hoặc chức năng lưu trữ bị chặn. Tiến độ vẫn còn trong phiên hiện tại; hãy xuất bản sao lưu trước khi đóng trang.",
       );
     }
   }, [state]);

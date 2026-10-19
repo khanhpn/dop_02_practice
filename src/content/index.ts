@@ -15,7 +15,7 @@ export const domains: Domain[] = [
   {
     id: 2,
     title: "Configuration Management & IaC",
-    subtitle: "Quản lý cấu hình & hạ tầng dạng mã",
+    subtitle: "Quản lý cấu hình và hạ tầng bằng mã",
     weight: 17,
     color: "#426bb8",
     description:
@@ -28,7 +28,7 @@ export const domains: Domain[] = [
     weight: 15,
     color: "#43856a",
     description:
-      "Giữ hệ thống hoạt động khi có thành phần gặp lỗi, mở rộng theo nhu cầu và phục hồi trong giới hạn thời gian, dữ liệu mà doanh nghiệp chấp nhận.",
+      "Duy trì hoạt động khi thành phần gặp lỗi, mở rộng theo nhu cầu và phục hồi trong thời gian cho phép, với mức mất dữ liệu mà doanh nghiệp chấp nhận.",
   },
   {
     id: 4,
@@ -37,16 +37,16 @@ export const domains: Domain[] = [
     weight: 15,
     color: "#8b6bb3",
     description:
-      "Thu thập số liệu, nhật ký và dấu vết xử lý yêu cầu để hiểu hệ thống đang hoạt động ra sao và phát hiện vấn đề kịp thời.",
+      "Thu thập chỉ số, nhật ký và dấu vết xử lý yêu cầu để hiểu trạng thái hoạt động của hệ thống, phát hiện vấn đề và tìm nguyên nhân.",
   },
   {
     id: 5,
     title: "Incident & Event Response",
-    subtitle: "Phản ứng sự cố & sự kiện",
+    subtitle: "Ứng phó sự cố và xử lý sự kiện",
     weight: 14,
     color: "#bc6658",
     description:
-      "Xử lý sự kiện, khắc phục tự động và tìm nguyên nhân gốc rễ của sự cố.",
+      "Tiếp nhận sự kiện, tự động thực hiện biện pháp khắc phục và điều tra nguyên nhân sự cố để khôi phục hoạt động của hệ thống.",
   },
   {
     id: 6,
@@ -87,7 +87,7 @@ export const chapters: Chapter[] = [
   {
     id: "2.1",
     domainId: 2,
-    title: "Định nghĩa hạ tầng và thành phần tái sử dụng",
+    title: "Khai báo hạ tầng và xây dựng thành phần tái sử dụng",
     examTask:
       "Define cloud infrastructure and reusable components to provision and manage systems throughout their lifecycle.",
   },
@@ -101,21 +101,21 @@ export const chapters: Chapter[] = [
   {
     id: "2.3",
     domainId: 2,
-    title: "Tự động hoá tác vụ ở quy mô lớn",
+    title: "Tự động hoá tác vụ trên quy mô lớn",
     examTask:
       "Design and build automated solutions for complex tasks and large-scale environments.",
   },
   {
     id: "3.1",
     domainId: 3,
-    title: "Thiết kế tính sẵn sàng cao",
+    title: "Thiết kế hệ thống có tính sẵn sàng cao",
     examTask:
       "Implement highly available solutions to meet resilience and business requirements.",
   },
   {
     id: "3.2",
     domainId: 3,
-    title: "Thiết kế khả năng mở rộng",
+    title: "Thiết kế hệ thống có khả năng mở rộng",
     examTask:
       "Implement solutions that are scalable to meet business requirements.",
   },
@@ -129,7 +129,7 @@ export const chapters: Chapter[] = [
   {
     id: "4.1",
     domainId: 4,
-    title: "Thu thập và lưu trữ dữ liệu quan sát",
+    title: "Thu thập và lưu trữ nhật ký, số liệu",
     examTask:
       "Configure the collection, aggregation, and storage of logs and metrics.",
   },
@@ -149,7 +149,7 @@ export const chapters: Chapter[] = [
   {
     id: "5.1",
     domainId: 5,
-    title: "Thu nhận, xử lý và phản ứng theo sự kiện",
+    title: "Tiếp nhận, xử lý và thực hiện hành động theo sự kiện",
     examTask:
       "Manage event sources to process, notify, and take action in response to events.",
   },
@@ -162,7 +162,7 @@ export const chapters: Chapter[] = [
   {
     id: "5.3",
     domainId: 5,
-    title: "Chẩn đoán hệ thống và ứng dụng",
+    title: "Chẩn đoán và xử lý lỗi hệ thống, ứng dụng",
     examTask: "Troubleshoot system and application failures.",
   },
   {

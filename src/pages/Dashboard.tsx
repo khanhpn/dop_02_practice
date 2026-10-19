@@ -59,11 +59,11 @@ export function Dashboard() {
       color: "#4b8067",
     },
     {
-      label: "Độ chính xác gần nhất",
+      label: "Tỷ lệ trả lời đúng",
       value: accuracy === null ? "—" : `${accuracy}%`,
       sub: history.length
         ? `${history.length} câu đã luyện`
-        : "Làm quiz để biết phần cần củng cố",
+        : "Làm câu hỏi ôn tập để biết phần cần củng cố",
       icon: FactCheckOutlined,
       color: "#a17844",
     },
@@ -158,7 +158,7 @@ export function Dashboard() {
             sx={{ mb: 2.5 }}
           >
             <Chip
-              label="MỤC TIÊU THÁNG 12"
+              label="MỤC TIÊU ÔN THI"
               size="small"
               sx={{
                 bgcolor: "#ffffff10",
@@ -196,8 +196,8 @@ export function Dashboard() {
               lineHeight: 1.9,
             }}
           >
-            6 domain. 19 chương. Một lộ trình rõ ràng từ kiến thức đến thực hành
-            — dành riêng cho hành trình Professional của bạn.
+            6 nhóm kiến thức, 19 chương. Học cơ chế, phân tích tình huống và thực
+            hành để chuẩn bị cho kỳ thi AWS DevOps Engineer – Professional.
           </Typography>
           <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
             <Button
@@ -280,7 +280,7 @@ export function Dashboard() {
                   mt: 1.2,
                 }}
               >
-                NGÀY ĐẾN NGÀY THI
+                NGÀY CÒN LẠI ĐẾN KỲ THI
               </Typography>
             </Box>
           </Box>
@@ -358,7 +358,7 @@ export function Dashboard() {
                 color="text.secondary"
                 sx={{ fontSize: 11, mt: 0.4 }}
               >
-                Học theo 6 domain, bám trọng số đề thi.
+                Học theo 6 nhóm kiến thức và trọng số tương ứng trong đề thi.
               </Typography>
             </Box>
             <Button
@@ -426,7 +426,7 @@ export function Dashboard() {
                     color="text.secondary"
                     sx={{ fontSize: "8px!important", mt: 2 }}
                   >
-                    DOMAIN 0{d.id} ·{" "}
+                    NHÓM 0{d.id} ·{" "}
                     {chapters.filter((c) => c.domainId === d.id).length} CHƯƠNG
                   </Typography>
                   <Typography variant="h4" sx={{ mt: 0.5, fontSize: 13 }}>
@@ -510,17 +510,17 @@ export function Dashboard() {
               {
                 time: "60p",
                 title: "Khơi lại kiến thức",
-                text: "Đọc bài, làm rõ những chỗ còn hổng.",
+                text: "Đọc bài và làm rõ những phần chưa nắm chắc.",
               },
               {
                 time: "120p",
                 title: "Thực hành để hiểu sâu",
-                text: "CloudFormation trước, Terraform đối chiếu.",
+                text: "Thực hành với CloudFormation, rồi đối chiếu với Terraform.",
               },
               {
                 time: "60p",
                 title: "Kiểm tra & ôn lại",
-                text: "Làm quiz, đọc giải thích từng lựa chọn.",
+                text: "Làm câu hỏi ôn tập và đọc lời giải cho từng lựa chọn.",
               },
             ].map((item, i) => (
               <Stack
@@ -614,14 +614,15 @@ export function Dashboard() {
                 sx={{ color: "#73977e", fontSize: 15 }}
               />
               <Typography sx={{ fontSize: 10.5, fontWeight: 650 }}>
-                Nắm vững, thay vì học thuộc
+                Hiểu cơ chế để vận dụng
               </Typography>
             </Stack>
             <Typography
               sx={{ fontSize: 10.5, color: "text.secondary", lineHeight: 1.9 }}
             >
-              Bài học tiếng Việt. Thuật ngữ có giải nghĩa. Câu hỏi EN/VI, giải
-              thích rõ từng đáp án và link ôn lại đúng kiến thức.
+              Bài học bằng tiếng Việt, có giải nghĩa thuật ngữ. Câu hỏi có cả
+              tiếng Anh và tiếng Việt, kèm lời giải từng lựa chọn và liên kết
+              đến phần kiến thức cần ôn lại.
             </Typography>
             <Typography
               sx={{ fontSize: 9.5, color: "text.secondary", mt: 1.5 }}

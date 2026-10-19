@@ -75,6 +75,8 @@ Mục tiêu nội dung đầy đủ: **72 bài, 19 Task Statements, ≥1.440 câ
 
 Trạng thái thực tế và phần tiếp tục nằm trong `docs/progress.md` và `src/content/domain*/PROGRESS.md` nếu có. UI báo số bài/câu đã biên soạn thực tế. Không dùng bài rỗng hoặc câu hỏi biến thể chỉ đổi tên công ty để làm đủ số lượng.
 
+Khi viết, dịch hoặc chỉnh nội dung tiếng Việt, áp dụng [skill biên tập tiếng Việt](.agents/skills/vietnamese-editorial/SKILL.md) và [quy ước diễn đạt](docs/vietnamese-editorial-guide.md). Quy trình bắt buộc có tác nhân chuyên ngôn ngữ tiếng Việt dịch, biên tập và một tác nhân khác đọc duyệt độc lập. Bản biên tập cần dễ đọc, giải thích rõ cơ chế và giữ đầy đủ điều kiện của tình huống thi; câu hỏi tiếng Anh, đáp án và mã kỹ thuật được bảo toàn.
+
 ## Backup và riêng tư
 
 LocalStorage key `dop-study-lab:v1`, schema version 1. Notes, bookmarks, lab checklist, lịch sử kết quả và phiên luyện dở được lưu trên máy. Import validate toàn bộ dữ liệu trước, hỏi xác nhận thay thế và có nút export dữ liệu cũ. Backup lỗi hoặc khác schema không ghi đè tiến độ. Nếu storage bị chặn/đầy, app báo lỗi và giữ dữ liệu trong phiên để export.

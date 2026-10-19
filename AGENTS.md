@@ -17,3 +17,9 @@ User instructions in this file override those skills for this repository.
 - `pnpm build` — only when the change can break the production bundle
 
 If typecheck is enough for the change, stop there.
+
+## Vietnamese educational content
+
+For Vietnamese lesson writing, translation, supplementation, editorial review, or learner-facing copy changes, read and follow [.agents/skills/vietnamese-editorial/SKILL.md](.agents/skills/vietnamese-editorial/SKILL.md).
+
+A Vietnamese-language specialist agent must translate and edit the text, and a different agent must independently review it before completion. Preserve AWS DOP-C02 meaning and technical fields. Read the full Vietnamese text in scope; terminology replacements or structural checks alone do not satisfy the editorial review.
