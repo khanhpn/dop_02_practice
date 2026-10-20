@@ -22,6 +22,7 @@ import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import FactCheckOutlined from "@mui/icons-material/FactCheckOutlined";
 import CalendarMonthOutlined from "@mui/icons-material/CalendarMonthOutlined";
+import NoteAltOutlined from "@mui/icons-material/NoteAltOutlined";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import ArrowOutwardRounded from "@mui/icons-material/ArrowOutwardRounded";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
@@ -46,11 +47,13 @@ import { Practice } from "./pages/Practice";
 import { Plan } from "./pages/Plan";
 import { Settings } from "./pages/Settings";
 import { CapstoneLab } from "./pages/CapstoneLab";
+import { Notes } from "./pages/Notes";
 const navigation = [
   { to: "/", label: "Tổng quan", icon: DashboardOutlined },
   { to: "/curriculum", label: "Lộ trình kiến thức", icon: MenuBookOutlined },
   { to: "/practice", label: "Luyện tập & thi thử", icon: FactCheckOutlined },
   { to: "/plan", label: "Kế hoạch của tôi", icon: CalendarMonthOutlined },
+  { to: "/notes", label: "Ghi chú", icon: NoteAltOutlined },
 ];
 function Shell() {
   const { state, update, error, dismissError } = useStudy();
@@ -374,6 +377,7 @@ function Shell() {
               <Route path="/lesson/:id" element={<LessonPage />} />
               <Route path="/practice" element={<Practice />} />
               <Route path="/plan" element={<Plan />} />
+              <Route path="/notes" element={<Notes />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/lab/observability" element={<CapstoneLab />} />
               <Route
