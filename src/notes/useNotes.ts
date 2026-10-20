@@ -10,14 +10,19 @@ export function useNotes() {
   const pending = useRef(new Map<string, StudyNote>());
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const queue = useRef<Promise<void>>(Promise.resolve());
+  const revision = useRef(0);
 
   const reload = useCallback(async () => {
+    const startedAt = revision.current;
     try {
       const [nextCategories, nextNotes] = await Promise.all([listCategories(), listNotes()]);
       setCategories(nextCategories);
-      setNotes(nextNotes);
-      setStatus("saved");
-      setError("");
+      // Loading/migration can finish after the user has started a draft.
+      const drafts = pending.current;
+      if (revision.current === startedAt) {
+        setNotes([...nextNotes.filter((note) => !drafts.has(note.id)), ...drafts.values()]);
+        if (drafts.size === 0) { setStatus("saved"); setError(""); }
+      }
     } catch (cause) {
       setStatus("error");
       setError(`Không mở được kho ghi chú: ${(cause as Error).message}`);
@@ -51,6 +56,7 @@ export function useNotes() {
   }, [flush]);
 
   const updateNote = useCallback((note: StudyNote) => {
+    revision.current += 1;
     const next = { ...note, updatedAt: Date.now() };
     setNotes((current) => current.some((item) => item.id === next.id) ? current.map((item) => item.id === next.id ? next : item) : [next, ...current]);
     pending.current.set(next.id, next);
