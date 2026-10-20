@@ -2,6 +2,10 @@
 
 ## Chỉ dẫn mới nhất của người dùng — ưu tiên hơn bố cục ban đầu
 
+Người dùng đã gửi một câu trả lời mẫu về EventBridge làm chuẩn cụ thể: định nghĩa trực tiếp, một câu dễ nhớ, ví dụ gạch đầu dòng, giải thích thành phần, sơ đồ luồng, đoạn JSON kèm ý nghĩa từng trường, bảng so sánh ngắn và các tình huống lựa chọn. Áp dụng nhịp giải thích này cho cả bốn bài, không chỉ thay tên các đoạn thành câu hỏi. Các bảng/sơ đồ/đoạn cấu hình hữu ích được trình bày ngay trong bài; không sao chép rác trích dẫn, biểu tượng nguồn hoặc bảng lỗi từ nội dung dán. Vẫn không có mục tài liệu tham khảo hay ngày đối chiếu trên trang đọc.
+
+Kiểu dữ liệu `reading` cho phép mỗi mục có lời giải thích, câu nhấn mạnh, danh sách, sơ đồ, mã với phần giải thích và bảng khi phù hợp. Không bắt buộc mọi bài có cùng số mục hoặc dùng một khuôn sáu phần. Những quyết định bỏ toàn bộ bảng ở lượt trước được thay bằng hướng dẫn mới này: bỏ sự rườm rà, giữ các ví dụ và hình thức trình bày giúp hiểu rõ.
+
 Người dùng tiếp tục yêu cầu bỏ toàn bộ phần tài liệu tham khảo và cách viết giống bản dịch tài liệu tiếng Anh. Bài phải giải thích như câu trả lời trong chat, bắt đầu từ những câu hỏi cơ bản như “CloudWatch là gì?”, dịch vụ dùng làm gì và ví dụ cụ thể, rồi mới nối sang các dịch vụ còn lại và so sánh.
 
 Bỏ cấu trúc ép mọi bài vào sáu phần chung. Dữ liệu bài chỉ còn một danh sách các mục giải thích liên tiếp (`reading`), không có bảng, quy trình đóng/mở, phần nguồn, ngày đối chiếu hay danh sách bài liên quan trên trang đọc. Menu riêng và bốn đường dẫn bài vẫn giữ. Phần thiết kế ban đầu bên dưới lưu lại quá trình thay đổi, không được dùng để đưa các thành phần đã bỏ trở lại.
