@@ -16,12 +16,16 @@ import { useNotes } from "../notes/useNotes";
 import type { NoteCategory } from "../notes/types";
 import type { NotesSnapshot } from "../notes/types";
 import { downloadNotesJson, readNotesFile } from "../notes/files";
+import { migrateLegacyNotes } from "../notes/migrate";
+import { useStudy } from "../core/StudyContext";
+import { useEffect } from "react";
 
 type CategoryDialog = { category: NoteCategory | null; name: string } | null;
 type Deletion = { type: "note" | "category"; id: string; title: string } | null;
 
 export function Notes() {
   const data = useNotes();
+  const { state } = useStudy();
   const [params, setParams] = useSearchParams();
   const lessonFilter = params.get("lesson");
   const [categoryId, setCategoryId] = useState<string | null>(null);
@@ -33,6 +37,7 @@ export function Notes() {
   const importInput = useRef<HTMLInputElement>(null);
   const [importCandidate, setImportCandidate] = useState<NotesSnapshot | null>(null);
   const [mobilePane, setMobilePane] = useState<"categories" | "list" | "editor">("categories");
+  useEffect(() => { void migrateLegacyNotes(state.notes).then(() => data.reload()).catch((cause: unknown) => setMessage(`Chưa chuyển được ghi chú cũ: ${(cause as Error).message}`)); }, [state.notes, data.reload]);
   const filtered = useMemo(() => data.notes.filter((note) => {
     if (lessonFilter && note.lessonId !== lessonFilter) return false;
     if (categoryId && note.categoryId !== categoryId) return false;

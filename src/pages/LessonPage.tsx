@@ -30,6 +30,7 @@ import { useStudy } from "../core/StudyContext";
 import { FlowDiagram } from "../components/FlowDiagram";
 import { CodeTabs } from "../components/CodeTabs";
 import { QuizRunner } from "../components/QuizRunner";
+import { LessonNotesSummary } from "../components/LessonNotesSummary";
 export function LessonPage() {
   const { id } = useParams();
   const [params, setParams] = useSearchParams();
@@ -446,20 +447,7 @@ export function LessonPage() {
             <Typography variant="h2" sx={{ fontSize: "1.65rem", mb: 2 }}>
               Ghi lại bằng cách hiểu của bạn
             </Typography>
-            <TextField
-              fullWidth
-              multiline
-              minRows={5}
-              label="Ghi chú cá nhân — tự lưu trên trình duyệt"
-              placeholder="Mình hay nhầm gì? Dấu hiệu nào trong đề giúp chọn đúng?"
-              value={state.notes[lesson.id] ?? ""}
-              onChange={(e) =>
-                update((s) => ({
-                  ...s,
-                  notes: { ...s.notes, [lesson.id]: e.target.value },
-                }))
-              }
-            />
+            <LessonNotesSummary lessonId={lesson.id} legacy={state.notes} />
           </Box>
           <Box sx={{ mt: 4 }}>
             <Typography variant="h4" sx={{ mb: 1.5 }}>
