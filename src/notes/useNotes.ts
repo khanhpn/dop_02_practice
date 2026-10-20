@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { deleteCategoryAndUncategorize, deleteNote, listCategories, listNotes, putCategory, putNote } from "./db";
-import type { NoteCategory, NoteSaveStatus, StudyNote } from "./types";
+import { deleteCategoryAndUncategorize, deleteNote, listCategories, listNotes, putCategory, putNote, replaceNotesSnapshot } from "./db";
+import type { NoteCategory, NoteSaveStatus, NotesSnapshot, StudyNote } from "./types";
 
 export function useNotes() {
   const [categories, setCategories] = useState<NoteCategory[]>([]);
@@ -91,5 +91,14 @@ export function useNotes() {
     setNotes((current) => current.filter((note) => note.id !== id));
   }, [flush]);
 
-  return { categories, notes, status, error, createCategory, renameCategory, removeCategory, createNote, updateNote, removeNote, flush, reload };
+  const replaceAll = useCallback(async (snapshot: NotesSnapshot) => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    await queue.current.catch(() => undefined);
+    await replaceNotesSnapshot(snapshot);
+    pending.current.clear();
+    await reload();
+  }, [reload]);
+
+  return { categories, notes, status, error, createCategory, renameCategory, removeCategory, createNote, updateNote, removeNote, flush, reload, replaceAll };
 }

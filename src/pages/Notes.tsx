@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Alert, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, InputAdornment, MenuItem, Stack, TextField, Typography } from "@mui/material";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackRounded from "@mui/icons-material/ArrowBackRounded";
@@ -6,12 +6,16 @@ import DeleteOutlineRounded from "@mui/icons-material/DeleteOutlineRounded";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import SearchRounded from "@mui/icons-material/SearchRounded";
 import NoteAltOutlined from "@mui/icons-material/NoteAltOutlined";
+import FileDownloadOutlined from "@mui/icons-material/FileDownloadOutlined";
+import FileUploadOutlined from "@mui/icons-material/FileUploadOutlined";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { lessonById, lessonPath, lessons } from "../content";
 import { MarkdownEditor } from "../components/MarkdownEditor";
 import { PageHeading } from "../components/PageHeading";
 import { useNotes } from "../notes/useNotes";
 import type { NoteCategory } from "../notes/types";
+import type { NotesSnapshot } from "../notes/types";
+import { downloadNotesJson, readNotesFile } from "../notes/files";
 
 type CategoryDialog = { category: NoteCategory | null; name: string } | null;
 type Deletion = { type: "note" | "category"; id: string; title: string } | null;
@@ -26,6 +30,8 @@ export function Notes() {
   const [dialog, setDialog] = useState<CategoryDialog>(null);
   const [deletion, setDeletion] = useState<Deletion>(null);
   const [message, setMessage] = useState("");
+  const importInput = useRef<HTMLInputElement>(null);
+  const [importCandidate, setImportCandidate] = useState<NotesSnapshot | null>(null);
   const [mobilePane, setMobilePane] = useState<"categories" | "list" | "editor">("categories");
   const filtered = useMemo(() => data.notes.filter((note) => {
     if (lessonFilter && note.lessonId !== lessonFilter) return false;
@@ -59,8 +65,23 @@ export function Notes() {
   }
   const countInCategory = (id: string) => data.notes.filter((note) => note.categoryId === id).length;
   const selectedLesson = selected?.lessonId ? lessonById.get(selected.lessonId) : null;
+  function exportCurrent() {
+    try { downloadNotesJson({ version: 1, categories: data.categories, notes: data.notes }); setMessage(""); }
+    catch (cause) { setMessage(`Không xuất được JSON: ${(cause as Error).message}`); }
+  }
+  async function readImport(file: File | undefined) {
+    if (!file) return;
+    try { setImportCandidate(await readNotesFile(file)); setMessage(""); }
+    catch (cause) { setMessage((cause as Error).message); }
+    finally { if (importInput.current) importInput.current.value = ""; }
+  }
+  async function confirmImport() {
+    if (!importCandidate) return;
+    try { await data.replaceAll(importCandidate); setImportCandidate(null); setSelectedId(null); setMessage(""); }
+    catch (cause) { setMessage(`Không nhập được ghi chú: ${(cause as Error).message}`); }
+  }
   return <>
-    <PageHeading eyebrow="KIẾN THỨC CỦA RIÊNG BẠN" title="Ghi chú để nhớ lâu hơn" description="Gom các điểm dễ nhầm, ví dụ thực tế và cách giải đề vào một nơi. Nội dung tự lưu trong trình duyệt; hãy xuất JSON định kỳ để giữ bản sao trên máy." />
+    <PageHeading eyebrow="KIẾN THỨC CỦA RIÊNG BẠN" title="Ghi chú để nhớ lâu hơn" description="Gom các điểm dễ nhầm, ví dụ thực tế và cách giải đề vào một nơi. Nội dung tự lưu trong trình duyệt; hãy xuất JSON định kỳ để giữ bản sao trên máy." action={<Stack direction="row" gap={1} flexWrap="wrap"><Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={exportCurrent}>Xuất JSON</Button><Button variant="contained" startIcon={<FileUploadOutlined />} onClick={() => importInput.current?.click()}>Nhập JSON</Button><input ref={importInput} hidden type="file" accept="application/json,.json" aria-label="Chọn file ghi chú JSON" onChange={(event) => void readImport(event.target.files?.[0])} /></Stack>} />
     {(data.error || message) && <Alert severity="error" sx={{ mb: 2 }}>{message || data.error}</Alert>}
     {lessonFilter && <Chip sx={{ mb: 2 }} label={`Đang xem ghi chú của ${lessonById.get(lessonFilter)?.title ?? lessonFilter}`} onDelete={() => { setParams({}); setSelectedId(null); }} />}
     <Box className={`notes-workspace pane-${mobilePane}`}>
@@ -88,5 +109,6 @@ export function Notes() {
     </Box>
     <Dialog open={!!dialog} onClose={() => setDialog(null)} fullWidth maxWidth="xs"><DialogTitle>{dialog?.category ? "Đổi tên category" : "Tạo category mới"}</DialogTitle><DialogContent><TextField autoFocus fullWidth label="Tên category" value={dialog?.name ?? ""} onChange={(event) => setDialog((current) => current ? { ...current, name: event.target.value } : null)} slotProps={{ htmlInput: { maxLength: 120 } }} onKeyDown={(event) => { if (event.key === "Enter") void saveCategory(); }} sx={{ mt: 1 }} /></DialogContent><DialogActions><Button onClick={() => setDialog(null)}>Hủy</Button><Button variant="contained" disabled={!dialog?.name.trim()} onClick={() => void saveCategory()}>Lưu</Button></DialogActions></Dialog>
     <Dialog open={!!deletion} onClose={() => setDeletion(null)} fullWidth maxWidth="xs"><DialogTitle>{deletion?.type === "category" ? "Xóa category?" : "Xóa ghi chú?"}</DialogTitle><DialogContent><Typography>{deletion?.type === "category" ? `“${deletion.title}” có ${countInCategory(deletion.id)} ghi chú. Những ghi chú này sẽ chuyển về Chưa phân loại, không bị xóa.` : `Ghi chú “${deletion?.title}” sẽ bị xóa khỏi trình duyệt này. Hãy xuất JSON trước nếu muốn giữ lại.`}</Typography></DialogContent><DialogActions><Button onClick={() => setDeletion(null)}>Giữ lại</Button><Button color="error" variant="contained" onClick={() => void remove()}>Xác nhận xóa</Button></DialogActions></Dialog>
+    <Dialog open={!!importCandidate} onClose={() => setImportCandidate(null)} fullWidth maxWidth="sm"><DialogTitle>Thay bộ ghi chú hiện tại?</DialogTitle><DialogContent><Typography>File có {importCandidate?.categories.length} category và {importCandidate?.notes.length} ghi chú. Nếu nhập, toàn bộ ghi chú hiện có trong trình duyệt này sẽ được thay bằng nội dung file.</Typography><Button startIcon={<FileDownloadOutlined />} onClick={exportCurrent} sx={{ mt: 2 }}>Xuất ghi chú hiện tại trước</Button></DialogContent><DialogActions><Button onClick={() => setImportCandidate(null)}>Hủy</Button><Button variant="contained" onClick={() => void confirmImport()}>Nhập và thay thế</Button></DialogActions></Dialog>
   </>;
 }
