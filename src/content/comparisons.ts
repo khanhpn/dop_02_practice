@@ -52,4 +52,11 @@ export const comparisons = [
     focus: ["Cách triển khai và chia traffic", "Điều kiện và chi phí", "Rollback ứng dụng và dữ liệu"],
     question: "Khi nào dùng rolling, blue/green hoặc canary?", color: "#a3682e",
   },
+  {
+    id: "aws-networking", number: "08", group: "Mạng & kết nối",
+    title: "Networking trong AWS", services: ["VPC", "Subnet", "Internet Gateway", "NAT", "Security Group"],
+    description: "Traffic đi từ Internet tới ứng dụng và database thế nào? Hiểu VPC, subnet, route, NAT và các lớp kiểm soát mạng qua một website thực tế.",
+    focus: ["Route table", "CIDR", "Public và private subnet", "NACL", "VPC endpoint", "DNS", "Peering", "Transit Gateway", "VPN", "Direct Connect", "CodeBuild"],
+    question: "Public subnet vẫn không ra Internet, hoặc đã mở Security Group mà vẫn timeout: kiểm tra gì?", color: "#356f9d",
+  },
 ] as const;

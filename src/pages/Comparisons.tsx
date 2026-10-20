@@ -9,6 +9,8 @@ import { PageHeading } from "../components/PageHeading";
 import { comparisons } from "../content/comparisons";
 import { comparisonArticles } from "../content/comparisons/articles";
 import { ComparisonContent } from "../components/ComparisonContent";
+import { ExamCues } from "../components/ExamCues";
+import { examCuesByArticle } from "../content/comparisons/exam-cues";
 
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").toLowerCase();
 
@@ -40,13 +42,20 @@ export function ComparisonPage() {
   const index = comparisons.findIndex((item) => item.id === id);
   const item = comparisons[index];
   const article = id ? comparisonArticles[id] : undefined;
+  const examCues = id ? examCuesByArticle[id] : undefined;
   if (!item || !article) return <Box sx={{ py: 6 }}><Typography variant="h2">Không tìm thấy chuyên đề</Typography><Button component={RouterLink} to="/comparisons" sx={{ mt: 2 }}>Về danh sách chuyên đề</Button></Box>;
   return <Box sx={{ maxWidth: 820, mx: "auto" }}>
     <Button component={RouterLink} to="/comparisons" startIcon={<ArrowBackRounded />} sx={{ mb: 2 }}>Tất cả chuyên đề</Button>
     <PageHeading eyebrow={`${item.number} · ${item.group}`} title={item.title} description={item.description} />
+    {examCues?.length ? <Button variant="outlined" size="small" sx={{ mb: 3 }} onClick={() => {
+      const target = document.getElementById("exam-cues");
+      target?.focus({ preventScroll: true });
+      target?.scrollIntoView({ behavior: "smooth" });
+    }}>Ôn nhanh keyword và tình huống DOP-C02 ↓</Button> : null}
     <Box>
       <Box component="article" sx={{ minWidth: 0 }}>
         <ComparisonContent article={article} />
+        {examCues?.length ? <ExamCues cues={examCues} /> : null}
         <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" gap={2} sx={{ mt: 5 }}>
           {index > 0 && <Button component={RouterLink} to={`/comparisons/${comparisons[index - 1].id}`} startIcon={<ArrowBackRounded />}>{comparisons[index - 1].title}</Button>}
           {index < comparisons.length - 1 && <Button component={RouterLink} to={`/comparisons/${comparisons[index + 1].id}`} endIcon={<ArrowForwardRounded />} sx={{ ml: { sm: "auto" } }}>{comparisons[index + 1].title}</Button>}

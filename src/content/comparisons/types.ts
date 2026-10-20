@@ -14,3 +14,9 @@ export interface ComparisonBlock {
 export interface ComparisonArticle {
   reading: ComparisonBlock[];
 }
+
+export interface ExamCue {
+  signal: string;
+  thinkOf: string;
+  check: string;
+}

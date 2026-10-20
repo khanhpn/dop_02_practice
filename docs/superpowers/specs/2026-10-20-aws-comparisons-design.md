@@ -2,6 +2,14 @@
 
 ## Phạm vi mở rộng theo yêu cầu tiếp theo
 
+Yêu cầu tiếp theo bổ sung keyword và tình huống để khoanh vùng phương án khi đọc đề DOP-C02. Áp dụng cho cả tám chuyên đề, đặt cuối từng bài và có nút đi nhanh từ đầu bài. Mỗi dòng gồm dấu hiệu/cụm tiếng Anh, dịch vụ hoặc cách xử lý nên nghĩ tới và điều kiện cần kiểm tra để tránh chọn nhầm. Đây là phần ôn cách suy luận từ dữ kiện, không sao chép câu hỏi thi hoặc khẳng định rằng một keyword luôn quyết định đáp án. Trên mobile, từng dòng xếp dọc để không cần kéo ngang.
+
+Đã bổ sung 92 dòng: bốn chuyên đề giám sát/IAM/Organizations/deploy có 12 dòng mỗi bài; bốn chuyên đề database/sự kiện/EventBridge/networking có 11 dòng mỗi bài. Hai tác nhân viết và đọc duyệt chéo toàn bộ nội dung. `pnpm check` đạt; kiểm kê xác nhận đủ tám ID và mọi dòng có đủ ba trường. Đã kiểm tra trong trình duyệt việc nhấn nút ôn nhanh ở bài Networking và hiển thị phần gợi nhớ. Không thay route/dependency hoặc dữ liệu bài/câu hỏi của lộ trình; không chạy bộ kiểm thử tự động.
+
+Yêu cầu tiếp theo bổ sung một bài **Networking trong AWS**, ID `aws-networking`, thành bài thứ tám trong Chuyên đề AWS. Bài đi từ VPC/CIDR/subnet/route tới Internet Gateway, NAT, Security Group/NACL, kiến trúc ALB–ứng dụng–database, endpoint, kết nối VPC và cách tìm lỗi mạng. Cách viết giữ chuẩn giải thích trực tiếp, ví dụ cụ thể, sơ đồ và bảng ngắn; không có mục nguồn tham khảo trên giao diện.
+
+Đã hoàn tất 12 mục của bài Networking, gồm cả ví dụ JSON rule cho ALB gọi ứng dụng và tình huống CodeBuild trong VPC. Bản viết đã qua tác nhân chuyên tiếng Việt và một lượt đọc độc lập toàn văn. `pnpm check` đạt; kiểm kê xác nhận bài thứ tám đã đăng ký, bảng đủ ô và JSON minh họa hợp lệ. Không thay route, dependency hoặc bộ kiểm kê bài/câu hỏi của lộ trình; không cần chạy lại production build cho lần bổ sung nội dung này.
+
 Người dùng yêu cầu tiếp tục thêm **AWS Organizations**, **Amazon EventBridge** và **các chiến lược deploy**, theo đúng mẫu giải thích trực tiếp đã cung cấp. Khu vực này mở rộng từ bốn bài so sánh thành bảy bài; menu và trang danh sách dùng tên **Chuyên đề AWS**, giữ đường dẫn `/comparisons` và những đường dẫn cũ để không làm mất liên kết đã có.
 
 Ba bài mới dùng ID `aws-organizations`, `eventbridge`, `deployment-strategies`. Bài EventBridge riêng giải thích từ nguồn/bus/rule/target đến ECS STOPPED, CloudTrail/Config, Scheduler, Pipes và lỗi giao/xử lý; bài so sánh EventBridge–SNS–SQS vẫn giữ vai trò đối chiếu ba dịch vụ. Bài deploy phải tách chiến lược chung với khả năng cụ thể của từng nền tảng, giải thích rollback ứng dụng và dữ liệu riêng. Bài Organizations phải phân biệt nhóm tài khoản, quyền truy cập, giới hạn tổ chức và thiết lập dịch vụ tập trung.
