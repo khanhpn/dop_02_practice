@@ -1,5 +1,13 @@
 # So sánh AWS — phạm vi ngày 20/10/2026
 
+## Chỉ dẫn mới nhất của người dùng — ưu tiên hơn bố cục ban đầu
+
+Người dùng tiếp tục yêu cầu bỏ toàn bộ phần tài liệu tham khảo và cách viết giống bản dịch tài liệu tiếng Anh. Bài phải giải thích như câu trả lời trong chat, bắt đầu từ những câu hỏi cơ bản như “CloudWatch là gì?”, dịch vụ dùng làm gì và ví dụ cụ thể, rồi mới nối sang các dịch vụ còn lại và so sánh.
+
+Bỏ cấu trúc ép mọi bài vào sáu phần chung. Dữ liệu bài chỉ còn một danh sách các mục giải thích liên tiếp (`reading`), không có bảng, quy trình đóng/mở, phần nguồn, ngày đối chiếu hay danh sách bài liên quan trên trang đọc. Menu riêng và bốn đường dẫn bài vẫn giữ. Phần thiết kế ban đầu bên dưới lưu lại quá trình thay đổi, không được dùng để đưa các thành phần đã bỏ trở lại.
+
+Đã áp dụng cho cả bốn bài, đọc duyệt chéo toàn bộ bản viết mới và kiểm tra trang CloudWatch trong trình duyệt. TypeScript và production build đạt sau thay đổi này. Không thêm hoặc chạy bộ kiểm thử tự động.
+
 ## Yêu cầu đã chốt
 
 Người dùng muốn bổ sung nội dung đọc sâu, tập trung giải thích cơ chế, điểm khác nhau, điều kiện áp dụng và cách lựa chọn trong tình huống thực tế của AWS DOP-C02.

@@ -2,168 +2,148 @@ import type { ComparisonArticle } from './types';
 
 export const monitoringIamArticles: Record<string, ComparisonArticle> = {
   'cloudwatch-cloudtrail-config': {
-    reviewedAt: '2026-10-20',
-    overview: [
-      { title: 'Ba dịch vụ này khác nhau chỗ nào?', paragraphs: [
-        'Bạn có thể nhớ bằng ba câu hỏi: hệ thống có đang chạy ổn không thì xem CloudWatch; ai vừa thay đổi gì thì xem CloudTrail; tài nguyên đang cấu hình thế nào, có đúng yêu cầu không thì xem AWS Config. Cả ba thường cùng xuất hiện trong một hệ thống vì mỗi dịch vụ trả lời một phần khác nhau.',
-        'Ví dụ, website đang chạy bình thường thì mất kết nối database. Bạn xem CloudWatch để biết lỗi bắt đầu lúc nào và ảnh hưởng bao nhiêu yêu cầu. Config cho bạn xem security group trước và sau khi đổi. CloudTrail giúp tìm role nào đã gọi API đổi security group đó. Ghép ba thông tin lại, bạn mới có thể giải thích chuyện gì đã xảy ra.'
-      ] },
-      { title: 'Khi nào bạn mở CloudWatch?', paragraphs: [
-        'Khi muốn biết CPU có cao không, website có chậm không hoặc số lỗi có tăng không, bạn bắt đầu từ CloudWatch. Những số đo theo thời gian này được gọi là metrics. Chẳng hạn, CPUUtilization cho biết mức dùng CPU của EC2 instance. Bạn đặt alarm để CloudWatch cảnh báo khi dữ liệu thỏa điều kiện đã chọn.',
-        'CloudWatch còn có Logs để lưu nhật ký và Logs Insights để tìm lỗi trong các nhật ký đó. Nhưng bạn phải cấu hình ứng dụng, dịch vụ hoặc agent gửi log vào, cấp quyền ghi và chọn thời gian lưu. Tạo một log group không khiến mọi log tự xuất hiện. Tương tự, CPU thấp chưa nói lên thanh toán đang thành công; bạn cần theo dõi cả số giao dịch lỗi hoặc thời gian phản hồi.'
-      ] },
-      { title: 'CloudTrail ghi ai làm gì, nhưng có ghi hết mọi thứ không?', paragraphs: [
-        'CloudTrail ghi các sự kiện liên quan đến thao tác AWS. Bạn cần phân biệt hai nhóm quan trọng: management events là những việc quản lý tài nguyên, như tạo EC2 hoặc đổi cấu hình bucket; data events là thao tác trên dữ liệu, như đọc object bằng S3 GetObject, ghi bằng PutObject, xóa bằng DeleteObject hoặc gọi Lambda Invoke.',
-        'Mục Event history có sẵn cho bạn xem management events trong 90 ngày gần nhất, theo từng tài khoản và Region. Nó không hiển thị data events, không tự gom cả tổ chức và không phụ thuộc trail bạn tạo thêm. Nếu muốn lưu lâu hơn, bạn cần trail hoặc kho sự kiện phù hợp. Muốn biết ai đọc object S3, bạn phải bật data events cho đúng phạm vi; phần này có chi phí riêng.'
-      ] },
-      { title: 'AWS Config giúp bạn thấy điều gì?', paragraphs: [
-        'Config giúp bạn xem tài nguyên đã được cấu hình ra sao và cấu hình thay đổi thế nào. Mỗi lần ghi nhận tạo ra thông tin về thuộc tính và quan hệ của tài nguyên, gọi là configuration item. Bạn có thể thêm Config rule để kiểm tra một yêu cầu cụ thể, chẳng hạn loại tài nguyên đó phải bật mã hóa. Bật ghi nhận cấu hình và tạo rule là hai việc riêng.',
-        'Bạn cũng đừng hiểu Config là cứ đổi sai thì bị chặn ngay. Tùy loại tài nguyên, chế độ ghi và rule, Config ghi hoặc đánh giá khi có thay đổi hay theo lịch; dữ liệu có thể đến chậm. Nếu muốn biết ai gây ra thay đổi, hãy đối chiếu CloudTrail. Thời điểm Config ghi nhận thay đổi chưa đủ để xác định người thực hiện.'
-      ] }
-    ],
-    table: { columns: ['CloudWatch', 'CloudTrail', 'AWS Config'], rows: [
-      { label: 'Câu hỏi chính', cells: ['Hệ thống đang hoạt động ra sao?', 'Ai gọi API nào, lúc nào?', 'Tài nguyên cấu hình ra sao, có đúng yêu cầu không?'] },
-      { label: 'Bạn xem được gì?', cells: ['Chỉ số vận hành, log và trạng thái cảnh báo.', 'API đã gọi, danh tính, tham số và kết quả được ghi.', 'Cấu hình, quan hệ giữa tài nguyên và kết quả kiểm tra rule.'] },
-      { label: 'Ví dụ', cells: ['Cảnh báo tỷ lệ HTTP 5xx tăng.', 'Điều tra yêu cầu đổi security group.', 'Tìm security group vi phạm quy tắc cấu hình.'] },
-      { label: 'Bạn cần cấu hình gì?', cells: ['Nguồn chỉ số và log, dimensions để phân biệt chuỗi chỉ số, quyền gửi dữ liệu.', 'Loại sự kiện, bộ chọn sự kiện, tài khoản và Region.', 'Loại tài nguyên, recorder để ghi cấu hình, Region và rules.'] },
-      { label: 'Thời điểm xử lý', cells: ['Theo chu kỳ gửi số đo và đánh giá cảnh báo.', 'Ghi nhận và chuyển sự kiện có độ trễ.', 'Khi có thay đổi hoặc theo lịch tùy cấu hình; có độ trễ.'] },
-      { label: 'Lưu dữ liệu', cells: ['Bạn chọn thời gian lưu log; chỉ số có quy định lưu riêng.', 'Event history giữ 90 ngày management events theo Region; muốn lâu hơn cần cấu hình thêm.', 'Bạn chọn thời gian lưu lịch sử và tài nguyên cần ghi.'] },
-      { label: 'Nhiều tài khoản thì sao?', cells: ['Có cách giám sát chung nhiều tài khoản và Region.', 'Dùng organization trail và nơi lưu chung.', 'Dùng aggregator để xem chung dữ liệu nhiều tài khoản, Region.'] },
-      { label: 'Tự khắc phục', cells: ['Alarm chạy hành động bạn đã cấu hình.', 'Bạn nối sự kiện với quy trình xử lý khác.', 'Bạn cấu hình thêm bước khắc phục và quyền chạy.'] }
-    ] },
-    conditions: [
-      { title: 'Website chậm hoặc lỗi tăng thì chọn gì?', paragraphs: [
-        'Bạn chọn CloudWatch để theo dõi độ trễ, tỷ lệ lỗi, số kết nối hoặc lượng công việc còn chờ trong hàng đợi. Trước khi đặt cảnh báo, hãy kiểm tra chỉ số đó đã có chưa. Nhiều thông số bên trong hệ điều hành hoặc ứng dụng cần agent thu thập hoặc cần ứng dụng tự gửi thêm.',
-        'Tiếp theo, bạn chọn ngưỡng, khoảng thời gian đánh giá, cách xử lý dữ liệu thiếu và việc cần làm khi có cảnh báo. Ngưỡng quá nhạy sẽ báo liên tục; chỉ nhìn CPU lại dễ bỏ sót lỗi từ database hoặc dịch vụ khác. Khi nghi sự cố bắt đầu từ một thay đổi cấu hình, bạn xem thêm Config và CloudTrail.'
-      ] },
-      { title: 'Muốn tìm ai đã sửa hoặc truy cập tài nguyên thì sao?', paragraphs: [
-        'Bạn dùng CloudTrail để tìm danh tính, API, địa chỉ nguồn và thời điểm thao tác. Nhưng trước hết phải hỏi: loại sự kiện đó có được ghi lúc sự việc xảy ra không? Nếu hôm nay bạn mới bật S3 data events thì không thể lấy lại lịch sử đọc object của tháng trước từ cấu hình vừa bật.',
-        'Nếu công ty có nhiều tài khoản và Region, bạn có thể dùng organization trail để ghi hoạt động toàn tổ chức theo phạm vi đã cấu hình. Bạn vẫn phải chọn nơi lưu, bảo vệ bucket chứa log và kiểm soát quyền đọc, quyền dùng khóa mã hóa. Mở Event history trong một tài khoản sẽ không tự cho bạn toàn bộ dữ liệu đó.'
-      ] },
-      { title: 'Muốn biết tài nguyên nào cấu hình sai và tự sửa được không?', paragraphs: [
-        'Bạn dùng Config để xem lịch sử cấu hình và kiểm tra tài nguyên có đúng quy tắc không. Hãy kiểm tra loại tài nguyên, rule và Region có được hỗ trợ, rồi bật recorder để ghi nhận cấu hình. Nếu muốn xem nhiều tài khoản ở một nơi, bạn thêm aggregator. Thành phần này chỉ gom dữ liệu đã có, không tự bật ghi nhận ở các tài khoản nguồn.',
-        'Config có thể phối hợp với bước khắc phục gọi là remediation, thường dùng Systems Manager Automation. Bạn phải cấu hình bước này và role có quyền sửa; chỉ bật Config là chưa đủ. Trước khi sửa, quy trình nên kiểm tra lại cấu hình hiện tại vì kết quả đánh giá có thể đã cũ. Với thay đổi nhạy cảm, bạn có thể thêm bước duyệt.'
-      ] }
-    ],
-    scenarios: [
-      { title: 'Website mất kết nối database: dùng cả ba thế nào?', paragraphs: [
-        'Giả sử bạn nhận cảnh báo lỗi kết nối database tăng. Bạn mở CloudWatch để xem lỗi bắt đầu từ đâu, ảnh hưởng dịch vụ nào. Sau đó xem Config: security group của database vừa bị bỏ rule cho phép ứng dụng kết nối. Bạn tìm tiếp trong CloudTrail để xác định role và API đã đổi rule đó.',
-        'Mỗi bước trả lời thêm một câu hỏi: CloudWatch cho thấy ảnh hưởng; Config cho thấy thay đổi cấu hình; CloudTrail cho thấy thao tác và danh tính liên quan. Khi ghép dữ liệu, bạn cần khớp đúng tài nguyên và khoảng thời gian, vì bản ghi từ các dịch vụ có thể xuất hiện không cùng lúc.'
-      ] },
-      { title: 'Có người tải file nhạy cảm trong S3, tìm ở đâu?', paragraphs: [
-        'Bạn cần tìm S3 GetObject trong CloudTrail data events, với điều kiện bucket hoặc object đó nằm trong phạm vi đã chọn để ghi. Nếu nhiều người dùng ứng dụng cùng truy cập S3 qua một role, CloudTrail có thể chỉ cho bạn biết phiên của role. Bạn cần ghép thêm log ứng dụng để xác định người dùng cụ thể.',
-        'Event history mặc định không có câu trả lời này vì chỉ chứa management events. Config cũng không ghi lịch sử từng lần tải file; nó có thể giúp bạn xem bucket policy hoặc cấu hình mã hóa đã đổi ra sao. Muốn điều tra được về sau, bạn phải chuẩn bị thu thập đúng dữ liệu từ trước.'
-      ] },
-      { title: 'Có một trăm tài khoản thì quản lý chung thế nào?', paragraphs: [
-        'Bạn bật ghi nhận cấu hình và triển khai Config rules ở những tài khoản, Region cần quản lý. Sau đó dùng aggregator để nhóm bảo mật xem kết quả chung. Song song, organization trail ghi hoạt động API; CloudWatch theo dõi vận hành và giúp bạn phát hiện khi việc thu thập dữ liệu gặp vấn đề.',
-        'Nếu muốn tự sửa vi phạm, bạn bổ sung remediation với quyền vừa đủ và cách xử lý ngoại lệ. Aggregator chỉ giúp xem chung, không tự đi sửa tài nguyên. CloudTrail giúp điều tra thao tác nhưng cũng không tự kết luận mọi tài nguyên hiện tại có đạt chuẩn cấu hình của công ty hay chưa.'
-      ] }
-    ],
-    pitfalls: [
-      { title: 'Có log group rồi mà vẫn không thấy log?', paragraphs: ['Bạn vẫn cần cấu hình nguồn gửi log và cấp quyền. CloudWatch Logs có thể nhận log từ CloudTrail, nhưng CloudTrail tạo dữ liệu còn CloudWatch Logs lưu dữ liệu được chuyển tới. Hãy kiểm tra cả đường chuyển và thời gian lưu; log group trống chưa nói lên tài khoản không có hoạt động.'] },
-      { title: 'Không thấy trong Event history nghĩa là chưa ai truy cập?', paragraphs: ['Chưa thể kết luận như vậy. Bạn có thể đang tìm thao tác dữ liệu trong nơi chỉ hiển thị management events. Hãy kiểm tra loại sự kiện, phạm vi đã chọn để ghi và thời điểm bật thu thập trước khi kết luận không có truy cập.'] },
-      { title: 'Bật Config rồi có cần cấu hình gì nữa không?', paragraphs: ['Có. Ghi nhận cấu hình, đánh giá bằng rule và khắc phục là ba bước riêng. Bạn cần cấu hình từng bước theo mục tiêu. Rule phát hiện lỗi sau thay đổi cũng không thay thế policy dùng để ngăn người không có quyền thực hiện thao tác ngay từ đầu.'] },
-      { title: 'Sao vừa đổi mà chưa thấy bản ghi?', paragraphs: ['Bạn kiểm tra đúng tài khoản, Region và phạm vi ghi trước, rồi xem dữ liệu có đang đến chậm không. Với tài nguyên toàn cục, cách ghi nhận còn có quy định riêng. Đừng mặc định cứ triển khai cùng một cấu hình vào mọi Region là sẽ có dữ liệu đúng và đầy đủ.'] }
-    ],
-    flow: { title: 'Nếu gặp sự cố, bạn kiểm tra theo thứ tự nào?', steps: [
-      'Bạn đang cần xem lỗi vận hành, tìm thao tác API hay kiểm tra cấu hình?',
-      'Kiểm tra đúng tài khoản, Region, nguồn dữ liệu và thời điểm bắt đầu ghi.',
-      'Xem ảnh hưởng trong CloudWatch và thay đổi cấu hình trong Config.',
-      'Tìm API và danh tính liên quan trong CloudTrail.',
-      'Sửa nguyên nhân rồi xem ứng dụng đã ổn và rule đã đánh giá lại chưa.'
-    ], caption: 'Bạn có thể đi qua lại giữa ba dịch vụ để nối các thông tin của cùng một sự cố.' },
-    sources: [
-      { title: 'CloudWatch — Tổng quan', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html' },
-      { title: 'CloudTrail — Giới hạn Event history', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/view-cloudtrail-events.html' },
-      { title: 'CloudTrail — Data events', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html' },
-      { title: 'CloudTrail — Organization trail', url: 'https://docs.aws.amazon.com/awscloudtrail/latest/userguide/creating-trail-organization.html' },
-      { title: 'AWS Config — Tổng quan', url: 'https://docs.aws.amazon.com/config/latest/developerguide/WhatIsConfig.html' },
-      { title: 'AWS Config — Đánh giá bằng rules và độ trễ ghi nhận', url: 'https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html' },
-      { title: 'AWS Config — Remediation', url: 'https://docs.aws.amazon.com/config/latest/developerguide/remediation.html' },
-      { title: 'AWS Config — Tổng hợp nhiều tài khoản và Region', url: 'https://docs.aws.amazon.com/config/latest/developerguide/aggregate-data.html' },
-      { title: 'CloudWatch — Giám sát nhiều tài khoản và Region', url: 'https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-Cross-Account-Methods.html' }
+    reading: [
+      {
+        title: 'CloudWatch là gì?',
+        paragraphs: [
+          'CloudWatch là dịch vụ giúp bạn theo dõi hệ thống đang chạy thế nào. Website có chậm không, máy chủ có quá tải không, ứng dụng đang báo lỗi gì — những việc như vậy bạn thường xem trong CloudWatch.',
+          'Giả sử bạn có một website bán hàng chạy trên EC2 và dùng RDS làm database. Bình thường khách mở trang mất nửa giây, hôm nay lại mất năm giây. Bạn cần biết máy chủ có hết tài nguyên không, database có quá nhiều kết nối không, hay ứng dụng đang lỗi ở bước nào. CloudWatch là nơi bạn tập hợp những thông tin đó để kiểm tra.',
+          'Trong CloudWatch, bạn sẽ gặp ba phần rất thường dùng: metrics để xem các số đo, logs để đọc nhật ký và alarms để nhận cảnh báo. Chúng liên quan với nhau nhưng không phải cùng một thứ.'
+        ]
+      },
+      {
+        title: 'Metrics, logs và alarms dùng thế nào?',
+        paragraphs: [
+          'Metrics là các số đo được ghi theo thời gian. Ví dụ, CPU của EC2 đang dùng 80%, database có bao nhiêu kết nối, hoặc website có bao nhiêu phản hồi lỗi. Bạn nhìn biểu đồ để thấy số đo tăng từ lúc nào và có trùng với thời điểm website chậm hay không.',
+          'Logs là nhật ký chi tiết. Một số đo có thể cho biết có 200 yêu cầu lỗi, còn log giúp bạn đọc lỗi cụ thể: truy vấn database bị quá thời gian chờ, thiếu quyền đọc S3 hay ứng dụng ném ra lỗi xử lý đơn hàng. Bạn có thể dùng Logs Insights để tìm những dòng liên quan trong lượng log lớn.',
+          'Alarm là phần bạn cấu hình để CloudWatch tự theo dõi một điều kiện rồi cảnh báo hoặc thực hiện hành động được hỗ trợ. Ví dụ, nếu tỷ lệ lỗi cao liên tiếp trong một khoảng thời gian, bạn muốn nhận thông báo. Bạn cần chọn ngưỡng, khoảng đánh giá và cách xử lý khi thiếu dữ liệu; một lần CPU tăng ngắn chưa chắc là sự cố cần đánh thức người trực.',
+          'Một số chỉ số AWS có sẵn, nhưng không phải mọi thông tin đều tự xuất hiện. Thông số bên trong hệ điều hành hoặc số giao dịch thanh toán lỗi có thể cần agent hay ứng dụng gửi thêm. Log cũng cần nguồn gửi và quyền ghi. Tạo log group rồi để đó không khiến CloudWatch tự đọc được log của website.',
+          'Với website bán hàng, bạn nên nhìn cả kết quả người dùng nhận được. CPU thấp mà khách không thanh toán được thì hệ thống vẫn có vấn đề. Chỉ số thời gian phản hồi và tỷ lệ thanh toán thành công thường giúp bạn hiểu tình hình hơn việc chỉ theo dõi CPU.'
+        ]
+      },
+      {
+        title: 'CloudTrail là gì?',
+        paragraphs: [
+          'CloudTrail là dịch vụ ghi lại hoạt động trong tài khoản AWS, nhất là các thao tác gọi API. Nó giúp bạn tìm ai đã làm gì, vào lúc nào và với tài nguyên nào. Người đó có thể bấm trên console, dùng dòng lệnh, hoặc là một ứng dụng đang chạy bằng IAM role.',
+          'Vẫn là website bán hàng lúc nãy: một người vừa sửa security group khiến ứng dụng không kết nối được database. CloudWatch cho bạn thấy lỗi kết nối tăng. Còn muốn tìm role nào đã sửa security group và gọi API gì, bạn xem CloudTrail.',
+          'CloudTrail không phải nhật ký chi tiết của mọi hành động bên trong ứng dụng. Nếu nhiều khách hàng dùng website và website dùng chung một role để gọi AWS, sự kiện AWS có thể chỉ cho thấy role hoặc phiên làm việc đó. Muốn biết khách hàng cụ thể nào thực hiện thao tác, bạn còn cần log và mã đối chiếu từ ứng dụng.'
+        ]
+      },
+      {
+        title: 'CloudTrail có ghi mọi lần đọc file trong S3 không?',
+        paragraphs: [
+          'Không mặc định như vậy. Bạn cần phân biệt thao tác quản lý tài nguyên với thao tác trên dữ liệu. Tạo EC2, đổi cấu hình bucket hoặc sửa security group là những ví dụ về management events. Đọc object S3 bằng GetObject, ghi bằng PutObject, xóa bằng DeleteObject hoặc gọi Lambda Invoke thuộc nhóm data events.',
+          'Mục Event history có sẵn cho bạn xem management events trong 90 ngày gần nhất, theo từng tài khoản và Region. Nó không hiển thị data events. Vì thế, bạn tìm trong đó mà không thấy lần tải file chưa có nghĩa là chưa ai tải.',
+          'Nếu cần biết ai đọc các file nhạy cảm, bạn phải cấu hình ghi data events cho đúng tài nguyên và phạm vi cần theo dõi. Phần này có chi phí riêng. Nếu hôm nay mới bật thì nó không tạo lại được lịch sử đọc file của tháng trước.',
+          'Muốn giữ lịch sử lâu hơn, bạn cần trail hoặc kho sự kiện phù hợp. Nếu có nhiều tài khoản, organization trail giúp ghi hoạt động trong tổ chức theo cấu hình của bạn. Bạn vẫn phải chọn phạm vi Region, nơi lưu và quyền truy cập log; Event history không tự biến thành lịch sử chung của cả công ty.'
+        ]
+      },
+      {
+        title: 'AWS Config là gì?',
+        paragraphs: [
+          'AWS Config là dịch vụ giúp bạn theo dõi cấu hình tài nguyên và những thay đổi của cấu hình đó. Chẳng hạn, security group hôm qua cho phép kết nối từ đâu, hôm nay có thêm rule gì, hoặc một tài nguyên có đang bật mã hóa theo yêu cầu hay không.',
+          'Bạn bật ghi nhận cho những loại tài nguyên cần theo dõi. Config lưu thông tin cấu hình và quan hệ giữa các tài nguyên được hỗ trợ. Nhờ vậy, khi security group của database đổi, bạn có thể xem cấu hình trước và sau để biết phần nào đã thay đổi.',
+          'Nếu muốn kiểm tra tài nguyên có đúng yêu cầu không, bạn tạo Config rule. Ví dụ, công ty yêu cầu một loại tài nguyên phải bật mã hóa thì rule sẽ đánh giá cấu hình đó. Chỉ bật ghi nhận chưa có nghĩa đã có các quy tắc kiểm tra.',
+          'Config cũng không chặn ngay mọi thay đổi sai. Việc ghi nhận và đánh giá có thể diễn ra theo thay đổi hoặc theo lịch tùy loại tài nguyên, chế độ ghi và rule; dữ liệu có thể đến chậm. Config giúp xem cấu hình, còn tìm ai đã gọi API gây ra thay đổi thì bạn đối chiếu CloudTrail.'
+        ]
+      },
+      {
+        title: 'Config thấy sai thì tự sửa được không?',
+        paragraphs: [
+          'Có thể cấu hình để tự sửa, nhưng bạn phải thêm bước khắc phục. Ví dụ, Config rule phát hiện tài nguyên không đạt yêu cầu, rồi một quy trình Systems Manager Automation thực hiện việc sửa. Quy trình đó cần role có quyền phù hợp; bật Config một mình không tự cấp quyền hay tự tạo việc sửa.',
+          'Trước khi sửa, quy trình nên kiểm tra lại trạng thái hiện tại. Có thể kết quả đánh giá được tạo vài phút trước nhưng người vận hành đã sửa xong rồi. Với thay đổi ảnh hưởng lớn, bạn cũng có thể yêu cầu duyệt thay vì chạy tự động ngay.',
+          'Nếu công ty có nhiều tài khoản và Region, Config aggregator giúp bạn xem chung dữ liệu cấu hình và kết quả kiểm tra. Nhưng nó chỉ gom dữ liệu đã có: bạn vẫn cần bật ghi nhận ở tài khoản nguồn. Aggregator cũng không tự đi sửa tài nguyên ở các tài khoản đó.'
+        ]
+      },
+      {
+        title: 'Khi website mất kết nối database, dùng cả ba ra sao?',
+        paragraphs: [
+          'Đầu tiên, CloudWatch cho thấy số lỗi kết nối tăng từ 10 giờ và khách bắt đầu không đặt hàng được. Bạn xem log ứng dụng để xác định lỗi xảy ra lúc kết nối database, thay vì đoán máy web đang thiếu CPU.',
+          'Tiếp theo, Config cho thấy security group của database vừa mất rule cho phép máy ứng dụng kết nối. Bạn đã biết cấu hình nào thay đổi. Sau đó, CloudTrail giúp tìm yêu cầu API đổi rule đó và role đã thực hiện.',
+          'Sau khi sửa lại rule, bạn quay về CloudWatch để xem kết nối và giao dịch đã bình thường chưa. Nếu có Config rule liên quan, bạn kiểm tra thêm kết quả đánh giá mới. Khi nối các thông tin này, cần khớp đúng tài nguyên và khoảng thời gian vì dữ liệu ở ba dịch vụ không nhất thiết xuất hiện cùng lúc.'
+        ]
+      },
+      {
+        title: 'Những chỗ nào dễ chọn nhầm?',
+        paragraphs: [
+          'Website chậm thì bắt đầu từ CloudWatch, không phải ngồi đọc toàn bộ CloudTrail để đo tốc độ phản hồi. Nhưng nếu bạn muốn biết ai vừa đổi cấu hình khiến website chậm, CloudTrail lại là phần cần thiết.',
+          'Muốn xem security group đã thay đổi từ cấu hình nào sang cấu hình nào, bạn dùng Config nếu tài nguyên đã nằm trong phạm vi ghi nhận. Muốn tìm người sửa, bạn xem CloudTrail. Hai câu hỏi này thường đi cùng nhau nhưng không nên coi là một.',
+          'Muốn tìm ai tải file S3, bạn cần đúng loại CloudTrail data events đã được bật từ trước. Config không ghi lịch sử từng lần tải; Event history mặc định cũng không có data events. Không thấy dữ liệu thì kiểm tra thêm tài khoản, Region, phạm vi ghi và thời gian lưu trước khi kết luận.',
+          'CloudTrail còn có thể gửi log tới CloudWatch Logs. Khi đó bạn đang dùng CloudWatch để lưu và tìm dữ liệu do CloudTrail tạo ra. Việc hai dịch vụ nối được với nhau không khiến vai trò của chúng giống nhau.'
+        ]
+      }
     ]
   },
   'scp-iam-policy': {
-    reviewedAt: '2026-10-20',
-    overview: [
-      { title: 'SCP khác IAM policy ở đâu?', paragraphs: [
-        'SCP đặt giới hạn chung cho các tài khoản thành viên trong AWS Organizations; IAM policy thường là nơi bạn cấp quyền làm việc cho user hoặc role. Ví dụ, role triển khai có AdministratorAccess nhưng SCP của công ty cấm dừng CloudTrail thì role đó vẫn không dừng được. Ngược lại, SCP cho phép S3 cũng chưa khiến một role tự có quyền đọc S3.',
-        'Khi nói IAM policy, bạn cần hỏi policy gắn ở đâu. Policy gắn với user, group hoặc role gọi là identity-based policy. Policy gắn trên tài nguyên, chẳng hạn bucket policy của S3, gọi là resource-based policy. Cả hai đều có thể tham gia cấp hoặc từ chối quyền, nhưng AWS đánh giá chúng khác nhau trong một số trường hợp.'
-      ] },
-      { title: 'Gắn SCP ở OU thì tài khoản bên dưới chịu ảnh hưởng thế nào?', paragraphs: [
-        'Bạn có thể gắn SCP ở root của tổ chức, ở OU để nhóm tài khoản hoặc ở từng tài khoản. AWS xét dọc đường từ root qua các OU tới tài khoản. Một hành động phải được Allow ở từng cấp trên đường đó; nếu có Deny khớp yêu cầu ở bất kỳ cấp nào thì hành động đó bị chặn.',
-        'Nếu một cấp có nhiều SCP, các Allow ở cùng cấp có thể bổ sung cho nhau. Nhưng Allow ở tài khoản không bù được quyền bị thiếu hay bị Deny ở OU cha. FullAWSAccess giữ phạm vi cho phép rộng tại cấp được gắn. Đây là SCP, nên nó vẫn không cấp quyền làm việc cho role như AdministratorAccess.'
-      ] },
-      { title: 'Không có Allow và có Deny khác nhau thế nào?', paragraphs: [
-        'Nếu không có Allow phù hợp, yêu cầu có thể bị từ chối vì chưa được cấp quyền; đây là implicit deny. Nếu có statement Deny khớp thao tác, tài nguyên và điều kiện, đó là explicit deny. Deny này có thể chặn một quyền được Allow ở nơi khác. Bạn phải đọc cả Condition, vì Deny có ngoại lệ chưa chắc áp dụng cho người đang gọi.',
-        'Ngoài SCP, bạn có thể gặp permissions boundary của user hoặc role, và session policy của phiên tạm thời. Boundary giới hạn quyền mà policy gắn với danh tính có thể cấp; session policy giới hạn quyền của phiên. Chúng không tự cấp quyền. Vì vậy, thêm Allow vào role vẫn có thể chưa đủ nếu quyền đó nằm ngoài giới hạn đang áp dụng.'
-      ] },
-      { title: 'Vậy quyền có phải lúc nào cũng là giao của tất cả policy?', paragraphs: [
-        'Bạn có thể dùng cách hiểu “quyền được cấp phải nằm trong các giới hạn” để đọc policy của role. Nhưng đừng áp dụng một công thức cho mọi trường hợp. Với resource policy trong cùng tài khoản, AWS còn xét policy cấp trực tiếp cho ai: IAM user, role hay một phiên của role. Đối tượng được cấp quyền trong policy này gọi là principal.',
-        'Cụ thể, quyền cấp trực tiếp cho user ARN trong cùng tài khoản không bị chặn chỉ vì thiếu Allow trong identity policy hoặc boundary. Quyền cấp trực tiếp cho role session ARN cũng không bị giới hạn bởi implicit deny trong identity policy, boundary hoặc session policy. Cấp cho role ARN thì boundary và session policy vẫn giới hạn quyền. Các Deny tường minh và giới hạn tổ chức áp dụng vẫn phải được kiểm tra; các ngoại lệ này không có nghĩa bạn được vượt SCP.'
-      ] }
-    ],
-    table: { columns: ['SCP', 'IAM identity-based policy', 'Resource-based policy / trust policy'], rows: [
-      { label: 'Dùng để làm gì?', cells: ['Đặt giới hạn quyền chung của tổ chức.', 'Cấp hoặc chặn quyền của user, group, role.', 'Cho ai truy cập tài nguyên; trust policy cho ai dùng role.'] },
-      { label: 'Nơi gắn', cells: ['Root, OU hoặc tài khoản của Organizations.', 'User, group hoặc role.', 'Tài nguyên có hỗ trợ policy đó.'] },
-      { label: 'Có tự cấp quyền không?', cells: ['Không.', 'Allow có thể cấp quyền, nhưng còn chịu giới hạn áp dụng.', 'Allow có thể cấp quyền; cách xét còn tùy dịch vụ và người được cấp.'] },
-      { label: 'Trường Principal', cells: ['Không có trường Principal như bucket policy.', 'Không có Principal; policy áp dụng cho danh tính được gắn.', 'Thường ghi ai được truy cập và điều kiện kèm theo.'] },
-      { label: 'Có ảnh hưởng xuống OU con không?', cells: ['Có, AWS xét dọc đường root → OU → account.', 'Không.', 'Không.'] },
-      { label: 'Nếu Deny khớp yêu cầu?', cells: ['Chặn được cả quản trị viên tài khoản thành viên.', 'Có thể chặn dù nơi khác có Allow.', 'Có thể chặn truy cập thuộc phạm vi áp dụng.'] },
-      { label: 'Ví dụ', cells: ['Cấm tài khoản thành viên dừng ghi nhật ký.', 'Cho role triển khai cập nhật một nhóm Lambda.', 'Cho role khác tài khoản đọc một prefix S3 hoặc được AssumeRole.'] },
-      { label: 'Điểm cần nhớ', cells: ['Không áp dụng cho danh tính trong management account hay service-linked roles.', 'Allow không vượt SCP hoặc Deny tường minh đang áp dụng.', 'Cần đọc đúng user ARN, role ARN, session ARN và cách truy cập chéo tài khoản.'] }
-    ] },
-    conditions: [
-      { title: 'Khi nào bạn nên dùng SCP?', paragraphs: [
-        'Bạn dùng SCP khi muốn đặt một giới hạn chung mà quản trị viên của tài khoản thành viên cũng phải tuân theo. Chẳng hạn, công ty không cho các tài khoản đó tắt ghi nhật ký, hoặc chỉ cho OU thử nghiệm dùng một nhóm dịch vụ. Để sử dụng SCP, Organizations phải bật chế độ đầy đủ tính năng.',
-        'Có hai ngoại lệ bạn cần nhớ: SCP không áp dụng cho danh tính trong management account và không giới hạn service-linked roles. SCP cũng không tự làm bucket trở thành riêng tư. Nếu principal bên ngoài được bucket policy cấp quyền, bạn phải kiểm soát đường truy cập đó bằng chính sách phù hợp; SCP của tài khoản chứa bucket chưa đủ để kết luận không ai bên ngoài truy cập được.'
-      ] },
-      { title: 'Còn quyền của từng ứng dụng thì đặt ở đâu?', paragraphs: [
-        'Bạn thường đặt quyền cụ thể trong policy của role. Ví dụ, một worker chỉ cần đọc một thư mục theo prefix trong S3 và gửi vào một SQS queue. Bạn cấp đúng các thao tác và tài nguyên đó cho role; không cần mở toàn bộ S3 chỉ vì SCP của tổ chức đang cho phép S3.',
-        'Nếu đội phát triển được tự tạo role, bạn có thể yêu cầu gắn permissions boundary để giới hạn quyền họ cấp tiếp. Nhưng cần kiểm soát cả việc sửa, gỡ boundary và quyền iam:PassRole để giao role cho dịch vụ. Đặt giới hạn rồi lại cho phép tự gỡ giới hạn thì cách phân quyền đó chưa đạt mục tiêu.'
-      ] },
-      { title: 'Pipeline ở tài khoản A muốn triển khai sang B thì cần gì?', paragraphs: [
-        'Bạn thường cho pipeline ở A gọi sts:AssumeRole để tạo phiên làm việc bằng role ở B. Phía A cần quyền gọi thao tác đó; trust policy của role B phải chấp nhận người gọi và các điều kiện kèm theo. Trust policy chỉ trả lời ai được dùng role. Sau khi tạo phiên, role B được làm gì lại phụ thuộc quyền và giới hạn của role B.',
-        'Một cách khác là role ở A truy cập thẳng tài nguyên ở B. Với cách này, thông thường bạn cần Allow ở phía danh tính A và ở policy của tài nguyên B, đồng thời thỏa các giới hạn tương ứng. Một số dịch vụ như KMS có quy tắc thêm. Vì thế, bạn nên xác định đang dùng cách nào trước khi sửa policy.'
-      ] }
-    ],
-    scenarios: [
-      { title: 'Có AdministratorAccess rồi, sao vẫn bị từ chối?', paragraphs: [
-        'Giả sử bạn có AdministratorAccess trong một tài khoản thành viên nhưng không gọi được cloudtrail:StopLogging. Bạn tìm thấy SCP ở OU có Deny khớp thao tác đó. Nếu các điều kiện cũng khớp, SCP sẽ chặn yêu cầu dù policy IAM cho phép. Đây chính là lý do công ty dùng SCP để giữ một số giới hạn chung.',
-        'Bạn thêm một Allow nữa vào IAM hoặc SCP của tài khoản cũng không vượt qua Deny đó. Bạn cần xem lại chính sách tổ chức hoặc dùng ngoại lệ đã được thiết kế. Tuy nhiên, nếu người gọi là danh tính trong management account thì đừng đổ lỗi cho SCP; bạn phải tìm nguyên nhân ở lớp quyền khác.'
-      ] },
-      { title: 'SCP cho phép S3 rồi, sao ứng dụng vẫn không đọc được file?', paragraphs: [
-        'Vì SCP không cấp quyền đọc file. Nó chỉ cho biết thao tác đó nằm trong phạm vi tổ chức cho phép. Nếu role chưa có quyền s3:GetObject trên đúng object ARN và không có đường cấp quyền khác phù hợp, bạn vẫn bị từ chối. Bạn cần xem policy của role và bucket policy để biết quyền đang được cấp từ đâu.',
-        'Nếu object mã hóa bằng SSE-KMS, bạn còn phải kiểm tra quyền giải mã và key policy. Nếu role có boundary hoặc phiên có session policy, hãy xem các giới hạn đó. Bạn cần kiểm tra đúng yêu cầu đọc file; chỉ thấy s3:* xuất hiện trong một SCP chưa đủ để xác nhận quyền.'
-      ] },
-      { title: 'AssumeRole được rồi mà cập nhật Lambda vẫn lỗi?', paragraphs: [
-        'Bạn đã tạo được phiên của role B, nhưng khi gọi cập nhật Lambda thì bị AccessDenied. Hai bước này kiểm tra hai quyền khác nhau. AssumeRole thành công chỉ cho biết bạn được tạo phiên tại thời điểm đó; nó không chứng minh phiên đã có quyền lambda:UpdateFunctionCode.',
-        'Lúc này, bạn kiểm tra policy của role B, SCP áp dụng cho B, boundary và session policy nếu có, cùng quyền tài nguyên liên quan. Sửa trust policy hay cấp quyền Lambda cho role nguồn ở A không tự thêm quyền cho phiên B. Bạn có thể dùng CloudTrail để xác định chính xác phiên nào gọi API thất bại.'
-      ] }
-    ],
-    pitfalls: [
-      { title: 'Có nên nhớ một công thức quyền duy nhất không?', paragraphs: ['Bạn có thể dùng công thức đơn giản để nhớ rằng Allow của role còn chịu các giới hạn. Nhưng khi gặp bucket policy hoặc resource policy khác, hãy xem nó cấp trực tiếp cho user, role hay phiên của role. Như phần trên đã giải thích, cách xử lý implicit deny khác nhau; bỏ qua chi tiết này dễ dẫn tới kết luận sai.'] },
-      { title: 'Gỡ FullAWSAccess có thể làm mất quyền gì?', paragraphs: ['Nếu bạn gỡ FullAWSAccess ở một cấp mà chưa có Allow thay thế, tài khoản bên dưới có thể mất quyền dù IAM vẫn đang cấp rất rộng. Bạn nên thử trên OU nhỏ và kiểm tra những thao tác quản trị cần giữ trước khi áp dụng rộng hơn. Allow ở tài khoản không bù được phần bị thiếu ở cấp cha.'] },
-      { title: 'Mở rộng trust policy có sửa được lỗi thiếu quyền không?', paragraphs: ['Chỉ khi lỗi nằm ở bước tạo phiên. Nếu bạn đã AssumeRole thành công và đang bị từ chối khi gọi S3, Lambda hay CloudFormation, cần kiểm tra quyền của phiên đó. Mở trust cho thêm người gọi vừa không sửa đúng lỗi vừa khiến nhiều danh tính hơn có thể dùng role.'] },
-      { title: 'Thấy AccessDenied thì kiểm tra gì trước?', paragraphs: ['Bạn ghi lại ai đang gọi, dùng phiên nào, ở tài khoản nào, gọi API nào và tác động tài nguyên nào. Cùng một action vẫn có thể thành công với tài nguyên này nhưng bị chặn với tài nguyên khác vì ARN, tag, Region hoặc điều kiện phiên. Đọc đúng yêu cầu sẽ giúp bạn tránh cấp thêm quyền ở sai chỗ.'] }
-    ],
-    flow: { title: 'Bạn có thể kiểm tra lỗi quyền theo thứ tự nào?', steps: [
-      'Xác định user, role hoặc phiên STS thực sự đang gọi API.',
-      'Tách lỗi AssumeRole khỏi lỗi gọi dịch vụ sau khi đã tạo phiên.',
-      'Xem Deny và các Allow cần có trên đường SCP từ root tới tài khoản.',
-      'Xem quyền đến từ policy của danh tính, của tài nguyên hay cả hai tài khoản.',
-      'Kiểm tra boundary, session policy và điều kiện theo đúng người hoặc phiên được cấp quyền.',
-      'Sửa đúng thao tác và tài nguyên cần thiết, rồi thử lại bằng danh tính thực tế.'
-    ], caption: 'Nếu dịch vụ có quy tắc riêng, như KMS, bạn xem thêm tài liệu của dịch vụ đó khi kiểm tra.' },
-    sources: [
-      { title: 'Organizations — SCP và các ngoại lệ', url: 'https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html' },
-      { title: 'Organizations — Đánh giá SCP theo cây tổ chức', url: 'https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps_evaluation.html' },
-      { title: 'IAM — Logic đánh giá policy', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html' },
-      { title: 'IAM — Permissions boundaries và resource-based grants', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html' },
-      { title: 'IAM — Đánh giá Allow và Deny theo principal', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic_policy-eval-denyallow.html' },
-      { title: 'IAM — Đánh giá truy cập chéo tài khoản', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic-cross-account.html' },
-      { title: 'IAM — Tạo role và trust cho truy cập', url: 'https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user.html' }
+    reading: [
+      {
+        title: 'IAM policy là gì?',
+        paragraphs: [
+          'IAM policy là tài liệu mô tả quyền trong AWS: được làm gì, với tài nguyên nào và trong điều kiện nào. Ví dụ, ứng dụng cần đọc ảnh sản phẩm trong S3 thì bạn cấp s3:GetObject trên những object cần đọc. Ứng dụng không tự có quyền đọc chỉ vì nó đang chạy trong tài khoản AWS của bạn.',
+          'Thông thường, bạn gắn policy vào user, group hoặc role. Với ứng dụng chạy trên AWS, bạn thường cấp quyền qua role rồi để ứng dụng dùng role đó. Một ứng dụng chỉ đọc ảnh không cần được cấp cả quyền xóa bucket hay quản trị IAM.',
+          'Trong policy, Allow là cho phép và Deny là từ chối. Nhưng một Allow không phải lúc nào cũng đủ để yêu cầu thành công, vì AWS còn kiểm tra những giới hạn và policy liên quan khác. SCP là một trong số đó.'
+        ]
+      },
+      {
+        title: 'SCP là gì?',
+        paragraphs: [
+          'SCP là chính sách của AWS Organizations dùng để đặt giới hạn quyền cho các tài khoản thành viên. Bạn dùng nó khi muốn có một quy định chung, chẳng hạn các tài khoản vận hành ứng dụng không được dừng ghi nhật ký CloudTrail, kể cả người đang thao tác có quyền quản trị IAM.',
+          'Điểm quan trọng nhất là SCP không cấp quyền. Nếu SCP cho phép dùng S3 nhưng role của ứng dụng chưa được cấp quyền đọc file, ứng dụng vẫn không đọc được. SCP cho biết tổ chức cho phép quyền đó tồn tại; policy và các cơ chế cấp quyền phù hợp mới cho role quyền thực sự sử dụng nó.',
+          'Vì vậy, IAM policy và SCP thường cùng dùng. Bạn cấp quyền cần cho công việc bằng IAM, rồi dùng SCP để giữ những giới hạn chung giữa các tài khoản. Muốn dùng SCP, AWS Organizations phải bật chế độ đầy đủ tính năng.'
+        ]
+      },
+      {
+        title: 'OU là gì, và SCP ảnh hưởng tới tài khoản thế nào?',
+        paragraphs: [
+          'OU là cách bạn nhóm các tài khoản trong Organizations. Ví dụ, bạn có OU Production chứa tài khoản chạy thật và OU Sandbox chứa tài khoản thử nghiệm. OU có thể nằm trong OU khác; phía trên cùng là root của tổ chức. Root ở đây là cấp trong cây tổ chức, không phải root user của một tài khoản.',
+          'Bạn gắn SCP ở root, OU hoặc từng tài khoản. AWS xét quyền dọc đường từ root qua các OU tới tài khoản. Nếu SCP ở OU Production có Deny khớp thao tác dừng CloudTrail thì tài khoản bên dưới chịu giới hạn đó; gắn Allow ở tài khoản không vượt qua Deny từ OU cha.',
+          'Ngoài việc không có Deny phù hợp, hành động còn cần được Allow ở từng cấp trên đường đó. Nhiều SCP cùng gắn tại một cấp có thể bổ sung Allow cho nhau. Nhưng nếu cấp cha không cho phép một hành động, cấp con không tự mở lại được.',
+          'Bạn sẽ gặp SCP tên FullAWSAccess. Nó giữ phạm vi cho phép rộng ở cấp được gắn, chứ không cấp quyền quản trị cho từng role. Nếu gỡ nó mà chưa có Allow thay thế cần thiết, các tài khoản bên dưới có thể mất quyền dù policy IAM của họ vẫn chưa đổi.'
+        ]
+      },
+      {
+        title: 'Có AdministratorAccess rồi, sao vẫn bị từ chối?',
+        paragraphs: [
+          'Giả sử bạn là quản trị viên trong tài khoản thành viên, có AdministratorAccess, nhưng gọi cloudtrail:StopLogging thì gặp AccessDenied. Bạn kiểm tra thấy SCP ở OU cấm thao tác này và điều kiện của Deny cũng khớp yêu cầu. Khi đó, quyền quản trị IAM không vượt được SCP.',
+          'Thêm một Allow nữa vào role không giải quyết được. Bạn phải xem lại giới hạn của tổ chức hoặc dùng ngoại lệ đã được thiết kế cho trường hợp đó. Khi đọc Deny, nhớ xem cả tài nguyên và Condition: một statement có ngoại lệ chưa chắc chặn mọi người gọi.',
+          'SCP cũng có phạm vi riêng. Nó không áp dụng cho danh tính trong management account và không giới hạn service-linked roles. Nếu người gọi nằm trong nhóm ngoại lệ đó, bạn cần tìm nguyên nhân ở các policy khác, thay vì mặc định lỗi do SCP.'
+        ]
+      },
+      {
+        title: 'SCP không chặn thì vì sao vẫn thiếu quyền?',
+        paragraphs: [
+          'Vì “không bị SCP chặn” chưa có nghĩa là “đã được cấp đủ quyền”. Với ứng dụng đọc ảnh S3, bạn vẫn cần quyền s3:GetObject trên đúng object ARN. Nếu file được mã hóa bằng SSE-KMS, bạn còn phải xem quyền giải mã và key policy. Mở rộng quyền S3 không tự giải quyết được lỗi thiếu quyền KMS.',
+          'Bạn có thể gặp thêm permissions boundary của user hoặc role. Nó giới hạn quyền mà policy gắn với danh tính có thể cấp, nhưng không tự cấp quyền. Ví dụ, policy của role cho cả đọc lẫn xóa S3, còn boundary chỉ cho đọc, thì quyền xóa từ policy đó vẫn bị giới hạn.',
+          'Một phiên tạm thời còn có thể bị giới hạn bằng session policy. Khi xem lỗi, bạn cần biết ứng dụng đang dùng đúng role nào và phiên nào, vì quyền nhìn thấy trên role chưa chắc là toàn bộ điều kiện áp dụng cho lần gọi đó.',
+          'Nếu cho đội phát triển tự tạo role, bạn có thể yêu cầu họ gắn boundary. Đồng thời, cần kiểm soát quyền sửa hoặc gỡ boundary và quyền iam:PassRole để giao role cho dịch vụ; nếu họ tự gỡ được giới hạn thì việc đặt boundary chưa đạt mục tiêu.'
+        ]
+      },
+      {
+        title: 'Bucket policy có liên quan gì tới IAM policy?',
+        paragraphs: [
+          'Ngoài policy gắn vào role, một số tài nguyên có policy riêng. Bucket policy là ví dụ quen thuộc: bạn đặt trên bucket và ghi ai được truy cập. AWS gọi nhóm này là resource-based policy. Người hoặc phiên được nhắc tới trong trường Principal là bên đang được cấp quyền.',
+          'Bạn không nên hiểu SCP của tài khoản chứa bucket là tự chặn được mọi người bên ngoài. Nếu một danh tính bên ngoài được bucket policy cấp quyền, phải kiểm tra đường truy cập và các giới hạn thực sự áp dụng cho danh tính đó. SCP không tự biến bucket được chia sẻ thành bucket riêng tư.',
+          'Có một chi tiết nâng cao khi cấp trực tiếp trong cùng tài khoản: policy ghi user ARN, role ARN hay ARN của một phiên role có thể dẫn tới cách đánh giá khác nhau. Chẳng hạn, quyền cấp thẳng cho user ARN không bị từ chối chỉ vì identity policy hoặc boundary thiếu Allow. Cấp thẳng cho phiên role cũng không bị giới hạn bởi phần thiếu Allow trong identity policy, boundary hoặc session policy; cấp cho role ARN thì boundary và session policy vẫn giới hạn quyền.',
+          'Điều này không có nghĩa mọi giới hạn đều bị bỏ qua. Deny tường minh phù hợp và các giới hạn tổ chức áp dụng vẫn cần được tôn trọng. Bạn chỉ cần nhớ: với resource policy, phải đọc rõ nó cấp cho ai, đừng dùng một công thức giao quyền đơn giản cho mọi trường hợp.'
+        ]
+      },
+      {
+        title: 'Muốn dùng role ở tài khoản khác thì cần gì?',
+        paragraphs: [
+          'Ví dụ, pipeline ở tài khoản A cần triển khai ứng dụng sang tài khoản B. Bạn có thể cho pipeline gọi sts:AssumeRole để tạo phiên làm việc bằng role triển khai ở B. Phía A cần quyền gọi AssumeRole, còn trust policy của role B phải chấp nhận người gọi cùng các điều kiện đã đặt.',
+          'Trust policy trả lời ai được dùng role. Nó khác policy cấp quyền làm việc cho role. Bạn được dùng role B chưa có nghĩa role B được cập nhật Lambda hay đọc mọi bucket trong B.',
+          'Nếu AssumeRole thành công rồi mà cập nhật Lambda vẫn lỗi, bạn kiểm tra quyền của phiên role B: policy của role, SCP áp dụng cho B, boundary và session policy nếu có, cùng những quyền liên quan tới thao tác. Thêm quyền Lambda cho role nguồn ở A hoặc mở rộng trust policy không tự cấp thêm lambda:UpdateFunctionCode cho phiên B.',
+          'Bạn cũng có thể thiết kế role ở A truy cập thẳng tài nguyên ở B mà không đổi sang role B. Khi đó, thông thường cần Allow ở phía danh tính A và policy của tài nguyên B, cùng các giới hạn tương ứng. Một số dịch vụ như KMS có quy tắc thêm. Trước khi sửa quyền, hãy xác định mình đang dùng cách nào.'
+        ]
+      },
+      {
+        title: 'Gặp AccessDenied thì nên bắt đầu từ đâu?',
+        paragraphs: [
+          'Bạn tìm đúng lần gọi bị lỗi trước: ai gọi, đang dùng phiên của role nào, gọi API nào và tác động tài nguyên nào. CloudTrail có thể giúp xác định những thông tin này cho sự kiện được ghi. Một API giống nhau vẫn có thể được phép trên tài nguyên này nhưng bị chặn trên tài nguyên khác vì ARN, tag, Region hoặc điều kiện phiên.',
+          'Sau đó, bạn xem đây là lỗi tạo phiên AssumeRole hay lỗi làm việc sau khi đã có phiên. Với lỗi làm việc, tìm nguồn cấp quyền rồi kiểm tra Deny, SCP và những giới hạn đang áp dụng. Không nên chỉ tìm thấy một Allow là dừng, cũng không nên mở rộng mọi policy trước khi biết đang thiếu quyền ở đâu.',
+          'Cách phân biệt dễ giữ nhất là: IAM policy mô tả quyền làm việc; SCP đặt giới hạn chung của tổ chức; trust policy quyết định ai được dùng role. Khi một yêu cầu thất bại, bạn cần xem đúng phần tham gia vào yêu cầu đó.'
+        ]
+      }
     ]
   }
 };
