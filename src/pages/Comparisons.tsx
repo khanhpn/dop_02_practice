@@ -14,12 +14,12 @@ const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u0
 
 export function Comparisons() {
   const [search, setSearch] = useState("");
-  const filtered = comparisons.filter((item) => normalize(`${item.title} ${item.group} ${item.description}`).includes(normalize(search.trim())));
+  const filtered = comparisons.filter((item) => normalize([item.title, item.group, item.description, ...item.services, ...item.focus].join(" ")).includes(normalize(search.trim())));
   return <>
-    <PageHeading eyebrow="ĐỐI CHIẾU ĐỂ HIỂU RÕ" title="So sánh AWS" description="Đối chiếu các dịch vụ và cơ chế dễ nhầm để hiểu cách hoạt động và điều kiện lựa chọn." />
+    <PageHeading eyebrow="HIỂU QUA VÍ DỤ THỰC TẾ" title="Chuyên đề AWS" description="Giải thích từng dịch vụ, cách dùng và những lựa chọn dễ nhầm, từ câu hỏi đơn giản đến tình huống thực tế." />
     <Stack direction={{ xs: "column", sm: "row" }} justifyContent="space-between" gap={2} alignItems={{ sm: "center" }} sx={{ mb: 3 }}>
-      <Typography color="text.secondary">{filtered.length} / {comparisons.length} bài so sánh</Typography>
-      <TextField size="small" placeholder="Tìm dịch vụ hoặc chủ đề…" value={search} onChange={(event) => setSearch(event.target.value)} sx={{ width: { xs: "100%", sm: 340 } }} slotProps={{ htmlInput: { "aria-label": "Tìm bài so sánh" }, input: { startAdornment: <InputAdornment position="start"><SearchRounded /></InputAdornment> } }} />
+      <Typography color="text.secondary">{filtered.length} / {comparisons.length} bài chuyên đề</Typography>
+      <TextField size="small" placeholder="Tìm dịch vụ hoặc chủ đề…" value={search} onChange={(event) => setSearch(event.target.value)} sx={{ width: { xs: "100%", sm: 340 } }} slotProps={{ htmlInput: { "aria-label": "Tìm bài chuyên đề" }, input: { startAdornment: <InputAdornment position="start"><SearchRounded /></InputAdornment> } }} />
     </Stack>
     <Box sx={{ display: "grid", gridTemplateColumns: { xs: "minmax(0, 1fr)", md: "repeat(2, minmax(0, 1fr))" }, gap: 3 }}>
       {filtered.map((item) => <Card key={item.id} sx={{ p: { xs: 2.5, sm: 3.5 }, display: "flex", flexDirection: "column", borderTop: `3px solid ${item.color}` }}>
@@ -28,10 +28,10 @@ export function Comparisons() {
         <Typography color="text.secondary" sx={{ mb: 2 }}>{item.description}</Typography>
         <Stack direction="row" gap={1} flexWrap="wrap" sx={{ mb: 2 }}>{item.services.map((service) => <Chip key={service} label={service} size="small" variant="outlined" />)}</Stack>
         <Box sx={{ bgcolor: "action.hover", borderRadius: 2, p: 2, mb: 3, flex: 1 }}><Typography variant="body2">{item.question}</Typography></Box>
-        <Button component={RouterLink} to={`/comparisons/${item.id}`} endIcon={<ArrowForwardRounded />} sx={{ alignSelf: "flex-start" }}>Đọc bài so sánh</Button>
+        <Button component={RouterLink} to={`/comparisons/${item.id}`} endIcon={<ArrowForwardRounded />} sx={{ alignSelf: "flex-start" }}>Đọc bài</Button>
       </Card>)}
     </Box>
-    {filtered.length === 0 && <Box sx={{ textAlign: "center", py: 7 }}><Typography variant="h3">Không tìm thấy bài so sánh</Typography><Button onClick={() => setSearch("")} sx={{ mt: 2 }}>Xóa từ khóa</Button></Box>}
+    {filtered.length === 0 && <Box sx={{ textAlign: "center", py: 7 }}><Typography variant="h3">Không tìm thấy chuyên đề</Typography><Button onClick={() => setSearch("")} sx={{ mt: 2 }}>Xóa từ khóa</Button></Box>}
   </>;
 }
 
@@ -40,9 +40,9 @@ export function ComparisonPage() {
   const index = comparisons.findIndex((item) => item.id === id);
   const item = comparisons[index];
   const article = id ? comparisonArticles[id] : undefined;
-  if (!item || !article) return <Box sx={{ py: 6 }}><Typography variant="h2">Không tìm thấy bài so sánh</Typography><Button component={RouterLink} to="/comparisons" sx={{ mt: 2 }}>Về danh sách bài so sánh</Button></Box>;
+  if (!item || !article) return <Box sx={{ py: 6 }}><Typography variant="h2">Không tìm thấy chuyên đề</Typography><Button component={RouterLink} to="/comparisons" sx={{ mt: 2 }}>Về danh sách chuyên đề</Button></Box>;
   return <Box sx={{ maxWidth: 820, mx: "auto" }}>
-    <Button component={RouterLink} to="/comparisons" startIcon={<ArrowBackRounded />} sx={{ mb: 2 }}>Tất cả bài so sánh</Button>
+    <Button component={RouterLink} to="/comparisons" startIcon={<ArrowBackRounded />} sx={{ mb: 2 }}>Tất cả chuyên đề</Button>
     <PageHeading eyebrow={`${item.number} · ${item.group}`} title={item.title} description={item.description} />
     <Box>
       <Box component="article" sx={{ minWidth: 0 }}>

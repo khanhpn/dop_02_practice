@@ -1,5 +1,13 @@
 # So sánh AWS — phạm vi ngày 20/10/2026
 
+## Phạm vi mở rộng theo yêu cầu tiếp theo
+
+Người dùng yêu cầu tiếp tục thêm **AWS Organizations**, **Amazon EventBridge** và **các chiến lược deploy**, theo đúng mẫu giải thích trực tiếp đã cung cấp. Khu vực này mở rộng từ bốn bài so sánh thành bảy bài; menu và trang danh sách dùng tên **Chuyên đề AWS**, giữ đường dẫn `/comparisons` và những đường dẫn cũ để không làm mất liên kết đã có.
+
+Ba bài mới dùng ID `aws-organizations`, `eventbridge`, `deployment-strategies`. Bài EventBridge riêng giải thích từ nguồn/bus/rule/target đến ECS STOPPED, CloudTrail/Config, Scheduler, Pipes và lỗi giao/xử lý; bài so sánh EventBridge–SNS–SQS vẫn giữ vai trò đối chiếu ba dịch vụ. Bài deploy phải tách chiến lược chung với khả năng cụ thể của từng nền tảng, giải thích rollback ứng dụng và dữ liệu riêng. Bài Organizations phải phân biệt nhóm tài khoản, quyền truy cập, giới hạn tổ chức và thiết lập dịch vụ tập trung.
+
+Đã viết đủ ba bài mới, đồng thời rà lại bốn bài trước theo mẫu người dùng gửi. Nội dung mới đã qua biên tập tiếng Việt và đọc duyệt độc lập. Khi tự rà kỹ thuật, đã làm rõ CodeDeploy blue/green trên nền tảng EC2/on-premises chỉ hỗ trợ EC2, không hỗ trợ máy on-premises. TypeScript và production build đạt; kiểm kê đọc dữ liệu xác nhận đủ bảy bài, các bảng đủ ô và các ví dụ JSON đúng cú pháp. Đã mở danh sách và bài deploy trong trình duyệt, xác nhận tìm “canary” ra đúng bài. Không chạy lab AWS hoặc bộ kiểm thử tự động.
+
 ## Chỉ dẫn mới nhất của người dùng — ưu tiên hơn bố cục ban đầu
 
 Người dùng đã gửi một câu trả lời mẫu về EventBridge làm chuẩn cụ thể: định nghĩa trực tiếp, một câu dễ nhớ, ví dụ gạch đầu dòng, giải thích thành phần, sơ đồ luồng, đoạn JSON kèm ý nghĩa từng trường, bảng so sánh ngắn và các tình huống lựa chọn. Áp dụng nhịp giải thích này cho cả bốn bài, không chỉ thay tên các đoạn thành câu hỏi. Các bảng/sơ đồ/đoạn cấu hình hữu ích được trình bày ngay trong bài; không sao chép rác trích dẫn, biểu tượng nguồn hoặc bảng lỗi từ nội dung dán. Vẫn không có mục tài liệu tham khảo hay ngày đối chiếu trên trang đọc.

@@ -31,4 +31,25 @@ export const comparisons = [
     question: "Khi nào chọn một dịch vụ, khi nào cần kết hợp để xử lý bất đồng bộ?",
     color: "#327b64",
   },
+  {
+    id: "aws-organizations", number: "05", group: "Quản lý nhiều tài khoản",
+    title: "AWS Organizations", services: ["Organizations", "OU", "SCP", "Control Tower"],
+    description: "Quản lý nhiều tài khoản AWS, chia nhóm và đặt giới hạn chung cho cả công ty.",
+    focus: ["Tài khoản và OU", "SCP và phân quyền", "Quản trị tập trung"],
+    question: "Có dev, staging và production thì tổ chức tài khoản thế nào?", color: "#785797",
+  },
+  {
+    id: "eventbridge", number: "06", group: "Tự động hóa theo sự kiện",
+    title: "Amazon EventBridge", services: ["Event bus", "Rules", "Scheduler", "Pipes"],
+    description: "Khi có chuyện A xảy ra, tự động thực hiện việc B. Hiểu qua ECS, thay đổi cấu hình và batch theo lịch.",
+    focus: ["Nguồn, bus, rule và target", "Event pattern", "Scheduler và Pipes"],
+    question: "ECS task dừng, cấu hình bị sửa hoặc đến giờ chạy batch thì làm gì?", color: "#327b64",
+  },
+  {
+    id: "deployment-strategies", number: "07", group: "Triển khai ứng dụng",
+    title: "Các chiến lược deploy", services: ["Rolling", "Immutable", "Blue/green", "Canary"],
+    description: "Đưa phiên bản mới ra sao để giảm gián đoạn, kiểm tra lỗi và quay về bản cũ khi cần?",
+    focus: ["Cách triển khai và chia traffic", "Điều kiện và chi phí", "Rollback ứng dụng và dữ liệu"],
+    question: "Khi nào dùng rolling, blue/green hoặc canary?", color: "#a3682e",
+  },
 ] as const;

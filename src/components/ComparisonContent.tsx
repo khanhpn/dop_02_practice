@@ -16,7 +16,7 @@ export function ComparisonContent({ article }: { article: ComparisonArticle }) {
     {block.bullets && <Box component="ul" sx={{ pl: 2.5, my: 2, "& li": { mb: 1 } }}>{block.bullets.map((bullet) => <li key={bullet}><Text compact>{bullet}</Text></li>)}</Box>}
     {block.steps && <Box component="ol" sx={{ pl: 2.5, my: 2, "& li": { mb: 1 } }}>{block.steps.map((step) => <li key={step}><Text compact>{step}</Text></li>)}</Box>}
     {block.diagram && <Box component="pre" tabIndex={0} aria-label={`Sơ đồ: ${block.title}`} sx={{ overflowX: "auto", my: 2, p: 2, bgcolor: "action.hover", borderRadius: 1, fontSize: 13, lineHeight: 1.8, fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace" }}>{block.diagram}</Box>}
-    {block.code && <Box component="pre" sx={{ overflowX: "auto", my: 2, p: 2, borderRadius: 1, bgcolor: "action.hover", fontSize: 13, lineHeight: 1.7 }}><code>{block.code}</code></Box>}
+    {block.code && <Box component="pre" tabIndex={0} aria-label={`Ví dụ cấu hình: ${block.title}`} sx={{ overflowX: "auto", my: 2, p: 2, borderRadius: 1, bgcolor: "action.hover", fontSize: 13, lineHeight: 1.7 }}><code>{block.code}</code></Box>}
     {block.codeExplanation && <Box component="ul" sx={{ pl: 2.5, my: 2, "& li": { mb: 1 } }}>{block.codeExplanation.map((line) => <li key={line}><Text compact>{line}</Text></li>)}</Box>}
     {block.table && <TableContainer tabIndex={0} role="region" aria-label={`Bảng: ${block.title}. Có thể cuộn ngang.`} sx={{ my: 2 }}>
       <Table size="small" sx={{ minWidth: block.table.columns.length > 3 ? 700 : 520 }}>

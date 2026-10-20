@@ -56,7 +56,7 @@ const navigation = [
   { to: "/practice", label: "Luyện tập & thi thử", icon: FactCheckOutlined },
   { to: "/plan", label: "Kế hoạch của tôi", icon: CalendarMonthOutlined },
   { to: "/notes", label: "Ghi chú", icon: NoteAltOutlined },
-  { to: "/comparisons", label: "So sánh AWS", icon: CompareArrowsRounded },
+  { to: "/comparisons", label: "Chuyên đề AWS", icon: CompareArrowsRounded },
 ];
 function Shell() {
   const { state, update, error, dismissError } = useStudy();
