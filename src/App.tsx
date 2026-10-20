@@ -63,6 +63,8 @@ function Shell() {
   );
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const sidebarWidth = sidebarCollapsed ? 76 : 252;
   useEffect(() => {
     setMobileOpen(false);
     if (!location.pathname.startsWith("/lesson/"))
@@ -77,6 +79,7 @@ function Shell() {
         : "Không gian học");
   const sidebar = (
     <Box
+      className={sidebarCollapsed ? "app-sidebar is-collapsed" : "app-sidebar"}
       sx={{
         height: "100%",
         display: "flex",
@@ -86,6 +89,14 @@ function Shell() {
         p: 2.5,
       }}
     >
+      <IconButton
+        aria-label={sidebarCollapsed ? "Mở rộng menu" : "Thu gọn menu"}
+        aria-expanded={!sidebarCollapsed}
+        onClick={() => setSidebarCollapsed((value) => !value)}
+        sx={{ display: { xs: "none", lg: "inline-flex" }, alignSelf: "flex-end", color: "inherit", mb: 1 }}
+      >
+        <MenuRounded />
+      </IconButton>
       <Box
         component={RouterLink}
         to="/"
@@ -135,6 +146,8 @@ function Shell() {
             component={RouterLink}
             to={to}
             key={to}
+            title={label}
+            aria-label={label}
             selected={location.pathname === to}
             className="sidebar-link"
           >
@@ -156,6 +169,8 @@ function Shell() {
             component={RouterLink}
             to={`/curriculum?domain=${d.id}`}
             key={d.id}
+            title={d.shortLabel}
+            aria-label={d.shortLabel}
             className="sidebar-link"
             selected={
               location.pathname === "/curriculum" &&
@@ -219,6 +234,8 @@ function Shell() {
       <ListItemButton
         component={RouterLink}
         to="/settings"
+        title="Cài đặt & dữ liệu"
+        aria-label="Cài đặt & dữ liệu"
         className="sidebar-link"
         selected={location.pathname === "/settings"}
       >
@@ -248,13 +265,13 @@ function Shell() {
         <Box
           component="nav"
           aria-label="Điều hướng chính"
-          sx={{ width: { lg: 252 }, flexShrink: 0 }}
+          sx={{ width: { lg: sidebarWidth }, flexShrink: 0, transition: "width 180ms ease" }}
         >
           <Drawer
             variant="permanent"
             sx={{
               display: { xs: "none", lg: "block" },
-              "& .MuiDrawer-paper": { width: 252, border: 0 },
+              "& .MuiDrawer-paper": { width: sidebarWidth, border: 0, transition: "width 180ms ease" },
             }}
           >
             {sidebar}

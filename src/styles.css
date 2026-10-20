@@ -122,7 +122,22 @@ a {
 .notes-category-row { display: flex; align-items: center; gap: 2px; }
 .notes-category-item { justify-content: space-between !important; text-align: left !important; text-transform: none !important; border-radius: 9px !important; padding: 10px 12px !important; min-width: 0 !important; }
 .notes-category-row .notes-category-item { flex: 1; }
-.notes-category-item span { opacity: .7; margin-left: 8px; }
+.notes-category-item .notes-category-count { opacity: .7; margin-left: 8px; flex-shrink: 0; }
+.notes-category-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.notes-category-row > .MuiIconButton-root { flex-shrink: 0; }
+@media (min-width: 1200px) {
+  .app-sidebar.is-collapsed { padding: 12px; }
+  .app-sidebar.is-collapsed .brand { justify-content: center; margin-bottom: 24px; }
+  .app-sidebar.is-collapsed .brand > :last-child,
+  .app-sidebar.is-collapsed .nav-section,
+  .app-sidebar.is-collapsed .MuiListItemText-root,
+  .app-sidebar.is-collapsed .tiny-badge,
+  .app-sidebar.is-collapsed .sidebar-link > .MuiTypography-root,
+  .app-sidebar.is-collapsed > .MuiBox-root:not(.brand),
+  .app-sidebar.is-collapsed > .MuiButton-root { display: none; }
+  .app-sidebar.is-collapsed .sidebar-link { justify-content: center; }
+  .app-sidebar.is-collapsed .MuiListItemIcon-root { min-width: 0; }
+}
 .notes-storage-hint { color: #687c70; font-size: 12px; line-height: 1.6; margin-top: 30px; padding: 12px; border-top: 1px solid #dce5dd; }
 .notes-list-scroll { max-height: 650px; overflow-y: auto; margin: 0 -8px; padding: 0 8px; }
 .notes-list-item { display: block; width: 100%; padding: 16px; margin-bottom: 8px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; }
