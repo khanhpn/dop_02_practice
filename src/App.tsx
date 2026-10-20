@@ -23,6 +23,7 @@ import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import FactCheckOutlined from "@mui/icons-material/FactCheckOutlined";
 import CalendarMonthOutlined from "@mui/icons-material/CalendarMonthOutlined";
 import NoteAltOutlined from "@mui/icons-material/NoteAltOutlined";
+import CompareArrowsRounded from "@mui/icons-material/CompareArrowsRounded";
 import SettingsOutlined from "@mui/icons-material/SettingsOutlined";
 import ArrowOutwardRounded from "@mui/icons-material/ArrowOutwardRounded";
 import LightModeOutlined from "@mui/icons-material/LightModeOutlined";
@@ -48,12 +49,14 @@ import { Plan } from "./pages/Plan";
 import { Settings } from "./pages/Settings";
 import { CapstoneLab } from "./pages/CapstoneLab";
 import { Notes } from "./pages/Notes";
+import { Comparisons, ComparisonPage } from "./pages/Comparisons";
 const navigation = [
   { to: "/", label: "Tổng quan", icon: DashboardOutlined },
   { to: "/curriculum", label: "Lộ trình kiến thức", icon: MenuBookOutlined },
   { to: "/practice", label: "Luyện tập & thi thử", icon: FactCheckOutlined },
   { to: "/plan", label: "Kế hoạch của tôi", icon: CalendarMonthOutlined },
   { to: "/notes", label: "Ghi chú", icon: NoteAltOutlined },
+  { to: "/comparisons", label: "So sánh AWS", icon: CompareArrowsRounded },
 ];
 function Shell() {
   const { state, update, error, dismissError } = useStudy();
@@ -67,11 +70,11 @@ function Shell() {
   const sidebarWidth = sidebarCollapsed ? 76 : 252;
   useEffect(() => {
     setMobileOpen(false);
-    if (!location.pathname.startsWith("/lesson/"))
+    if (!location.pathname.startsWith("/lesson/") && !location.hash)
       window.scrollTo({ top: 0, behavior: "instant" });
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
   const current =
-    navigation.find((n) => n.to === location.pathname)?.label ??
+    navigation.find((n) => n.to === location.pathname || (n.to !== "/" && location.pathname.startsWith(`${n.to}/`)))?.label ??
     (location.pathname.startsWith("/lesson/")
       ? "Bài học"
       : location.pathname === "/settings"
@@ -148,7 +151,7 @@ function Shell() {
             key={to}
             title={label}
             aria-label={label}
-            selected={location.pathname === to}
+            selected={location.pathname === to || (to !== "/" && location.pathname.startsWith(`${to}/`))}
             className="sidebar-link"
           >
             <ListItemIcon>
@@ -395,6 +398,8 @@ function Shell() {
               <Route path="/practice" element={<Practice />} />
               <Route path="/plan" element={<Plan />} />
               <Route path="/notes" element={<Notes />} />
+              <Route path="/comparisons" element={<Comparisons />} />
+              <Route path="/comparisons/:id" element={<ComparisonPage />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/lab/observability" element={<CapstoneLab />} />
               <Route
