@@ -34,8 +34,13 @@ export function MarkdownEditor({ note, status, onChange, onBlur }: { note: Study
   }
   return (
     <Box className="notes-editor-shell">
-      <TextField fullWidth variant="standard" placeholder="Tiêu đề ghi chú" aria-label="Tiêu đề ghi chú" value={note.title} onChange={(event) => onChange({ ...note, title: event.target.value })} onBlur={onBlur} slotProps={{ htmlInput: { maxLength: 300 } }} sx={{ mb: 2, "& input": { fontSize: 24, fontWeight: 700, lineHeight: 1.4 } }} />
-      <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1} sx={{ mb: 1.5 }}>
+      <Stack className="notes-editor-heading" direction="row" alignItems="center" gap={2}>
+        <TextField fullWidth variant="standard" placeholder="Tiêu đề ghi chú" aria-label="Tiêu đề ghi chú" value={note.title} onChange={(event) => onChange({ ...note, title: event.target.value })} onBlur={onBlur} slotProps={{ htmlInput: { maxLength: 300 } }} sx={{ minWidth: 0, flex: 1, "& input": { fontSize: 22, fontWeight: 700, lineHeight: 1.35 } }} />
+        <Typography variant="caption" color={status === "error" ? "error" : "text.secondary"} role="status" sx={{ flexShrink: 0 }}>
+          {status === "saving" ? "Đang lưu…" : status === "saved" ? "Đã lưu trong trình duyệt này" : status === "error" ? "Chưa lưu được" : "Đang tải…"}
+        </Typography>
+      </Stack>
+      <Stack className="notes-editor-toolbar" direction="row" alignItems="center" flexWrap="wrap" gap={1}>
         <ButtonGroup size="small" variant="outlined" aria-label="Định dạng Markdown">
           <Button onClick={() => insert("## ", "")}>Tiêu đề</Button>
           <Button onClick={() => insert("**")}>Đậm</Button>
@@ -43,15 +48,12 @@ export function MarkdownEditor({ note, status, onChange, onBlur }: { note: Study
           <Button onClick={() => insert("`")}>Mã</Button>
           <Button onClick={() => insert("[", "](https://)")}>Liên kết</Button>
         </ButtonGroup>
-        <Typography variant="caption" color={status === "error" ? "error" : "text.secondary"} role="status">
-          {status === "saving" ? "Đang lưu…" : status === "saved" ? "Đã lưu trong trình duyệt này" : status === "error" ? "Chưa lưu được" : "Đang tải…"}
-        </Typography>
+        <ButtonGroup size="small" variant="text" aria-label="Chế độ soạn thảo">
+          <Button onClick={() => setMode("write")} aria-pressed={mode === "write"}>Viết</Button>
+          <Button onClick={() => setMode("split")} aria-pressed={mode === "split"}>Viết và xem</Button>
+          <Button onClick={() => setMode("preview")} aria-pressed={mode === "preview"}>Xem trước</Button>
+        </ButtonGroup>
       </Stack>
-      <ButtonGroup size="small" variant="text" sx={{ mb: 1.5 }} aria-label="Chế độ soạn thảo">
-        <Button onClick={() => setMode("write")} aria-pressed={mode === "write"}>Viết</Button>
-        <Button onClick={() => setMode("split")} aria-pressed={mode === "split"}>Viết và xem</Button>
-        <Button onClick={() => setMode("preview")} aria-pressed={mode === "preview"}>Xem trước</Button>
-      </ButtonGroup>
       <Box className={`notes-editor-grid ${mode === "split" ? "is-split" : ""}`}>
         {mode !== "preview" && <textarea ref={editor} aria-label="Nội dung ghi chú Markdown" className="notes-textarea" placeholder="Viết theo cách hiểu của bạn…\n\n## Điểm dễ nhầm\n- ..." maxLength={5_000_000} value={note.bodyMarkdown} onChange={(event) => onChange({ ...note, bodyMarkdown: event.target.value })} onKeyDown={handleShortcut} onBlur={onBlur} />}
         {mode !== "write" && <Box className="notes-preview-pane">{headings.length > 2 && <Box className="notes-outline"><Typography variant="caption" fontWeight={700}>TRONG GHI CHÚ NÀY</Typography>{headings.map((heading, index) => <button key={`${heading.title}-${index}`} type="button" style={{ paddingLeft: `${(heading.level - 1) * 12}px` }} onClick={(event) => { const pane = event.currentTarget.closest(".notes-preview-pane"); pane?.querySelectorAll("h1,h2,h3")[index]?.scrollIntoView({ behavior: "smooth", block: "center" }); }}>{heading.title}</button>)}</Box>}<MarkdownPreview value={note.bodyMarkdown} /></Box>}

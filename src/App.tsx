@@ -66,6 +66,7 @@ function Shell() {
     [state.settings.theme],
   );
   const location = useLocation();
+  const notesPage = location.pathname === "/notes";
   const [mobileOpen, setMobileOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const sidebarWidth = sidebarCollapsed ? 76 : 252;
@@ -295,14 +296,14 @@ function Shell() {
           <Box
             component="header"
             sx={{
-              height: 78,
+              height: notesPage ? 60 : 78,
               borderBottom: "1px solid",
               borderColor: "divider",
               bgcolor: "background.paper",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              px: { xs: 2, md: 4.5 },
+              px: notesPage ? { xs: 1.5, sm: 2, md: 2.5 } : { xs: 2, md: 4.5 },
               gap: 2,
             }}
           >
@@ -385,7 +386,7 @@ function Shell() {
           <Box
             component="main"
             id="main-content"
-            sx={{ p: { xs: 2, sm: 3, md: 4.5 }, maxWidth: 1600, mx: "auto" }}
+            sx={{ p: notesPage ? { xs: 1, sm: 1.5, md: 2 } : { xs: 2, sm: 3, md: 4.5 }, maxWidth: notesPage ? "none" : 1600, mx: "auto" }}
           >
             {error && (
               <Alert severity="warning" onClose={dismissError} sx={{ mb: 3 }}>
@@ -418,7 +419,7 @@ function Shell() {
             <Box
               component="footer"
               sx={{
-                display: "flex",
+                display: notesPage ? "none" : "flex",
                 justifyContent: "space-between",
                 flexWrap: "wrap",
                 gap: 1,
