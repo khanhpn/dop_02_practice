@@ -2,13 +2,13 @@ import type { NoteCategory, NotesSnapshot, StudyNote } from "./types";
 import { validateNotesSnapshot } from "./validation";
 
 const DB_NAME = "dop-study-notes";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 let databasePromise: Promise<IDBDatabase> | null = null;
 
 export function openNotesDb(): Promise<IDBDatabase> {
   if (databasePromise) return databasePromise;
   databasePromise = new Promise<IDBDatabase>((resolve, reject) => {
-    if (!globalThis.indexedDB) { reject(new Error("Trình duyệt không hỗ trợ IndexedDB.")); return; }
+    if (!globalThis.indexedDB) { reject(new Error("Trình duyệt này không hỗ trợ IndexedDB để lưu ghi chú.")); return; }
     const request = indexedDB.open(DB_NAME, DB_VERSION);
     request.onupgradeneeded = () => {
       const db = request.result;
@@ -18,11 +18,24 @@ export function openNotesDb(): Promise<IDBDatabase> {
         notes.createIndex("categoryId", "categoryId");
         notes.createIndex("lessonId", "lessonId");
         notes.createIndex("updatedAt", "updatedAt");
+      } else if (request.transaction) {
+        const notes = request.transaction.objectStore("notes");
+        const cursor = notes.openCursor();
+        cursor.onsuccess = () => {
+          const row = cursor.result;
+          if (!row) return;
+          const note = row.value as Partial<StudyNote>;
+          row.update({ ...note, tags: note.tags ?? [], pinned: note.pinned ?? false, needsReview: note.needsReview ?? false });
+          row.continue();
+        };
       }
     };
-    request.onsuccess = () => { request.result.onversionchange = () => request.result.close(); resolve(request.result); };
-    request.onerror = () => reject(request.error ?? new Error("Không mở được kho ghi chú."));
-    request.onblocked = () => reject(new Error("Kho ghi chú đang được mở ở tab khác. Hãy đóng tab cũ rồi thử lại."));
+    request.onsuccess = () => {
+      request.result.onversionchange = () => { request.result.close(); databasePromise = null; };
+      resolve(request.result);
+    };
+    request.onerror = () => reject(request.error?.name === "VersionError" ? new Error("Kho ghi chú đã được cập nhật ở thẻ trình duyệt khác. Hãy tải lại trang này rồi thử lại.") : request.error ?? new Error("Không mở được kho ghi chú."));
+    request.onblocked = () => reject(new Error("Chưa thể cập nhật kho ghi chú vì một thẻ trình duyệt khác vẫn đang sử dụng dữ liệu. Hãy đóng các thẻ dop.study khác rồi thử lại."));
   }).catch((error: unknown) => { databasePromise = null; throw error; });
   return databasePromise;
 }
@@ -59,9 +72,14 @@ export async function putCategory(category: NoteCategory): Promise<void> {
 }
 export async function putNote(note: StudyNote): Promise<void> {
   const db = await openNotesDb();
-  const tx = db.transaction("notes", "readwrite");
+  const tx = db.transaction(["categories", "notes"], "readwrite");
   const done = finished(tx);
-  tx.objectStore("notes").put(note);
+  const notes = tx.objectStore("notes");
+  if (note.categoryId === null) notes.put(note);
+  else {
+    const category = tx.objectStore("categories").get(note.categoryId);
+    category.onsuccess = () => notes.put(category.result ? note : { ...note, categoryId: null });
+  }
   await done;
 }
 export async function deleteNote(id: string): Promise<void> {
@@ -91,7 +109,7 @@ export async function readNotesSnapshot(): Promise<NotesSnapshot> {
   const tx = db.transaction(["categories", "notes"], "readonly");
   const categories = result(tx.objectStore("categories").getAll() as IDBRequest<NoteCategory[]>);
   const notes = result(tx.objectStore("notes").getAll() as IDBRequest<StudyNote[]>);
-  return { version: 1, categories: await categories, notes: await notes };
+  return { version: 2, categories: await categories, notes: await notes };
 }
 export async function replaceNotesSnapshot(snapshot: NotesSnapshot): Promise<void> {
   const safe = validateNotesSnapshot(snapshot);

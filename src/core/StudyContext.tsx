@@ -18,6 +18,7 @@ interface StudyContextValue {
   state: StudyState;
   update: (fn: (state: StudyState) => StudyState) => void;
   replace: (state: StudyState) => void;
+  replacePersisted: (state: StudyState) => void;
   error: string;
   dismissError: () => void;
 }
@@ -63,6 +64,12 @@ export function StudyProvider({ children }: { children: ReactNode }) {
     setState(s);
     setError("");
   }, []);
+  const replacePersisted = useCallback((s: StudyState) => {
+    localStorage.setItem(STORAGE_KEY, serializeBackup(s));
+    canSave.current = true;
+    setState(s);
+    setError("");
+  }, []);
   // Count focused study time; background tabs do not inflate the total.
   useEffect(() => {
     const timer = setInterval(() => {
@@ -77,6 +84,7 @@ export function StudyProvider({ children }: { children: ReactNode }) {
         state,
         update,
         replace,
+        replacePersisted,
         error,
         dismissError: () => setError(""),
       }}

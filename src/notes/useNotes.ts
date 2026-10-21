@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createContext, createElement, useCallback, useContext, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { deleteCategoryAndUncategorize, deleteNote, listCategories, listNotes, putCategory, putNote, replaceNotesSnapshot } from "./db";
 import type { NoteCategory, NoteSaveStatus, NotesSnapshot, StudyNote } from "./types";
 
-export function useNotes() {
+function useNotesStore() {
   const [categories, setCategories] = useState<NoteCategory[]>([]);
   const [notes, setNotes] = useState<StudyNote[]>([]);
   const [status, setStatus] = useState<NoteSaveStatus>("loading");
@@ -11,18 +12,24 @@ export function useNotes() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const queue = useRef<Promise<void>>(Promise.resolve());
   const revision = useRef(0);
+  const reloadEpoch = useRef(0);
+  const deletedIds = useRef(new Set<string>());
 
   const reload = useCallback(async () => {
     const startedAt = revision.current;
+    const epoch = ++reloadEpoch.current;
     try {
       const [nextCategories, nextNotes] = await Promise.all([listCategories(), listNotes()]);
+      if (epoch !== reloadEpoch.current) return;
       setCategories(nextCategories);
-      // Loading/migration can finish after the user has started a draft.
-      const drafts = pending.current;
-      if (revision.current === startedAt) {
-        setNotes([...nextNotes.filter((note) => !drafts.has(note.id)), ...drafts.values()]);
-        if (drafts.size === 0) { setStatus("saved"); setError(""); }
-      }
+      // An IndexedDB read may complete after the user edits or deletes a note.
+      setNotes((current) => {
+        const merged = new Map(nextNotes.filter((note) => !deletedIds.current.has(note.id)).map((note) => [note.id, note]));
+        if (revision.current !== startedAt) current.forEach((note) => merged.set(note.id, note));
+        pending.current.forEach((note) => merged.set(note.id, note));
+        return [...merged.values()];
+      });
+      if (pending.current.size === 0) { setStatus("saved"); setError(""); }
     } catch (cause) {
       setStatus("error");
       setError(`Không mở được kho ghi chú: ${(cause as Error).message}`);
@@ -43,7 +50,7 @@ export function useNotes() {
       if (pending.current.size === 0) { setStatus("saved"); setError(""); }
     }).catch((cause: unknown) => {
       setStatus("error");
-      setError(`Chưa lưu được ghi chú. Bản nháp vẫn còn trong tab này: ${(cause as Error).message}`);
+      setError(`Chưa lưu được ghi chú. Bản nháp vẫn còn trong thẻ trình duyệt này: ${(cause as Error).message}`);
       throw cause;
     });
     return queue.current;
@@ -57,6 +64,7 @@ export function useNotes() {
 
   const updateNote = useCallback((note: StudyNote) => {
     revision.current += 1;
+    deletedIds.current.delete(note.id);
     const next = { ...note, updatedAt: Date.now() };
     setNotes((current) => current.some((item) => item.id === next.id) ? current.map((item) => item.id === next.id ? next : item) : [next, ...current]);
     pending.current.set(next.id, next);
@@ -67,7 +75,7 @@ export function useNotes() {
 
   const createNote = useCallback((lessonId: string | null = null, categoryId: string | null = null) => {
     const now = Date.now();
-    const note: StudyNote = { id: crypto.randomUUID(), categoryId, lessonId, title: "", bodyMarkdown: "", createdAt: now, updatedAt: now };
+    const note: StudyNote = { id: crypto.randomUUID(), categoryId, lessonId, title: "", bodyMarkdown: "", tags: [], pinned: false, needsReview: false, createdAt: now, updatedAt: now };
     updateNote(note);
     return note;
   }, [updateNote]);
@@ -93,18 +101,35 @@ export function useNotes() {
   const removeNote = useCallback(async (id: string) => {
     await flush();
     await deleteNote(id);
+    revision.current += 1;
+    deletedIds.current.add(id);
     pending.current.delete(id);
     setNotes((current) => current.filter((note) => note.id !== id));
   }, [flush]);
 
   const replaceAll = useCallback(async (snapshot: NotesSnapshot) => {
+    reloadEpoch.current += 1;
     if (timer.current) clearTimeout(timer.current);
     timer.current = null;
     await queue.current.catch(() => undefined);
     await replaceNotesSnapshot(snapshot);
     pending.current.clear();
+    deletedIds.current.clear();
     await reload();
   }, [reload]);
 
   return { categories, notes, status, error, createCategory, renameCategory, removeCategory, createNote, updateNote, removeNote, flush, reload, replaceAll };
+}
+
+const NotesContext = createContext<ReturnType<typeof useNotesStore> | null>(null);
+
+export function NotesProvider({ children }: { children: ReactNode }) {
+  const store = useNotesStore();
+  return createElement(NotesContext.Provider, { value: store }, children);
+}
+
+export function useNotes() {
+  const store = useContext(NotesContext);
+  if (!store) throw new Error("useNotes phải được dùng trong NotesProvider.");
+  return store;
 }

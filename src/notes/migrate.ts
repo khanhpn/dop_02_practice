@@ -19,7 +19,7 @@ export async function migrateLegacyNotes(legacy: Record<string, string>): Promis
     get.onsuccess = () => {
       if (get.result) return;
       const now = Date.now();
-      const note: StudyNote = { id, categoryId: null, lessonId, title: "Ghi chú từ bài học", bodyMarkdown, createdAt: now, updatedAt: now };
+      const note: StudyNote = { id, categoryId: null, lessonId, title: "Ghi chú từ bài học", bodyMarkdown, tags: [], pinned: false, needsReview: false, createdAt: now, updatedAt: now };
       store.put(note);
       migrated++;
     };

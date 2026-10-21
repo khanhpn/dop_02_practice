@@ -107,6 +107,16 @@
 - [ ] Have a Vietnamese-language specialist edit every new learner-facing string; have a different agent independently read all resulting Vietnamese UI text and verify corrections.
 - [ ] Run `pnpm check` and `pnpm build`; do not run automated tests. Review the changed-file diff and commit only task files.
 
+### Task 5a: Professional exam-note workspace upgrade
+
+**Files:** `src/notes/types.ts`, `src/notes/validation.ts`, `src/notes/useNotes.ts`, `src/pages/Notes.tsx`, `src/components/MarkdownEditor.tsx`, `src/components/MarkdownPreview.tsx`, `src/styles.css`.
+
+- [ ] Extend note metadata with tags, pinned and review-needed flags; import v1 JSON with safe defaults and retain backward compatibility.
+- [ ] Add quick filters (pinned, review-needed, uncategorized), tag/category/lesson filtering and sort controls; improve note cards and summary counters.
+- [ ] Add four exam-oriented Markdown templates, editor keyboard shortcuts, and a heading outline for long notes.
+- [ ] Polish desktop/mobile layouts, empty/loading/error states, spacing, contrast and focus treatment without copying another app's exact visual identity.
+- [ ] Verify `pnpm check` and `pnpm build`; independently review Vietnamese UI copy and storage behavior.
+
 ### Task 6: Whole-feature review
 
 **Files:** all files changed in Tasks 1–5 plus the approved spec.

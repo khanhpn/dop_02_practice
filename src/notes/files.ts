@@ -12,10 +12,12 @@ export function downloadJson(text: string, filename: string): void {
 
 export function downloadNotesJson(snapshot: NotesSnapshot): void {
   const date = new Date().toISOString().slice(0, 10);
-  downloadJson(JSON.stringify(snapshot, null, 2), `dop-study-notes-${date}.json`);
+  const text = JSON.stringify(snapshot, null, 2);
+  parseNotesJson(text);
+  downloadJson(text, `dop-study-notes-${date}.json`);
 }
 
 export async function readNotesFile(file: File): Promise<NotesSnapshot> {
-  if (file.size > MAX_NOTES_FILE_BYTES) throw new Error("File ghi chú vượt quá 50 MB.");
+  if (file.size > MAX_NOTES_FILE_BYTES) throw new Error("Tệp ghi chú vượt quá 50 MB. Dữ liệu hiện tại chưa bị thay đổi.");
   return parseNotesJson(await file.text());
 }

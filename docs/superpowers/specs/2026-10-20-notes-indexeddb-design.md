@@ -14,6 +14,14 @@ Mỗi lần chỉnh sửa ghi vào IndexedDB sau khoảng ngừng gõ ngắn; kh
 
 ## Giao diện và thao tác
 
+### Nâng cấp workspace ôn thi — 21/10/2026
+
+Người học yêu cầu nâng chức năng hiện có thành một giao diện chuyên nghiệp, dễ dùng và nhiều tính năng hơn, không sao chép nguyên sản phẩm khác. Cấu trúc giáo trình DOP-C02 là lối vào chính; category vẫn do người học tự tạo. Mỗi ghi chú có thể gắn bài học, gắn nhiều tag, ghim, và đánh dấu **Cần ôn**. Các bộ lọc nhanh gồm Tất cả, Đã ghim, Cần ôn, Chưa phân loại; tìm kiếm phải kết hợp được với category, tag và bài học. Thẻ ghi chú cho thấy tiêu đề, trích đoạn, tag và trạng thái; có sắp xếp theo lần sửa hoặc tiêu đề. Trên đầu workspace có vài con số có ích (tổng ghi chú, cần ôn, gắn bài học), không biến trang thành dashboard dày đặc.
+
+Có các mẫu Markdown một cú nhấp cho **Khái niệm**, **Bẫy đề**, **Lab**, **Lỗi từng gặp**. Mẫu chỉ điền khung câu hỏi/gợi ý, không tự tạo nội dung AWS. Khi ghi chú dài, bản xem trước có mục lục theo heading. Thanh công cụ có phím tắt dễ nhớ, trạng thái lưu rõ và nút xuất JSON luôn tìm được. UI dùng một ngôn ngữ thiết kế nhất quán, khoảng trắng đủ rộng, màu trạng thái vừa phải, khả năng dùng bàn phím và bố cục mobile thật sự một cột.
+
+Định dạng JSON mới thêm tag, ghim và trạng thái cần ôn. Import file phiên bản 1 cũ phải tự điền giá trị mặc định cho ba trường này, không làm mất note. Bản sao lưu tiến độ chung cũng chứa toàn bộ các thuộc tính mới.
+
 Trên desktop, trang dùng ba vùng rõ ràng: category ở trái, danh sách ghi chú ở giữa, trình soạn thảo ở phải. Màn hình nhỏ chuyển thành luồng category → danh sách → ghi chú, có đường quay lại và không làm mất bản nháp. Thanh trên cùng có tìm kiếm theo tiêu đề/nội dung, tạo category, tạo ghi chú và Xuất/Nhập JSON. Danh sách hiển thị tiêu đề, trích đoạn ngắn, bài học liên kết, thời điểm sửa; có lọc category và sắp theo lần sửa gần nhất. Category mặc định **Tất cả ghi chú** là bộ lọc, không phải bản ghi có thể xóa.
 
 Trình soạn thảo Markdown có ô tiêu đề, chọn category, chọn/đi đến bài học liên kết, thanh công cụ tối thiểu (tiêu đề, đậm, danh sách, đoạn mã, liên kết), hai chế độ **Viết / Xem trước** và trên màn rộng có thể xem song song. Phím tắt thông dụng được hỗ trợ nếu không xung đột trình duyệt. Xem trước trình bày tiêu đề, bảng, danh sách và khối mã nhất quán với giao diện đọc bài. Không render HTML thô do người dùng gõ; liên kết được giới hạn giao thức an toàn để tránh script trong Markdown. Ô nhập vẫn là plain text, nên luôn có thể sửa và xuất nội dung gốc.

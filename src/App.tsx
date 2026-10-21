@@ -49,6 +49,7 @@ import { Plan } from "./pages/Plan";
 import { Settings } from "./pages/Settings";
 import { CapstoneLab } from "./pages/CapstoneLab";
 import { Notes } from "./pages/Notes";
+import { NotesProvider } from "./notes/useNotes";
 import { Comparisons, ComparisonPage } from "./pages/Comparisons";
 const navigation = [
   { to: "/", label: "Tổng quan", icon: DashboardOutlined },
@@ -444,7 +445,7 @@ export default function App() {
   return (
     <HashRouter>
       <StudyProvider>
-        <Shell />
+        <NotesProvider><Shell /></NotesProvider>
       </StudyProvider>
     </HashRouter>
   );

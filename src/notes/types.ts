@@ -11,12 +11,15 @@ export interface StudyNote {
   lessonId: string | null;
   title: string;
   bodyMarkdown: string;
+  tags: string[];
+  pinned: boolean;
+  needsReview: boolean;
   createdAt: number;
   updatedAt: number;
 }
 
 export interface NotesSnapshot {
-  version: 1;
+  version: 2;
   categories: NoteCategory[];
   notes: StudyNote[];
 }

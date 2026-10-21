@@ -7,6 +7,8 @@ import type {
   StudyState,
 } from "./types";
 import { gradeQuestion } from "./quiz";
+import type { NotesSnapshot } from "../notes/types";
+import { validateNotesSnapshot } from "../notes/validation";
 export const STORAGE_KEY = "dop-study-lab:v1";
 export const dateOnly = (date = new Date()) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -167,6 +169,21 @@ export function parseBackup(text: string): StudyState {
 }
 export const serializeBackup = (state: StudyState) =>
   JSON.stringify(state, null, 2);
+export function serializeFullBackup(state: StudyState, notes: NotesSnapshot): string {
+  return JSON.stringify({ kind: "dop-study-full", version: 2, study: state, notes }, null, 2);
+}
+export function parseFullBackup(text: string): { state: StudyState; notes: NotesSnapshot | null } {
+  if (new Blob([text]).size > 60_000_000) throw new Error("Tệp sao lưu vượt quá 60 MB. Dữ liệu hiện tại chưa bị thay đổi.");
+  let value: unknown;
+  try { value = JSON.parse(text); }
+  catch { throw new Error("Không đọc được nội dung JSON trong tệp. Dữ liệu hiện tại chưa bị thay đổi."); }
+  if (value && typeof value === "object" && "kind" in value && value.kind === "dop-study-full") {
+    const envelope = value as Record<string, unknown>;
+    if (envelope.version !== 2) throw new Error("Phiên bản của bản sao lưu chưa được hỗ trợ. Dữ liệu hiện tại chưa bị thay đổi.");
+    return { state: parseBackup(JSON.stringify(envelope.study)), notes: validateNotesSnapshot(envelope.notes) };
+  }
+  return { state: parseBackup(text), notes: null };
+}
 export function recordAnswers(
   state: StudyState,
   questions: Question[],
