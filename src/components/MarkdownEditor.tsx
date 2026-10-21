@@ -1,11 +1,12 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Box, Button, ButtonGroup, Stack, TextField, Typography } from "@mui/material";
 import type { StudyNote, NoteSaveStatus } from "../notes/types";
 import { MarkdownPreview } from "./MarkdownPreview";
 
 export function MarkdownEditor({ note, status, onChange, onBlur }: { note: StudyNote; status: NoteSaveStatus; onChange: (note: StudyNote) => void; onBlur: () => void }) {
-  const [mode, setMode] = useState<"write" | "preview" | "split">("split");
+  const [mode, setMode] = useState<"write" | "preview" | "split">("write");
   const editor = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => { setMode("write"); }, [note.id]);
   const headings = useMemo(() => {
     const result: { level: number; title: string }[] = [];
     let fence: "`" | "~" | null = null;

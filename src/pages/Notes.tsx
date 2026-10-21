@@ -16,7 +16,6 @@ import BookmarkRounded from "@mui/icons-material/BookmarkRounded";
 import { Link as RouterLink, useSearchParams } from "react-router-dom";
 import { domains, lessonById, lessonPath, lessons } from "../content";
 import { MarkdownEditor } from "../components/MarkdownEditor";
-import { PageHeading } from "../components/PageHeading";
 import { useNotes } from "../notes/useNotes";
 import type { NoteCategory, StudyNote } from "../notes/types";
 import type { NotesSnapshot } from "../notes/types";
@@ -54,6 +53,7 @@ export function Notes() {
   const [sortBy, setSortBy] = useState<"recent" | "title">("recent");
   const [tagDraft, setTagDraft] = useState("");
   const [templateMenu, setTemplateMenu] = useState(false);
+  const [metadataOpen, setMetadataOpen] = useState(false);
   const [dialog, setDialog] = useState<CategoryDialog>(null);
   const [deletion, setDeletion] = useState<Deletion>(null);
   const [message, setMessage] = useState("");
@@ -85,11 +85,11 @@ export function Notes() {
   const categoryNameTaken = !!dialog && data.categories.some((category) => category.id !== dialog.category?.id && category.name.trim().toLocaleLowerCase("vi") === dialog.name.trim().toLocaleLowerCase("vi"));
 
   function selectCategory(id: string | null) { setCategoryId(id); setUncategorized(false); setSelectedId(null); setMobilePane("list"); }
-  function selectNote(id: string) { setSelectedId(id); setMobilePane("editor"); }
+  function selectNote(id: string) { setSelectedId(id); setMetadataOpen(false); setMobilePane("editor"); }
   function addNote(template?: typeof templates[number]) {
     const note = data.createNote(lessonFilter, categoryId);
     if (template) data.updateNote({ ...note, title: template.name, bodyMarkdown: template.body, needsReview: template.name === "Bẫy đề" });
-    setSearch(""); setQuickFilter("all"); setTagFilter(""); setDomainFilter(0); setSelectedId(note.id); setMobilePane("editor"); setTemplateMenu(false);
+    setSearch(""); setQuickFilter("all"); setTagFilter(""); setDomainFilter(0); setSelectedId(note.id); setMetadataOpen(false); setMobilePane("editor"); setTemplateMenu(false);
   }
   function addTag(note: StudyNote) {
     const tag = tagDraft.trim().replace(/^#/, "");
@@ -147,7 +147,7 @@ export function Notes() {
         snapshot = { version: 2, categories: [...categories.values()], notes: [...merged.values()].map((note) => note.categoryId && !categories.has(note.categoryId) ? { ...note, categoryId: null } : note) };
       }
       downloadNotesJson(snapshot);
-      setMessage(saveFailed ? "Đã xuất bản nháp đang mở. Kho lưu trữ có lỗi nên tệp này có thể thiếu ghi chú chưa được hiển thị; hãy kiểm tra tệp trước khi đóng thẻ trình duyệt." : "");
+      setMessage(saveFailed ? "Đã xuất các ghi chú đang có, gồm cả bản nháp. Do lỗi lưu trữ, tệp có thể chưa đầy đủ. Hãy kiểm tra tệp trước khi đóng thẻ trình duyệt." : "");
     }
     catch (cause) { setMessage(`Không xuất được ghi chú ra tệp JSON: ${(cause as Error).message}`); }
     finally { operation.current = false; setBusy(false); }
@@ -168,27 +168,24 @@ export function Notes() {
   const dark = theme.palette.mode === "dark";
   const surfaceStyle = { "--notes-surface": dark ? "#19292d" : "#fff", "--notes-sidebar": dark ? "#142327" : "#f5f8f4", "--notes-border": dark ? "#30433e" : "#dce5dd", "--notes-hover": dark ? "#223b36" : "#f4f8f3", "--notes-selected": dark ? "#2b5044" : "#eaf4ed", "--notes-text": dark ? "#e8f0ec" : "#26392f", "--notes-muted": dark ? "#a2b5af" : "#60726a" } as CSSProperties;
   return <Box className="notes-page" style={surfaceStyle}>
-    <PageHeading eyebrow="ÔN TẬP THEO CÁCH CỦA BẠN" title="Ghi chú ôn tập" description="Lưu các điểm dễ nhầm, ví dụ thực tế và cách giải câu hỏi để dễ ôn lại. Ghi chú tự lưu trong trình duyệt này, không tự đồng bộ sang máy khác. Hãy xuất tệp JSON định kỳ để sao lưu." action={<Stack direction="row" gap={1} flexWrap="wrap"><Button variant="outlined" startIcon={<FileDownloadOutlined />} onClick={() => void exportCurrent()} disabled={busy}>Xuất JSON</Button><Button variant="contained" startIcon={<FileUploadOutlined />} onClick={() => importInput.current?.click()} disabled={busy}>Nhập JSON</Button><input ref={importInput} hidden type="file" accept="application/json,.json" aria-label="Chọn tệp ghi chú JSON" onChange={(event) => void readImport(event.target.files?.[0])} /></Stack>} />
+    <Stack className="notes-topbar" direction="row" alignItems="center" justifyContent="space-between" gap={1}>
+      <Typography variant="h3">Ghi chú</Typography>
+      <Stack direction="row" gap={1}>
+        <Button size="small" variant="text" startIcon={<FileDownloadOutlined />} onClick={() => void exportCurrent()} disabled={busy}>Xuất JSON</Button>
+        <Button size="small" variant="text" startIcon={<FileUploadOutlined />} onClick={() => importInput.current?.click()} disabled={busy}>Nhập JSON</Button>
+        <input ref={importInput} hidden type="file" accept="application/json,.json" aria-label="Chọn tệp ghi chú JSON" onChange={(event) => void readImport(event.target.files?.[0])} />
+      </Stack>
+    </Stack>
     {(data.error || message) && <Alert severity="error" sx={{ mb: 2 }}>{message || data.error}{data.error && <Button color="inherit" size="small" onClick={() => { void data.flush().then(() => data.reload()).catch(() => undefined); }}>Thử lưu lại</Button>}</Alert>}
     {lessonFilter && <Chip sx={{ mb: 2 }} label={`Đang xem ghi chú của ${lessonById.get(lessonFilter)?.title ?? lessonFilter}`} onDelete={() => { setParams({}); setSelectedId(null); }} />}
-    <Stack className="notes-overview" direction="row" flexWrap="wrap" gap={1.5} sx={{ mb: 2.5 }}>
-      <Box><strong>{data.notes.length}</strong><span>Ghi chú</span></Box>
-      <Box><strong>{data.notes.filter((note) => note.needsReview).length}</strong><span>Cần ôn lại</span></Box>
-      <Box><strong>{data.notes.filter((note) => note.lessonId).length}</strong><span>Gắn với bài học</span></Box>
-    </Stack>
     <Box className={`notes-workspace pane-${mobilePane}`}>
       <Box className="notes-categories">
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}><Typography className="notes-pane-title">Danh mục</Typography><IconButton size="small" aria-label="Tạo danh mục" onClick={() => setDialog({ category: null, name: "" })}><AddRounded /></IconButton></Stack>
+        <IconButton size="small" aria-label="Tạo danh mục" title="Tạo danh mục" onClick={() => setDialog({ category: null, name: "" })}><AddRounded /></IconButton>
         <Button fullWidth className="notes-category-item" variant={categoryId === null && !uncategorized ? "contained" : "text"} onClick={() => selectCategory(null)}>Tất cả ghi chú <span className="notes-category-count">{data.notes.length}</span></Button>
         <Button fullWidth className="notes-category-item" variant={uncategorized ? "contained" : "text"} onClick={() => { selectCategory(null); setUncategorized(true); }}>Chưa phân loại <span className="notes-category-count">{data.notes.filter((note) => note.categoryId === null).length}</span></Button>
-        <Box className="notes-sidebar-divider" />
-        <Typography className="notes-side-label">XEM NHANH</Typography>
         <Button fullWidth className="notes-category-item" variant={quickFilter === "pinned" ? "contained" : "text"} onClick={() => { setQuickFilter(quickFilter === "pinned" ? "all" : "pinned"); setMobilePane("list"); }} startIcon={<PushPinOutlined fontSize="small" />}>Đã ghim <span className="notes-category-count">{data.notes.filter((note) => note.pinned).length}</span></Button>
         <Button fullWidth className="notes-category-item" variant={quickFilter === "review" ? "contained" : "text"} onClick={() => { setQuickFilter(quickFilter === "review" ? "all" : "review"); setMobilePane("list"); }} startIcon={<BookmarkBorderRounded fontSize="small" />}>Cần ôn lại <span className="notes-category-count">{data.notes.filter((note) => note.needsReview).length}</span></Button>
-        <Box className="notes-sidebar-divider" />
-        <Typography className="notes-side-label">DANH MỤC CỦA BẠN</Typography>
         {data.categories.map((category) => <Box key={category.id} className="notes-category-row"><Button className="notes-category-item" variant={categoryId === category.id ? "contained" : "text"} onClick={() => selectCategory(category.id)} title={category.name}><span className="notes-category-name">{category.name}</span><span className="notes-category-count">{countInCategory(category.id)}</span></Button><IconButton size="small" aria-label={`Đổi tên danh mục ${category.name}`} onClick={() => setDialog({ category, name: category.name })}><EditOutlined fontSize="small" /></IconButton><IconButton size="small" aria-label={`Xóa danh mục ${category.name}`} onClick={() => setDeletion({ type: "category", id: category.id, title: category.name })}><DeleteOutlineRounded fontSize="small" /></IconButton></Box>)}
-        <Box className="notes-storage-hint">Lưu trong trình duyệt này · Xuất JSON để sao lưu</Box>
       </Box>
       <Box className="notes-list">
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}><Stack direction="row" alignItems="center" gap={1}><IconButton className="notes-mobile-back" aria-label="Về danh mục" onClick={() => setMobilePane("categories")}><ArrowBackRounded /></IconButton><Typography className="notes-pane-title">Ghi chú <span className="notes-count">{filtered.length}</span></Typography></Stack><Button variant="contained" size="small" startIcon={<AddRounded />} onClick={() => addNote()}>Viết mới</Button></Stack>
@@ -203,12 +200,10 @@ export function Notes() {
         </Box>
       </Box>
       <Box className="notes-detail">
-        {selected ? <><Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}><Stack direction="row" gap={1} alignItems="center"><IconButton className="notes-mobile-back" aria-label="Về danh sách" onClick={() => setMobilePane("list")}><ArrowBackRounded /></IconButton><Typography variant="caption" color="text.secondary">GHI CHÚ CÁ NHÂN</Typography></Stack><Stack direction="row"><IconButton aria-label={selected.pinned ? "Bỏ ghim" : "Ghim ghi chú"} color={selected.pinned ? "primary" : "default"} onClick={() => data.updateNote({ ...selected, pinned: !selected.pinned })}>{selected.pinned ? <PushPinRounded /> : <PushPinOutlined />}</IconButton><IconButton aria-label={selected.needsReview ? "Bỏ đánh dấu cần ôn lại" : "Đánh dấu cần ôn lại"} color={selected.needsReview ? "warning" : "default"} onClick={() => data.updateNote({ ...selected, needsReview: !selected.needsReview })}>{selected.needsReview ? <BookmarkRounded /> : <BookmarkBorderRounded />}</IconButton><IconButton color="error" aria-label="Xóa ghi chú" onClick={() => setDeletion({ type: "note", id: selected.id, title: selected.title || "ghi chú chưa đặt tên" })}><DeleteOutlineRounded /></IconButton></Stack></Stack>
-          <Stack direction={{ xs: "column", md: "row" }} spacing={1.5} sx={{ mb: 2 }}><TextField select size="small" label="Danh mục" value={selected.categoryId ?? ""} onChange={(event) => data.updateNote({ ...selected, categoryId: event.target.value || null })} sx={{ minWidth: 190 }}><MenuItem value="">Chưa phân loại</MenuItem>{data.categories.map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}</TextField><TextField select size="small" label="Bài học liên quan" value={selected.lessonId ?? ""} onChange={(event) => data.updateNote({ ...selected, lessonId: event.target.value || null })} sx={{ minWidth: 220 }}><MenuItem value="">Không gắn với bài học</MenuItem>{lessons.map((lesson) => <MenuItem key={lesson.id} value={lesson.id}>{lesson.number}. {lesson.title}</MenuItem>)}</TextField></Stack>
-          <Stack direction="row" alignItems="center" gap={.7} flexWrap="wrap" sx={{ mb: 2 }}>{selected.tags.map((tag) => <Chip key={tag} size="small" label={`#${tag}`} onDelete={() => data.updateNote({ ...selected, tags: selected.tags.filter((item) => item !== tag) })} />)}<TextField size="small" placeholder="Thêm nhãn, nhấn Enter" aria-label="Thêm nhãn" value={tagDraft} onChange={(event) => setTagDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addTag(selected); } }} slotProps={{ htmlInput: { maxLength: 40 } }} sx={{ width: 180 }} /></Stack>
-          {selectedLesson && <Button component={RouterLink} to={lessonPath(selectedLesson.id)} size="small" sx={{ mb: 1 }}>Mở bài học liên quan ↗</Button>}
+        {selected ? <><Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 1 }}><IconButton className="notes-mobile-back" aria-label="Về danh sách" onClick={() => setMobilePane("list")}><ArrowBackRounded /></IconButton><Stack direction="row" sx={{ ml: "auto" }}><Button size="small" onClick={() => setMetadataOpen((open) => !open)} aria-expanded={metadataOpen}>Thông tin {metadataOpen ? "▴" : "▾"}</Button><IconButton aria-label={selected.pinned ? "Bỏ ghim" : "Ghim ghi chú"} color={selected.pinned ? "primary" : "default"} onClick={() => data.updateNote({ ...selected, pinned: !selected.pinned })}>{selected.pinned ? <PushPinRounded /> : <PushPinOutlined />}</IconButton><IconButton aria-label={selected.needsReview ? "Bỏ đánh dấu cần ôn lại" : "Đánh dấu cần ôn lại"} color={selected.needsReview ? "warning" : "default"} onClick={() => data.updateNote({ ...selected, needsReview: !selected.needsReview })}>{selected.needsReview ? <BookmarkRounded /> : <BookmarkBorderRounded />}</IconButton><IconButton color="error" aria-label="Xóa ghi chú" onClick={() => setDeletion({ type: "note", id: selected.id, title: selected.title || "ghi chú chưa đặt tên" })}><DeleteOutlineRounded /></IconButton></Stack></Stack>
+          {metadataOpen && <Box className="notes-metadata"><Stack direction={{ xs: "column", md: "row" }} spacing={1.5} sx={{ mb: 1.5 }}><TextField select size="small" label="Danh mục" value={selected.categoryId ?? ""} onChange={(event) => data.updateNote({ ...selected, categoryId: event.target.value || null })} sx={{ minWidth: 190 }}><MenuItem value="">Chưa phân loại</MenuItem>{data.categories.map((category) => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}</TextField><TextField select size="small" label="Bài học liên quan" value={selected.lessonId ?? ""} onChange={(event) => data.updateNote({ ...selected, lessonId: event.target.value || null })} sx={{ minWidth: 220 }}><MenuItem value="">Không gắn với bài học</MenuItem>{lessons.map((lesson) => <MenuItem key={lesson.id} value={lesson.id}>{lesson.number}. {lesson.title}</MenuItem>)}</TextField></Stack><Stack direction="row" alignItems="center" gap={.7} flexWrap="wrap">{selected.tags.map((tag) => <Chip key={tag} size="small" label={`#${tag}`} onDelete={() => data.updateNote({ ...selected, tags: selected.tags.filter((item) => item !== tag) })} />)}<TextField size="small" placeholder="Thêm nhãn, nhấn Enter" aria-label="Thêm nhãn" value={tagDraft} onChange={(event) => setTagDraft(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addTag(selected); } }} slotProps={{ htmlInput: { maxLength: 40 } }} sx={{ width: 180 }} />{selectedLesson && <Button component={RouterLink} to={lessonPath(selectedLesson.id)} size="small">Mở bài học ↗</Button>}</Stack></Box>}
           <MarkdownEditor note={selected} status={data.status} onChange={data.updateNote} onBlur={() => { void data.flush().catch(() => undefined); }} />
-        </> : <Box className="notes-empty notes-detail-empty"><NoteAltOutlined sx={{ fontSize: 48 }} /><Typography variant="h3">Ghi lại để hiểu sâu, ôn lại dễ hơn</Typography><Typography color="text.secondary">Chọn một ghi chú để đọc và chỉnh sửa, hoặc tạo ghi chú về điều bạn vừa học.</Typography><Button variant="contained" startIcon={<AddRounded />} onClick={() => addNote()}>Viết ghi chú</Button><Button onClick={() => setTemplateMenu((open) => !open)}>Bắt đầu từ mẫu</Button>{templateMenu && <Stack direction="row" gap={1} flexWrap="wrap" justifyContent="center">{templates.map((template) => <Button key={template.name} variant="outlined" size="small" onClick={() => addNote(template)}>{template.name}</Button>)}</Stack>}</Box>}
+        </> : <Box className="notes-empty notes-detail-empty"><NoteAltOutlined sx={{ fontSize: 48 }} /><Button variant="contained" startIcon={<AddRounded />} onClick={() => addNote()}>Viết ghi chú</Button><Button onClick={() => setTemplateMenu((open) => !open)}>Tạo từ mẫu</Button>{templateMenu && <Stack direction="row" gap={1} flexWrap="wrap" justifyContent="center">{templates.map((template) => <Button key={template.name} variant="outlined" size="small" onClick={() => addNote(template)}>{template.name}</Button>)}</Stack>}</Box>}
       </Box>
     </Box>
     <Dialog open={!!dialog} onClose={() => { if (!categorySaving) setDialog(null); }} fullWidth maxWidth="xs"><DialogTitle>{dialog?.category ? "Đổi tên danh mục" : "Tạo danh mục mới"}</DialogTitle><DialogContent><TextField autoFocus fullWidth label="Tên danh mục" error={categoryNameTaken} helperText={categoryNameTaken ? "Tên danh mục đã tồn tại. Hãy chọn tên khác." : undefined} disabled={categorySaving} value={dialog?.name ?? ""} onChange={(event) => setDialog((current) => current ? { ...current, name: event.target.value } : null)} slotProps={{ htmlInput: { maxLength: 120 } }} onKeyDown={(event) => { if (event.key === "Enter") void saveCategory(); }} sx={{ mt: 1 }} /></DialogContent><DialogActions><Button disabled={categorySaving} onClick={() => setDialog(null)}>Hủy</Button><Button variant="contained" disabled={!dialog?.name.trim() || categorySaving || categoryNameTaken} onClick={() => void saveCategory()}>Lưu</Button></DialogActions></Dialog>

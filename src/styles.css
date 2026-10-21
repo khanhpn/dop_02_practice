@@ -106,23 +106,25 @@ a {
 }
 .notes-workspace {
   display: grid;
-  grid-template-columns: minmax(180px, 220px) minmax(250px, 320px) minmax(0, 1fr);
-  min-height: 680px;
+  grid-template-columns: 245px minmax(0, 1fr);
+  grid-template-rows: auto minmax(680px, 1fr);
+  min-height: calc(100vh - 170px);
   overflow: hidden;
   border: 1px solid var(--notes-border);
   border-radius: 18px;
   background: var(--notes-surface);
   box-shadow: 0 20px 50px #193b2b0a;
 }
-.notes-categories, .notes-list, .notes-detail { min-width: 0; padding: 22px; }
-.notes-categories { background: var(--notes-sidebar); border-right: 1px solid var(--notes-border); }
-.notes-list { border-right: 1px solid var(--notes-border); }
-.notes-overview > div { min-width: 140px; flex: 1; padding: 17px 20px; border: 1px solid var(--notes-border); border-radius: 14px; background: var(--notes-surface); }
-.notes-overview strong, .notes-overview span { display: block; }
-.notes-overview strong { color: var(--notes-text); font-size: 24px; line-height: 1.2; }
-.notes-overview span { color: var(--notes-muted); font-size: 12px; margin-top: 5px; }
-.notes-sidebar-divider { height: 1px; background: var(--notes-border); margin: 18px 4px; }
-.notes-side-label { color: var(--notes-muted); font-size: 10px !important; font-weight: 800 !important; letter-spacing: .13em !important; margin: 0 12px 8px !important; }
+.notes-topbar { margin-bottom: 12px; min-height: 42px; }
+.notes-topbar h3 { font-size: 20px; }
+.notes-categories, .notes-list, .notes-detail { min-width: 0; padding: 18px; }
+.notes-categories { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; overflow-x: auto; background: var(--notes-sidebar); border-bottom: 1px solid var(--notes-border); padding: 9px 12px; }
+.notes-categories > .MuiIconButton-root { flex-shrink: 0; margin-right: 8px; }
+.notes-categories > .notes-category-item, .notes-category-row { width: auto !important; flex-shrink: 0; }
+.notes-categories .notes-category-item { white-space: nowrap; padding: 6px 10px !important; }
+.notes-list { grid-column: 1; border-right: 1px solid var(--notes-border); background: var(--notes-sidebar); }
+.notes-detail { grid-column: 2; }
+.notes-metadata { padding: 14px; margin-bottom: 14px; border: 1px solid var(--notes-border); border-radius: 10px; background: var(--notes-sidebar); }
 .notes-pane-title { font-size: 13px !important; font-weight: 760 !important; letter-spacing: .06em !important; text-transform: uppercase; }
 .notes-count { color: #82968a; font-weight: 500; }
 .notes-category-row { display: flex; align-items: center; gap: 2px; }
@@ -144,8 +146,7 @@ a {
   .app-sidebar.is-collapsed .sidebar-link { justify-content: center; }
   .app-sidebar.is-collapsed .MuiListItemIcon-root { min-width: 0; }
 }
-.notes-storage-hint { color: var(--notes-muted); font-size: 12px; line-height: 1.6; margin-top: 30px; padding: 12px; border-top: 1px solid var(--notes-border); }
-.notes-list-scroll { max-height: 650px; overflow-y: auto; margin: 0 -8px; padding: 0 8px; }
+.notes-list-scroll { max-height: calc(100vh - 370px); overflow-y: auto; margin: 0 -8px; padding: 0 8px; }
 .notes-list-item { display: block; width: 100%; padding: 16px; margin-bottom: 8px; border: 1px solid transparent; border-radius: 12px; background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit; }
 .notes-list-item:hover { background: var(--notes-hover); }
 .notes-list-item.is-selected { background: var(--notes-selected); border-color: var(--notes-border); }
@@ -159,7 +160,7 @@ a {
 .notes-editor-shell { width: 100%; }
 .notes-editor-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .notes-editor-grid.is-split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.notes-textarea, .notes-preview-pane { width: 100%; min-height: 460px; padding: 20px; border: 1px solid var(--notes-border); border-radius: 12px; background: var(--notes-sidebar); }
+.notes-textarea, .notes-preview-pane { width: 100%; min-height: max(560px, calc(100vh - 315px)); padding: 20px; border: 1px solid var(--notes-border); border-radius: 12px; background: var(--notes-sidebar); }
 .notes-textarea { resize: vertical; color: var(--notes-text); font: 14px/1.75 ui-monospace, SFMono-Regular, Consolas, monospace; outline: none; }
 .notes-textarea:focus { border-color: #43856a; box-shadow: 0 0 0 3px #43856a20; }
 .notes-preview-pane { overflow-x: auto; }
@@ -177,8 +178,8 @@ a {
 .notes-empty { min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 25px; color: #54816b; }
 .notes-detail-empty { min-height: 550px; max-width: 500px; margin: auto; }.notes-empty-preview { color: #809287; }
 .notes-mobile-back { display: none !important; }
-@media (max-width: 1100px) { .notes-workspace { grid-template-columns: 170px 240px minmax(0, 1fr); }.notes-categories, .notes-list, .notes-detail { padding: 16px; }.notes-editor-grid.is-split { grid-template-columns: 1fr; } }
-@media (max-width: 760px) { .notes-workspace { display: block; min-height: 560px; }.notes-workspace > div { display: none; border: 0; }.notes-workspace.pane-categories .notes-categories, .notes-workspace.pane-list .notes-list, .notes-workspace.pane-editor .notes-detail { display: block; }.notes-mobile-back { display: inline-flex !important; }.notes-list-scroll { max-height: none; }.notes-textarea, .notes-preview-pane { min-height: 400px; } }
+@media (max-width: 1100px) { .notes-workspace { grid-template-columns: 210px minmax(0, 1fr); }.notes-categories, .notes-list, .notes-detail { padding: 12px; }.notes-editor-grid.is-split { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .notes-workspace { display: block; min-height: 560px; }.notes-workspace > div { display: none; border: 0; }.notes-workspace.pane-categories .notes-categories, .notes-workspace.pane-list .notes-list, .notes-workspace.pane-editor .notes-detail { display: block; }.notes-categories .notes-category-item { width: 100% !important; }.notes-categories .notes-category-row { width: 100% !important; }.notes-mobile-back { display: inline-flex !important; }.notes-list-scroll { max-height: none; }.notes-textarea, .notes-preview-pane { min-height: 400px; } }
 .section-link {
   text-decoration: none;
   display: block;
