@@ -115,7 +115,7 @@ export function MarkdownEditor({ note, status, onChange, onBlur }: { note: Study
     <Box className="notes-editor-shell">
       <Stack className="notes-editor-heading" direction="row" alignItems="center" gap={2}>
         <TextField fullWidth variant="standard" placeholder="Tiêu đề ghi chú" aria-label="Tiêu đề ghi chú" value={note.title} onChange={(event) => onChange({ ...note, title: event.target.value })} onBlur={onBlur} slotProps={{ htmlInput: { maxLength: 300 } }} sx={{ minWidth: 0, flex: 1, "& input": { fontSize: 22, fontWeight: 700, lineHeight: 1.35 } }} />
-        <Typography variant="caption" color={status === "error" ? "error" : "text.secondary"} role="status" sx={{ flexShrink: 0 }}>
+        <Typography className="notes-save-status" data-status={status} variant="caption" role="status" aria-live="polite" sx={{ flexShrink: 0 }}>
           {status === "saving" ? "Đang lưu…" : status === "saved" ? "Đã lưu trong trình duyệt này" : status === "error" ? "Chưa lưu được" : "Đang tải…"}
         </Typography>
       </Stack>
